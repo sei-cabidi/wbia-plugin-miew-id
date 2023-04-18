@@ -59,3 +59,15 @@ def get_valid_transforms(config):
         ToTensorV2(p=1.0)
         ]
     )
+
+
+
+def get_test_transforms(config):
+
+    return albumentations.Compose(
+        [
+            albumentations.Resize(config.DIM[0],config.DIM[1],always_apply=True),
+            albumentations.Normalize(),
+        ToTensorV2(p=1.0)
+        ]
+    )

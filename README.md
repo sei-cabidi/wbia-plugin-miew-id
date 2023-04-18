@@ -14,4 +14,4 @@ A plugin for re-identificaiton of wildlife individuals using learned embeddings.
 
 #### Notes
 
-This is an initial commit with training, inference and WBIA integration capabilities. Documentation and the release of additional features is underway.
+This is an initial commit which includes training, inference and WBIA integration capabilities. Documentation and the release of additional features is underway.

@@ -1,5 +1,5 @@
 import yaml
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 
 from dataclasses import asdict
@@ -34,7 +34,11 @@ class ModelParams(DictClass):
     pretrained: bool
     n_classes: int
 
-
+@dataclass
+class TestParams():
+    batch_size: int = 4
+    fliplr: bool = False
+    fliplr_view: List = field(default_factory=list)
 
 @dataclass
 class Config(DictClass):
@@ -53,6 +57,7 @@ class Config(DictClass):
     use_wandb: bool
     scheduler_params: SchedulerParams
     model_params: ModelParams
+    test: TestParams
 
 def get_config(file_path: str) -> Config:
     with open(file_path, 'r') as file:
@@ -60,5 +65,6 @@ def get_config(file_path: str) -> Config:
 
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
+    config_dict['test'] = TestParams()
     config = Config(**config_dict)
     return config

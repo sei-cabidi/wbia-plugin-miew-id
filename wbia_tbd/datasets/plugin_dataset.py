@@ -15,7 +15,6 @@ class PluginDataset(Dataset):
         names,
         bboxes,
         viewpoints,
-        # target_imsize,
         transform,
         fliplr=False,
         fliplr_view=None,
@@ -23,7 +22,6 @@ class PluginDataset(Dataset):
         self.image_paths = image_paths
         self.bboxes = bboxes
         self.names = names
-        # self.target_imsize = target_imsize
         self.transform = transform
         self.viewpoints = viewpoints
 
@@ -59,18 +57,16 @@ class PluginDataset(Dataset):
             image = self.load_image(image_path)
             self.bboxes[idx] = [0, 0, image.shape[1], image.shape[0]]
 
-        # # Resize image
-        # image = skimage_transform.resize(
-        #     image, self.target_imsize, order=3, anti_aliasing=True
-        # )
 
-        # Flip image if a model have been trained on one specific view
         if self.fliplr:
             if self.viewpoints[idx] in self.fliplr_view:
                 image = np.fliplr(image)
 
         if self.transform is not None:
-            image = self.transform(image.copy())
+            augmented = self.transform(image=image.copy())
+            image = augmented['image']
+            # image = self.transform(image.copy())
+            
         return image, self.names[idx]
 
 

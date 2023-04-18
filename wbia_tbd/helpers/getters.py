@@ -1,21 +1,21 @@
-import torch
-from models import TbdNet
-from datasets import TbdDataset
+# import torch
+# from models import TbdNet
+# from datasets import TbdDataset
 
-def get_model(cfg, checkpoint_path=None, use_gpu=True):
+# def get_model(cfg, checkpoint_path=None, use_gpu=True):
 
-    model = TbdNet(**dict(cfg.model_params))
+#     model = TbdNet(**dict(cfg.model_params))
 
 
-    if use_gpu:
-        device = torch.device("cuda")
-        model.to(device)
+#     if use_gpu:
+#         device = torch.device("cuda")
+#         model.to(device)
 
-    if checkpoint_path:
-        model.load_state_dict(torch.load(checkpoint_path))
-        print('loaded checkpoint from', checkpoint_path)
+#     if checkpoint_path:
+#         model.load_state_dict(torch.load(checkpoint_path))
+#         print('loaded checkpoint from', checkpoint_path)
 
-    return model
+#     return model
 
 # def get_dataloader(df_data, images_dir, cfg, transforms, shuffle=True):
 #     dataset = TbdDataset(

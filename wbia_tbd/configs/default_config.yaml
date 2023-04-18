@@ -32,3 +32,7 @@ model_params:
   theta_zero: 0.785
   pretrained: true
   n_classes: 273 # used for loading checkpoint
+test:
+  fliplr: false
+  fliplr_view: []
+  batch_size: 8

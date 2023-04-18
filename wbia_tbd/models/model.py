@@ -86,7 +86,6 @@ class TbdNet(nn.Module):
             self.fc = nn.Linear(final_in_features, n_classes, bias = False)            
             self.bn.apply(weights_init_kaiming)
             self.fc.apply(weights_init_classifier)
-            #self._init_params()
             final_in_features = fc_dim
 
         self.loss_module = loss_module
@@ -106,8 +105,12 @@ class TbdNet(nn.Module):
         nn.init.constant_(self.bn.weight, 1)
         nn.init.constant_(self.bn.bias, 0)
 
-    def forward(self, x, label):
+    def forward(self, x, label=None):
         feature = self.extract_feat(x)
+        if not self.training:
+            return feature
+        else:
+            assert label is not None
         if self.loss_module in ('arcface', 'cosface', 'adacos'):
             logits = self.final(feature, label)
         else:

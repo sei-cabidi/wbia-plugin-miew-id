@@ -15,14 +15,10 @@ from scipy.spatial import distance_matrix
 
 import tqdm
 
-# from wbia_tbd.default_config import get_default_config
-# from wbia_tbd.models import build_model
-from helpers import get_config, get_model, read_json
-# from wbia_tbd.datasets import AnimalNameWbiaDataset  # noqa: E402
-from datasets import PluginDataset
-# from wbia_tbd.metrics import eval_onevsall
-# from wbia_tbd.utils import read_json, load_pretrained_weights
-from metrics import pred_light, compute_distance_matrix, eval_onevsall
+from wbia_tbd.helpers import get_config, read_json
+from wbia_tbd.models import get_model
+from wbia_tbd.datasets import PluginDataset, get_test_transforms
+from wbia_tbd.metrics import pred_light, compute_distance_matrix, eval_onevsall
 
 (print, rrr, profile) = ut.inject2(__name__)
 
@@ -167,7 +163,7 @@ def tbd_compute_embedding(ibs, aid_list, config=None, multithread=False):
             if config.use_gpu:
                 images = images.cuda(non_blocking=True)
 
-            output = model.extract_feat(images.float())
+            output = model(images.float())
             embeddings.append(output.detach().cpu().numpy())
 
     embeddings = np.concatenate(embeddings)
@@ -389,14 +385,8 @@ def _load_data(ibs, aid_list, config, multithread=False):
     r"""
     Load data, preprocess and create data loaders
     """
-    target_imsize = (config.DIM[0], config.DIM[1])
-    test_transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Resize(target_imsize),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ]
-    )
+
+    test_transform = get_test_transforms(config)
 
     image_paths = ibs.get_annot_image_paths(aid_list)
     bboxes = ibs.get_annot_bboxes(aid_list)
@@ -408,7 +398,6 @@ def _load_data(ibs, aid_list, config, multithread=False):
         names,
         bboxes,
         viewpoints,
-        target_imsize,
         test_transform,
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
