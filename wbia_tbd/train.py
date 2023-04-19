@@ -12,6 +12,7 @@ import os
 import torch
 import random
 import numpy as np
+from dotenv import load_dotenv
 
 import argparse
 
@@ -99,6 +100,7 @@ def run(config_path):
 
 
     if config.use_wandb:
+        load_dotenv()
         init_wandb(config.exp_name, config.project_name, config=None)
 
     run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.use_wandb)

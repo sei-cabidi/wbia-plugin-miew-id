@@ -10,8 +10,4 @@ timm==0.6.12
 torch==2.0.0
 torchvision==0.15.1
 tqdm==4.65.0
-utool==2.1.7
-vtool==1.5.0
-wbia_utool==4.0.4
-wbia_vtool==4.0.2
-wildbook_ia==4.0.1
+python-dotenv=1.0.0
