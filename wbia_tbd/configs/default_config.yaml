@@ -1,5 +1,6 @@
 exp_name: default_experiment
 project_name: default_config
+checkpoint_dir: ./runs
 DIM:
   - 440
   - 440

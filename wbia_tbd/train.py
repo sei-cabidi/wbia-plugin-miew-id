@@ -33,9 +33,9 @@ def run(config_path):
     
     config = get_config(config_path)
 
-    checkpoint_dir = f"./runs/{config.project_name}/{config.exp_name}/{config.model_name}-{config.DIM[0]}-{config.loss_module}"
+    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_name}-{config.DIM[0]}-{config.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
-    print('checkpoint_dir: ', checkpoint_dir)
+    print('Checkpoints will be saved at: ', checkpoint_dir)
 
 
     def set_seed_torch(seed):
@@ -108,6 +108,6 @@ def run(config_path):
 if __name__ == '__main__':
     args = parse_args()
     config_path = args.config
-    print(f"config path: {config_path}")
+    print(f"Loading config from path: {config_path}")
 
     run(config_path)
