@@ -1,7 +1,7 @@
 from datasets import TbdDataset, get_train_transforms, get_valid_transforms
 from logging_utils import init_wandb
 from models import TbdNet
-from etl import make_dataframes, IMAGES_DIR
+from etl import preprocess_data, print_intersect_stats
 from losses import fetch_loss
 from schedulers import TbdScheduler
 from engine import run_fn
@@ -16,6 +16,9 @@ from dotenv import load_dotenv
 
 import argparse
 
+# os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
+# os.environ['TORCH_USE_CUDA_DSA'] = "1"
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Load configuration file.")
     parser.add_argument(
@@ -26,14 +29,11 @@ def parse_args():
     )
     return parser.parse_args()
 
-# os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
-# os.environ['TORCH_USE_CUDA_DSA'] = "1"
-
 def run(config_path):
     
     config = get_config(config_path)
 
-    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_name}-{config.DIM[0]}-{config.loss_module}"
+    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.DIM[0]}-{config.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
@@ -48,20 +48,34 @@ def run(config_path):
         
     set_seed_torch(config.SEED)
 
+    df_train = preprocess_data(config.data.train_anno_path, 
+                                name_keys=config.data.name_keys,
+                                convert_names_to_ids=True, 
+                                viewpoint_list=config.data.viewpoint_list, 
+                                n_filter_min=config.data.train_n_filter_min, 
+                                n_subsample_max=config.data.train_n_subsample_max)
+    
+    df_val = preprocess_data(config.data.val_anno_path, 
+                                name_keys=config.data.name_keys,
+                                convert_names_to_ids=True, 
+                                viewpoint_list=config.data.viewpoint_list, 
+                                n_filter_min=config.data.val_n_filter_min, 
+                                n_subsample_max=config.data.val_n_subsample_max)
 
-    df_train, df_val = make_dataframes()
+    print_intersect_stats(df_train, df_val)
+
 
     n_train_classes = df_train['name'].nunique()
 
     train_dataset = TbdDataset(
         csv=df_train,
-        images_dir = IMAGES_DIR,
+        images_dir = config.data.images_dir,
         transforms=get_train_transforms(config),
     )
         
     valid_dataset = TbdDataset(
         csv=df_val,
-        images_dir=IMAGES_DIR,
+        images_dir=config.data.images_dir,
         transforms=get_valid_transforms(config),
     )
         

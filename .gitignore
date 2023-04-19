@@ -1,5 +1,6 @@
-/data/
-/wandb/
+wbia_tbd/data/
+wbia_tbd/wandb/
 *.pyc
-/runs/
+wbia_tbd/runs/
 .env
+TODO.md
