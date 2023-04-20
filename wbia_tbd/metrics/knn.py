@@ -18,7 +18,7 @@ def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
     """
     # Set number of nearest points (with duplicated labels)
     k_w_dupl = min(50, len(db_emb))
-    nn_classifier = NearestNeighbors(n_neighbors=k_w_dupl, metric='euclidean')
+    nn_classifier = NearestNeighbors(n_neighbors=k_w_dupl, metric='cosine')
     nn_classifier.fit(db_emb, db_lbls)
 
     # Predict nearest neighbors and distances for test embeddings

@@ -319,14 +319,14 @@ def evaluate_distmat(ibs, aid_list, config, use_depc, ranks=[1, 5, 10, 20]):
     """
     embs = np.array(tbd_embedding(ibs, aid_list, config, use_depc))
     print('Computing distance matrix ...')
-    distmat = distance_matrix(embs, embs)
+    distmat = compute_distance_matrix(embs, embs, metric='cosine')
 
     print('Computing ranks ...')
     db_labels = np.array(ibs.get_annot_name_rowids(aid_list))
     cranks, mAP = eval_onevsall(distmat, db_labels)
 
     print('** Results **')
-    # print('mAP: {:.1%}'.format(mAP))
+    print('mAP: {:.1%}'.format(mAP))
     for r in ranks:
         print('Rank-{:<3}: {:.1%}'.format(r, cranks[r - 1]))
     return cranks[0]
@@ -352,7 +352,7 @@ def _load_model(config, model_url):
     r"""
     Load a model based on config file
     """
-    print('Building model: {}'.format(config.model.name))
+    # print('Building model: {}'.format(config.model.name))
     # model = build_model(
     #     name=config.model.name,
     #     num_classes=config.model.num_train_classes,

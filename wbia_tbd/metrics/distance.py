@@ -48,9 +48,11 @@ def compute_distance_matrix(input1, input2, metric='euclidean'):
         torch.Tensor: distance matrix.
 
     """
+    if not isinstance(input1, torch.Tensor):
+        input1 = torch.from_numpy(input1)
+    if not isinstance(input2, torch.Tensor):
+        input2 = torch.from_numpy(input2)
     # check input
-    assert isinstance(input1, torch.Tensor)
-    assert isinstance(input2, torch.Tensor)
     assert input1.dim() == 2, 'Expected 2-D tensor, but got {}-D'.format(input1.dim())
     assert input2.dim() == 2, 'Expected 2-D tensor, but got {}-D'.format(input2.dim())
     assert input1.size(1) == input2.size(1)
