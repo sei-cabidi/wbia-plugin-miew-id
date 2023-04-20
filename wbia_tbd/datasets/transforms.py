@@ -28,7 +28,7 @@ class Triangle(ImageOnlyTransform):
 def get_train_transforms(config):
     return albumentations.Compose(
         [   Triangle(p = 0.5),
-            albumentations.Resize(config.DIM[0],config.DIM[1],always_apply=True),
+            albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
             albumentations.HorizontalFlip(p=0.5),
             
             #albumentations.VerticalFlip(p=0.5),
@@ -54,7 +54,7 @@ def get_valid_transforms(config):
 
     return albumentations.Compose(
         [
-            albumentations.Resize(config.DIM[0],config.DIM[1],always_apply=True),
+            albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
             albumentations.Normalize(),
         ToTensorV2(p=1.0)
         ]
@@ -66,7 +66,7 @@ def get_test_transforms(config):
 
     return albumentations.Compose(
         [
-            albumentations.Resize(config.DIM[0],config.DIM[1],always_apply=True),
+            albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
             albumentations.Normalize(),
         ToTensorV2(p=1.0)
         ]

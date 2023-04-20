@@ -33,7 +33,7 @@ def run(config_path):
     
     config = get_config(config_path)
 
-    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.DIM[0]}-{config.loss_module}"
+    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.data.data.data.data.data.image_size[0]}-{config.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
@@ -46,7 +46,7 @@ def run(config_path):
         torch.cuda.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
         
-    set_seed_torch(config.SEED)
+    set_seed_torch(config.engine.seed)
 
     df_train = preprocess_data(config.data.train_anno_path, 
                                 name_keys=config.data.name_keys,
@@ -81,16 +81,16 @@ def run(config_path):
         
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
-        batch_size=config.TRAIN_BATCH_SIZE,
+        batch_size=config.engine.train_batch_size,
         pin_memory=True,
         drop_last=True,
-        num_workers=config.NUM_WORKERS
+        num_workers=config.engine.num_workers
     )
 
     valid_loader = torch.utils.data.DataLoader(
         valid_dataset,
-        batch_size=config.VALID_BATCH_SIZE,
-        num_workers=config.NUM_WORKERS,
+        batch_size=config.engine.valid_batch_size,
+        num_workers=config.engine.num_workers,
         shuffle=False,
         pin_memory=True,
         drop_last=False,

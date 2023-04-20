@@ -27,8 +27,8 @@
 
 #     data_loader = torch.utils.data.DataLoader(
 #         dataset,
-#         batch_size=cfg.VALID_BATCH_SIZE,
-#         num_workers=cfg.NUM_WORKERS,
+#         batch_size=cfg.engine.valid_batch_size,
+#         num_workers=cfg.engine.num_workers,
 #         shuffle=shuffle,
 #         pin_memory=True,
 #         drop_last=False,

@@ -22,6 +22,20 @@ class Data(DictableClass):
     train_n_subsample_max: int = None
     val_n_subsample_max: int = None
     name_keys: List = field(default_factory=['name'])
+    image_size: Tuple[int, int]
+
+
+@dataclass
+class Engine(DictableClass):
+    num_workers: int = 0
+    train_batch_size: int
+    valid_batch_size: int
+    epochs: int
+    seed: int
+    device: str
+    loss_module: str
+    use_wandb: bool
+
 
 @dataclass
 class SchedulerParams(DictableClass):
@@ -57,17 +71,9 @@ class Config(DictableClass):
     exp_name: str
     project_name: str
     checkpoint_dir: str
-    data: Data
-    DIM: Tuple[int, int]
-    NUM_WORKERS: int
-    TRAIN_BATCH_SIZE: int
-    VALID_BATCH_SIZE: int
-    EPOCHS: int
-    SEED: int
-    device: str
-    loss_module: str
     comment: str
-    use_wandb: bool
+    data: Data
+    engine: Engine
     scheduler_params: SchedulerParams
     model_params: ModelParams
     test: TestParams
@@ -78,6 +84,7 @@ def get_config(file_path: str) -> Config:
         config_dict = yaml.safe_load(file)
 
     config_dict['data'] = Data(**config_dict['data'])
+    config_dict['engine'] = Engine(**config_dict['engine'])
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
     config_dict['test'] = TestParams(**config_dict['test'])

@@ -1,6 +1,7 @@
 exp_name: default_experiment
 project_name: default_config
 checkpoint_dir: ./runs
+comment: Experiment comment goes here
 
 data:
   images_dir: "data/beluga-440"
@@ -12,19 +13,19 @@ data:
   train_n_subsample_max: null
   val_n_subsample_max: 10
   name_keys: ['name', 'viewpoint']
-  
-DIM:
-  - 440
-  - 440
-NUM_WORKERS: 0
-TRAIN_BATCH_SIZE: 6
-VALID_BATCH_SIZE: 24
-EPOCHS: 30
-SEED: 42
-device: cuda
-loss_module: arcface
-comment: Experiment comment goes here
-use_wandb: false
+  image_size:
+    - 440
+    - 440
+
+engine:
+  num_workers: 0
+  train_batch_size: 6
+  valid_batch_size: 24
+  epochs: 30
+  seed: 42
+  device: cuda
+  loss_module: arcface
+  use_wandb: false
 
 scheduler_params:
   lr_start: 1.e-5
