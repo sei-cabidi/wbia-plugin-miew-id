@@ -21,5 +21,5 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         
         # if valid_loss.avg < best_loss:
         #     best_loss = valid_loss.avg
-        #     torch.save(model.state_dict(),f'model_{config.model_name}_IMG_SIZE_{config.data.image_size[0]}_{config.loss_module}.bin')
+        #     torch.save(model.state_dict(),f'model_{config.model_name}_IMG_SIZE_{config.data.image_size[0]}_{config.engine.loss_module}.bin')
         #     print('best model found for epoch {}'.format(epoch))

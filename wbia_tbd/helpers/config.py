@@ -16,18 +16,17 @@ class Data(DictableClass):
     images_dir: str
     train_anno_path: str
     val_anno_path: str
+    image_size: Tuple[int, int]
     viewpoint_list: List = None
     train_n_filter_min: int = None
     val_n_filter_min: int = 2
     train_n_subsample_max: int = None
     val_n_subsample_max: int = None
     name_keys: List = field(default_factory=['name'])
-    image_size: Tuple[int, int]
 
 
 @dataclass
 class Engine(DictableClass):
-    num_workers: int = 0
     train_batch_size: int
     valid_batch_size: int
     epochs: int
@@ -35,6 +34,8 @@ class Engine(DictableClass):
     device: str
     loss_module: str
     use_wandb: bool
+    num_workers: int = 0
+
 
 
 @dataclass

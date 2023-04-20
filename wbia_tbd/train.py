@@ -33,7 +33,7 @@ def run(config_path):
     
     config = get_config(config_path)
 
-    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.data.data.data.data.data.image_size[0]}-{config.loss_module}"
+    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.image_size[0]}-{config.engine.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
@@ -96,7 +96,7 @@ def run(config_path):
         drop_last=False,
     )
 
-    device = torch.device(config.device)
+    device = torch.device(config.engine.device)
 
     if config.model_params.n_classes != n_train_classes:
         print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes ({n_train_classes}). This parameters has to be readjusted in config for proper checkpoint loading after training.")
@@ -113,11 +113,11 @@ def run(config_path):
     scheduler = TbdScheduler(optimizer,**dict(config.scheduler_params))
 
 
-    if config.use_wandb:
+    if config.engine.use_wandb:
         load_dotenv()
         init_wandb(config.exp_name, config.project_name, config=None)
 
-    run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.use_wandb)
+    run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
 
 if __name__ == '__main__':
     args = parse_args()

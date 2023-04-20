@@ -343,7 +343,7 @@ def _load_config(config_url):
 
     config = get_config(config_file)
     config.use_gpu = torch.cuda.is_available()
-    config.device = 'cuda' if config.use_gpu else 'cpu'
+    config.engine.device = 'cuda' if config.use_gpu else 'cpu'
     # config.merge_from_file(config_file)
     return config
 
