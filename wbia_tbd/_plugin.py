@@ -37,10 +37,12 @@ DEMOS = {
 
 CONFIGS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.yaml',
+    'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.yaml',
 }
 
 MODELS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.bin',
+    'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.bin',
 }
 
 
