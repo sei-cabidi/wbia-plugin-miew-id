@@ -274,6 +274,9 @@ class TbdRequest(dt.base.VsOneSimilarityRequest):
     chunksize=None,
 )
 def wbia_plugin_tbd(depc, qaid_list, daid_list, config):
+    def distance_to_score(distance):
+        score = 1 - distance
+        return score
     ibs = depc.controller
 
     qaids = list(set(qaid_list))
@@ -303,7 +306,8 @@ def wbia_plugin_tbd(depc, qaid_list, daid_list, config):
             )
             qaid_score_dict[qaid] = {}
             for daid, tbd_annot_distance in zip(daids, tbd_annot_distances):
-                qaid_score_dict[qaid][daid] = distance_to_score(tbd_annot_distance, norm=500.0)
+                qaid_score_dict[qaid][daid] = distance_to_score(tbd_annot_distance)
+                print('dist', tbd_annot_distance, qaid_score_dict[qaid][daid])
 
     for qaid, daid in zip(qaid_list, daid_list):
         if qaid == daid:
@@ -594,6 +598,7 @@ def _db_labels_for_tbd(ibs, daid_list):
 # for cosine distance
 def distance_to_score(distance):
     score = 1 - distance
+    score = np.float64(score)
     return score
 
 def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_to_score):
