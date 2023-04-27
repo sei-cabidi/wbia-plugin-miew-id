@@ -608,7 +608,7 @@ def distance_dicts_to_score_dicts(distance_dicts, conversion_func=distance_to_sc
     return name_score_dicts
 
 def aid_scores_from_score_dict(name_score_dict, daid_list):
-    daid_scores = [name_score_dict[daid] for daid in daid_list]
+    daid_scores = [name_score_dict.get(daid, 0) for daid in daid_list]
     return daid_scores
 
 def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
