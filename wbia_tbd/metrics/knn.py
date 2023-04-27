@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
 
-def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
+def predict_k_neigh(db_emb, db_lbls, test_emb, k=50, remove_duplicates=False):
     """Get k nearest solutions from the database for test embeddings (query)
     using k-NearestNeighbors algorithm.
     Input:
@@ -37,7 +37,9 @@ def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
 
     for j in range(neigh_lbl.shape[0]):
         indices = np.arange(0, len(neigh_lbl[j]))
-        a, b = rem_dupl(neigh_lbl[j], indices)
+        if remove_duplicates:
+            a, b = rem_dupl(neigh_lbl[j], indices)
+        a, b = neigh_lbl[j], indices
         neigh_lbl_un.append(a[:k])
         neigh_ind_un.append(neigh_ind[j][b][:k].tolist())
         neigh_dist_un.append(neigh_dist[j][b][:k].tolist())
@@ -45,12 +47,12 @@ def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
     return neigh_lbl_un, neigh_ind_un, neigh_dist_un
 
 
-def pred_light(query_embedding, db_embeddings, db_labels, n_results=10):
+def pred_light(query_embedding, db_embeddings, db_labels, n_results=50):
     """Get k nearest solutions from the database for one query embedding
     using k-NearestNeighbors algorithm.
     """
     neigh_lbl_un, neigh_ind_un, neigh_dist_un = predict_k_neigh(
-        db_embeddings, db_labels, query_embedding, k=n_results
+        db_embeddings, db_labels, query_embedding, k=n_results, remove_duplicates=False
     )
 
     neigh_lbl_un = neigh_lbl_un[0]

@@ -219,7 +219,7 @@ def get_match_results(depc, qaid_list, daid_list, score_list, config):
         match_result._update_unique_nid_index()
 
         grouped_annot_scores = vt.apply_grouping(annot_scores, match_result.name_groupxs)
-        name_scores = np.array([np.sum(dists) for dists in grouped_annot_scores])
+        name_scores = np.array([np.max(dists) for dists in grouped_annot_scores])
         match_result.set_cannonical_name_score(annot_scores, name_scores)
         yield match_result
 
@@ -274,9 +274,6 @@ class TbdRequest(dt.base.VsOneSimilarityRequest):
     chunksize=None,
 )
 def wbia_plugin_tbd(depc, qaid_list, daid_list, config):
-    def distance_to_score(distance):
-        score = 1 - distance
-        return score
     ibs = depc.controller
 
     qaids = list(set(qaid_list))
@@ -287,14 +284,15 @@ def wbia_plugin_tbd(depc, qaid_list, daid_list, config):
     qaid_score_dict = {}
     for qaid in tqdm.tqdm(qaids):
         if use_knn:
-                tbd_name_dists = ibs.tbd_predict_light(
+                tbd_dists = ibs.tbd_predict_light(
                     qaid,
                     daids,
                     config['config_path'],
                 )
-                tbd_name_scores = distance_dicts_to_name_score_dicts(tbd_name_dists)
+                tbd_scores = distance_dicts_to_score_dicts(tbd_dists)
 
-                aid_score_list = aid_scores_from_name_scores(ibs, tbd_name_scores, daids)
+                # aid_score_list = aid_scores_from_name_scores(ibs, tbd_name_scores, daids)
+                aid_score_list = aid_scores_from_score_dict(tbd_scores, daids)
                 aid_score_dict = dict(zip(daids, aid_score_list))
 
                 qaid_score_dict[qaid] = aid_score_dict
@@ -307,7 +305,6 @@ def wbia_plugin_tbd(depc, qaid_list, daid_list, config):
             qaid_score_dict[qaid] = {}
             for daid, tbd_annot_distance in zip(daids, tbd_annot_distances):
                 qaid_score_dict[qaid][daid] = distance_to_score(tbd_annot_distance)
-                print('dist', tbd_annot_distance, qaid_score_dict[qaid][daid])
 
     for qaid, daid in zip(qaid_list, daid_list):
         if qaid == daid:
@@ -481,8 +478,10 @@ def wbia_tbd_test_ibs(demo_db_url, species, subset):
 @register_ibs_method
 def tbd_predict_light(ibs, qaid, daid_list, config=None):
     db_embs = np.array(ibs.tbd_embedding(daid_list, config))
-    db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
     query_emb = np.array(ibs.tbd_embedding([qaid], config))
+
+    # db_labels = np.array(ibs.get_annot_name_texts(daid_list, distinguish_unknowns=True))
+    db_labels = np.array(daid_list)
 
     ans = pred_light(query_emb, db_embs, db_labels)
     return ans
@@ -578,13 +577,13 @@ def tbd_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
 # are agnostic tot eh method of computing embeddings:
 # https://github.com/WildMeOrg/wbia-plugin-tbd/wbia_tbd/_plugin.py
 def _db_labels_for_tbd(ibs, daid_list):
-    db_labels = ibs.get_annot_name_texts(daid_list)
-    db_auuids = ibs.get_annot_semantic_uuids(daid_list)
-    # later we must know which db_labels are for single auuids, hence prefix
-    db_auuids = [UNKNOWN + str(auuid) for auuid in db_auuids]
-    db_labels = [
-        lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
-    ]
+    db_labels = ibs.get_annot_name_texts(daid_list, distinguish_unknowns=True)
+    # db_auuids = ibs.get_annot_name_rowids(daid_list)
+    # # later we must know which db_labels are for single auuids, hence prefix
+    # db_auuids = [UNKNOWN + '-' + str(auuid) for auuid in db_auuids]
+    # db_labels = [
+    #     lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
+    # ]
     db_labels = np.array(db_labels)
     return db_labels
 
@@ -601,13 +600,16 @@ def distance_to_score(distance):
     score = np.float64(score)
     return score
 
-def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_to_score):
+def distance_dicts_to_score_dicts(distance_dicts, conversion_func=distance_to_score):
     score_dicts = distance_dicts.copy()
     name_score_dicts = {}
     for entry in score_dicts:
         name_score_dicts[entry['label']] = conversion_func(entry['distance'])
     return name_score_dicts
 
+def aid_scores_from_score_dict(name_score_dict, daid_list):
+    daid_scores = [name_score_dict[daid] for daid in daid_list]
+    return daid_scores
 
 def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
     daid_name_list = list(_db_labels_for_tbd(ibs, daid_list))
@@ -620,6 +622,10 @@ def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
         name: name_score_dict[name] / name_count_dict[name]
         for name in name_score_dict.keys()
     }
+
+    name_annotwise_score_dict = {}
+    for name in name_score_dict.keys():
+        name_annotwise_score_dict[name] = name_score_dict[name] / name_count_dict[name]
 
     from collections import defaultdict
 
