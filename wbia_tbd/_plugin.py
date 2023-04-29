@@ -623,10 +623,6 @@ def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
         for name in name_score_dict.keys()
     }
 
-    name_annotwise_score_dict = {}
-    for name in name_score_dict.keys():
-        name_annotwise_score_dict[name] = name_score_dict[name] / name_count_dict[name]
-
     from collections import defaultdict
 
     name_annotwise_score_dict = defaultdict(float, name_annotwise_score_dict)
