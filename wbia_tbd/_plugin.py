@@ -164,7 +164,6 @@ def tbd_embedding_depc(depc, aid_list, config=None):
 def tbd_compute_embedding(ibs, aid_list, config=None, multithread=False):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
-    species='stenella_longirostris'
 
     # Load config
     if config is None:
