@@ -38,11 +38,30 @@ DEMOS = {
 CONFIGS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.yaml',
     'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.yaml',
-}
+    'tursiops_truncatus': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'dolphin_whitesided+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'white_shark+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'spinner_dolphin': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'stenella_longirostris': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'sotalia_guianensis': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',
+    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.yaml',}
 
 MODELS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.bin',
     'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.beluga.bin',
+    'tursiops_truncatus': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'dolphin_whitesided+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'white_shark+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'spinner_dolphin': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'stenella_longirostris': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'sotalia_guianensis': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
+    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/tbd.bottlenose.bin',
 }
 
 
@@ -145,6 +164,7 @@ def tbd_embedding_depc(depc, aid_list, config=None):
 def tbd_compute_embedding(ibs, aid_list, config=None, multithread=False):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
+    species='stenella_longirostris'
 
     # Load config
     if config is None:

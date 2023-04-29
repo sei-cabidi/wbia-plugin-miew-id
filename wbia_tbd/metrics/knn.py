@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
 
-def predict_k_neigh(db_emb, db_lbls, test_emb, k=50, remove_duplicates=False):
+def predict_k_neigh(db_emb, db_lbls, test_emb, k=5, remove_duplicates=False):
     """Get k nearest solutions from the database for test embeddings (query)
     using k-NearestNeighbors algorithm.
     Input:
@@ -37,9 +37,9 @@ def predict_k_neigh(db_emb, db_lbls, test_emb, k=50, remove_duplicates=False):
 
     for j in range(neigh_lbl.shape[0]):
         indices = np.arange(0, len(neigh_lbl[j]))
-        if remove_duplicates:
-            a, b = rem_dupl(neigh_lbl[j], indices)
         a, b = neigh_lbl[j], indices
+        if remove_duplicates:
+            a, b = rem_dupl(a, b)
         neigh_lbl_un.append(a[:k])
         neigh_ind_un.append(neigh_ind[j][b][:k].tolist())
         neigh_dist_un.append(neigh_dist[j][b][:k].tolist())
