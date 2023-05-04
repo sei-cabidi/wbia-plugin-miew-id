@@ -1,12 +1,12 @@
 import torch
 import sys
-# sys.path.append('..'); from wbia_pie_v2.models import TbdNet
-# from datasets import TbdDataset
-from .model import TbdNet
+# sys.path.append('..'); from wbia_pie_v2.models import MiewIDNet
+# from datasets import MiewIDDataset
+from .model import MiewIDNet
 
 def get_model(cfg, checkpoint_path=None, use_gpu=True):
 
-    model = TbdNet(**dict(cfg.model_params))
+    model = MiewIDNet(**dict(cfg.model_params))
 
 
     if use_gpu:

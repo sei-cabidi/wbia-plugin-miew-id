@@ -19,7 +19,7 @@ WANDB_MODE={'online'/'offline'}
 You can create a new line in a code block in markdown by using two spaces at the end of the line followed by a line break. Here's an example:
 
 ```
-cd wbia_tbd
+cd wbia_miew_id
 python train.py
 ```
 

@@ -3,7 +3,7 @@ import cv2
 import torch
 from torch.utils.data import Dataset
 
-class TbdDataset(Dataset):
+class MiewIDDataset(Dataset):
     def __init__(self, csv, images_dir, transforms=None):
 
         self.csv = csv#.reset_index()

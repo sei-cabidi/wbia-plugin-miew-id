@@ -1,9 +1,9 @@
-from datasets import TbdDataset, get_train_transforms, get_valid_transforms
+from datasets import MiewIDDataset, get_train_transforms, get_valid_transforms
 from logging_utils import init_wandb
-from models import TbdNet
+from models import MiewIDNet
 from etl import preprocess_data, print_intersect_stats
 from losses import fetch_loss
-from schedulers import TbdScheduler
+from schedulers import MiewIDScheduler
 from engine import run_fn
 from helpers import get_config
 
@@ -67,13 +67,13 @@ def run(config_path):
 
     n_train_classes = df_train['name'].nunique()
 
-    train_dataset = TbdDataset(
+    train_dataset = MiewIDDataset(
         csv=df_train,
         images_dir = config.data.images_dir,
         transforms=get_train_transforms(config),
     )
         
-    valid_dataset = TbdDataset(
+    valid_dataset = MiewIDDataset(
         csv=df_val,
         images_dir=config.data.images_dir,
         transforms=get_valid_transforms(config),
@@ -101,7 +101,7 @@ def run(config_path):
     if config.model_params.n_classes != n_train_classes:
         print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes ({n_train_classes}). This parameters has to be readjusted in config for proper checkpoint loading after training.")
         config.model_params.n_classes = n_train_classes
-    model = TbdNet(**dict(config.model_params))
+    model = MiewIDNet(**dict(config.model_params))
     model.to(device)
 
     criterion = fetch_loss()
@@ -110,7 +110,7 @@ def run(config_path):
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config.scheduler_params.lr_start)
 
-    scheduler = TbdScheduler(optimizer,**dict(config.scheduler_params))
+    scheduler = MiewIDScheduler(optimizer,**dict(config.scheduler_params))
 
 
     if config.engine.use_wandb:
