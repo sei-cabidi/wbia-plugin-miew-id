@@ -46,7 +46,7 @@ class GeM(nn.Module):
     
 
             
-class MiewIDNet(nn.Module):
+class MiewIdNet(nn.Module):
 
     def __init__(self,
                  n_classes,
@@ -67,7 +67,7 @@ class MiewIDNet(nn.Module):
         :param pooling: One of ('SPoC', 'MAC', 'RMAC', 'GeM', 'Rpool', 'Flatten', 'CompactBilinearPooling')
         :param loss_module: One of ('arcface', 'cosface', 'softmax')
         """
-        super(MiewIDNet, self).__init__()
+        super(MiewIdNet, self).__init__()
         print('Building Model Backbone for {} model'.format(model_name))
 
         self.backbone = timm.create_model(model_name, pretrained=pretrained)

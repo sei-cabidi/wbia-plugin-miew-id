@@ -124,7 +124,7 @@ def miew_id_embedding(ibs, aid_list, config=None, use_depc=True):
         if use_depc:
             config_map = {'config_path': config}
             dirty_embeddings = ibs.depc_annot.get(
-                'MiewIDEmbedding', dirty_aids, 'embedding', config_map
+                'MiewIdEmbedding', dirty_aids, 'embedding', config_map
             )
         else:
             dirty_embeddings = miew_id_compute_embedding(ibs, dirty_aids, config)
@@ -137,18 +137,18 @@ def miew_id_embedding(ibs, aid_list, config=None, use_depc=True):
     return embeddings
 
 
-class MiewIDEmbeddingConfig(dt.Config):  # NOQA
+class MiewIdEmbeddingConfig(dt.Config):  # NOQA
     _param_info_list = [
         ut.ParamInfo('config_path', default=None),
     ]
 
 
 @register_preproc_annot(
-    tablename='MiewIDEmbedding',
+    tablename='MiewIdEmbedding',
     parents=[ANNOTATION_TABLE],
     colnames=['embedding'],
     coltypes=[np.ndarray],
-    configclass=MiewIDEmbeddingConfig,
+    configclass=MiewIdEmbeddingConfig,
     fname='miew_id',
     chunksize=128,
 )
@@ -191,7 +191,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     return embeddings
 
 
-class MiewIDConfig(dt.Config):  # NOQA
+class MiewIdConfig(dt.Config):  # NOQA
     def get_param_info_list(self):
         return [
             ut.ParamInfo('config_path', None),
@@ -243,9 +243,9 @@ def get_match_results(depc, qaid_list, daid_list, score_list, config):
         yield match_result
 
 
-class MiewIDRequest(dt.base.VsOneSimilarityRequest):
+class MiewIdRequest(dt.base.VsOneSimilarityRequest):
     _symmetric = False
-    _tablename = 'MiewID'
+    _tablename = 'MiewId'
 
     @ut.accepts_scalar_input
     def get_fmatch_overlayed_chip(request, aid_list, overlay=True, config=None):
@@ -274,7 +274,7 @@ class MiewIDRequest(dt.base.VsOneSimilarityRequest):
 
     def execute(request, *args, **kwargs):
         # kwargs['use_cache'] = False
-        result_list = super(MiewIDRequest, request).execute(*args, **kwargs)
+        result_list = super(MiewIdRequest, request).execute(*args, **kwargs)
         qaids = kwargs.pop('qaids', None)
         if qaids is not None:
             result_list = [result for result in result_list if result.qaid in qaids]
@@ -282,12 +282,12 @@ class MiewIDRequest(dt.base.VsOneSimilarityRequest):
 
 
 @register_preproc_annot(
-    tablename='MiewID',
+    tablename='MiewId',
     parents=[ANNOTATION_TABLE, ANNOTATION_TABLE],
     colnames=['score'],
     coltypes=[float],
-    configclass=MiewIDConfig,
-    requestclass=MiewIDRequest,
+    configclass=MiewIdConfig,
+    requestclass=MiewIdRequest,
     fname='miew_id',
     rm_extern_on_delete=True,
     chunksize=None,

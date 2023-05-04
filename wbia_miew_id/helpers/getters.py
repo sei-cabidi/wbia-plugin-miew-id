@@ -1,10 +1,10 @@
 # import torch
-# from models import MiewIDNet
-# from datasets import MiewIDDataset
+# from models import MiewIdNet
+# from datasets import MiewIdDataset
 
 # def get_model(cfg, checkpoint_path=None, use_gpu=True):
 
-#     model = MiewIDNet(**dict(cfg.model_params))
+#     model = MiewIdNet(**dict(cfg.model_params))
 
 
 #     if use_gpu:
@@ -18,7 +18,7 @@
 #     return model
 
 # def get_dataloader(df_data, images_dir, cfg, transforms, shuffle=True):
-#     dataset = MiewIDDataset(
+#     dataset = MiewIdDataset(
 #         csv=df_data,
 #         images_dir = images_dir,
 #         transforms=transforms,
