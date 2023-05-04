@@ -1,7 +1,7 @@
 
-# WILDBOOK IA - ID Plugin
+# WILDBOOK IA - MIEW-ID Plugin
 
-A plugin for re-identificaiton of wildlife individuals using learned embeddings.
+A plugin for matching and interpreting embeddings for wildlife identification.
 
 
 ## Setup
