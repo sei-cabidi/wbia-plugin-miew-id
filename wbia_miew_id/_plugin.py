@@ -12,6 +12,7 @@ import os
 import torch
 import torchvision.transforms as transforms  # noqa: E402
 from scipy.spatial import distance_matrix
+import pandas as pd
 
 import tqdm
 
@@ -19,6 +20,7 @@ from wbia_miew_id.helpers import get_config, read_json
 from wbia_miew_id.models import get_model
 from wbia_miew_id.datasets import PluginDataset, get_test_transforms
 from wbia_miew_id.metrics import pred_light, compute_distance_matrix, eval_onevsall
+from wbia_miew_id.visualization import draw_one
 
 (print, rrr, profile) = ut.inject2(__name__)
 
@@ -180,7 +182,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     embeddings = []
     model.eval()
     with torch.no_grad():
-        for images, names in test_loader:
+        for images, names, image_paths in test_loader:
             if config.use_gpu:
                 images = images.cuda(non_blocking=True)
 
@@ -254,15 +256,40 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         chips = ibs.get_annot_chips(aid_list)
         return chips
 
-    def render_single_result(request, cm, aid, **kwargs):
-        # HACK FOR WEB VIEWER
-        overlay = kwargs.get('draw_fmatches')
-        chips = request.get_fmatch_overlayed_chip(
-            [cm.qaid, aid], overlay=overlay, config=request.config
-        )
-        out_image = vt.stack_image_list(chips)
-        return out_image
+    # def render_single_result(request, cm, aid, **kwargs):
+    #     # HACK FOR WEB VIEWER
+    #     overlay = kwargs.get('draw_fmatches')
+    #     chips = request.get_fmatch_overlayed_chip(
+    #         [cm.qaid, aid], overlay=overlay, config=request.config
+    #     )
+    #     out_image = vt.stack_image_list(chips)
+        
+    #     return out_image
 
+    def render_single_result(request, cm, aid, **kwargs):
+
+        depc = request.depc
+        ibs = depc.controller
+
+        # Load config
+        species = ibs.get_annot_species_texts(aid)
+
+        config = None
+        if config is None:
+            config = CONFIGS[species]
+        config = _load_config(config)
+
+        # Load model
+        model = _load_model(config, MODELS[species], use_dataparallel=False)
+
+        # This list has to be in the format of [query_aid, db_aid]
+        aid_list = [aid, cm.qaid]
+        test_loader, test_dataset = _load_data(ibs, aid_list, config)
+
+        out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
+
+        return out_image
+    
     def postprocess_execute(request, table, parent_rowids, rowids, result_list):
         qaid_list, daid_list = list(zip(*parent_rowids))
         score_list = ut.take_column(result_list, 0)
@@ -370,7 +397,7 @@ def _load_config(config_url):
     return config
 
 
-def _load_model(config, model_url):
+def _load_model(config, model_url, use_dataparallel=True):
     r"""
     Load a model based on config file
     """
@@ -398,7 +425,7 @@ def _load_model(config, model_url):
     # else:
     #    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     # print('Loaded model from {}'.format(model_path))
-    if config.use_gpu:
+    if config.use_gpu and use_dataparallel:
         model = torch.nn.DataParallel(model).cuda()
     return model
 

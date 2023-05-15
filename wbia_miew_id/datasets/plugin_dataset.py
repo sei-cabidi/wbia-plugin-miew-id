@@ -67,6 +67,6 @@ class PluginDataset(Dataset):
             image = augmented['image']
             # image = self.transform(image.copy())
             
-        return image, self.names[idx]
+        return image, self.names[idx], self.image_paths[idx]
 
 
