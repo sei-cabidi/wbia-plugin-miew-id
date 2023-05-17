@@ -283,7 +283,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         model = _load_model(config, MODELS[species], use_dataparallel=False)
 
         # This list has to be in the format of [query_aid, db_aid]
-        aid_list = [aid, cm.qaid]
+        aid_list = [cm.qaid, aid]
         test_loader, test_dataset = _load_data(ibs, aid_list, config)
 
         out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
