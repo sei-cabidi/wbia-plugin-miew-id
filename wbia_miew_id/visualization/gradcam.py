@@ -14,6 +14,12 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 from wbia_miew_id.datasets import MiewIdDataset, get_valid_transforms
 from wbia_miew_id.models import MiewIdNet
 
+def resize_image(image, new_height):
+    aspect_ratio = image.shape[1] / image.shape[0]
+    new_width = int(new_height * aspect_ratio)
+    resized_image = cv2.resize(image, (new_width, new_height))
+    return resized_image
+
 
 class SimilarityToConceptTarget:
     def __init__(self, features):
@@ -144,7 +150,9 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     ai3 = db_float
 
     image_list = [ai0, ai1, ai2, ai3]
-    comb_image = np.hstack(image_list)
+    resize_height = 440
+    resized_image_list = [resize_image(img, resize_height) for img in image_list]
+    comb_image = np.hstack(resized_image_list)
     if show:
         plt.imshow(comb_image)
 
