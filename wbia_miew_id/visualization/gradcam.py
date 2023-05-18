@@ -75,11 +75,14 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     labels = []
     images = []
     paths = []
+    bboxes = []
     with torch.no_grad():   
         for batch in tk0:
             batch_image = batch[0]
             batch_name = batch[1]
             batch_path = batch[2]
+            batch_bbox = batch[3]
+
 
             images.extend(batch_image)
             batch_embeddings = model(batch_image.to(config.engine.device))
@@ -92,8 +95,11 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
             batch_labels = batch_name.tolist()
             labels.extend(batch_labels)
             
-            paths = batch_path
             paths.extend(batch_path)
+
+            bboxes.extend(batch_bbox)
+
+    bboxes = [t.int().tolist() for t in bboxes]
             
     embeddings = pd.concat(embeddings)
 
@@ -130,6 +136,16 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     # query image results
     qry_image_path = paths[qry_idx]
     qry_float = load_image(qry_image_path)
+    qry_bbox = bboxes[qry_idx]
+    print(qry_bbox, 'qry_bbox')
+
+    x1, y1, w, h = qry_bbox
+
+
+    qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
+    if min(qry_float.shape) < 1:
+        # Use original image
+        qry_float = qry_float = load_image(qry_image_path)
 
     qry_float_norm = (qry_float - qry_float.min()) / (qry_float.max() - qry_float.min())
     db_grayscale_cam_res = cv2.resize(db_grayscale_cam, (qry_float_norm.shape[1], qry_float_norm.shape[0]))
@@ -141,6 +157,12 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     # db image results
     db_image_path = paths[db_idx]
     db_float = load_image(db_image_path)
+    db_bbox = bboxes[db_idx]
+    x1, y1, w, h = db_bbox
+    db_float = db_float[y1 : y1 + h, x1 : x1 + w]
+    if min(db_float.shape) < 1:
+        # Use original image
+        db_float = db_float = load_image(db_image_path)
 
     db_float_norm = (db_float - db_float.min()) / (db_float.max() - db_float.min())
     qry_grayscale_cam_res = cv2.resize(qry_grayscale_cam, (db_float_norm.shape[1], db_float_norm.shape[0]))

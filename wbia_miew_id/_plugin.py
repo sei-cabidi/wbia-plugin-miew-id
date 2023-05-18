@@ -182,7 +182,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     embeddings = []
     model.eval()
     with torch.no_grad():
-        for images, names, image_paths in test_loader:
+        for images, names, image_paths, image_bboxes in test_loader:
             if config.use_gpu:
                 images = images.cuda(non_blocking=True)
 
