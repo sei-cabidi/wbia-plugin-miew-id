@@ -20,7 +20,7 @@ from wbia_miew_id.helpers import get_config, read_json
 from wbia_miew_id.models import get_model
 from wbia_miew_id.datasets import PluginDataset, get_test_transforms
 from wbia_miew_id.metrics import pred_light, compute_distance_matrix, eval_onevsall
-from wbia_miew_id.visualization import draw_one
+from wbia_miew_id.visualization import draw_one, draw_batch
 
 (print, rrr, profile) = ut.inject2(__name__)
 
@@ -289,6 +289,30 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
 
         return out_image
+    
+    def render_batch_result(request, cm, aids):
+
+        depc = request.depc
+        ibs = depc.controller
+
+        # Load config
+        species = ibs.get_annot_species_texts(aids)[0]
+
+        config = None
+        if config is None:
+            config = CONFIGS[species]
+        config = _load_config(config)
+
+        # Load model
+        model = _load_model(config, MODELS[species], use_dataparallel=False)
+
+        # This list has to be in the format of [query_aid, db_aid]
+        aid_list = np.concatenate(([cm.qaid],  aids))
+        test_loader, test_dataset = _load_data(ibs, aid_list, config)
+
+        batch_images = draw_batch(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
+
+        return batch_images
     
     def postprocess_execute(request, table, parent_rowids, rowids, result_list):
         qaid_list, daid_list = list(zip(*parent_rowids))
