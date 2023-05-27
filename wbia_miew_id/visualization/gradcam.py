@@ -141,7 +141,6 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     qry_image_path = paths[qry_idx]
     qry_float = load_image(qry_image_path)
     qry_bbox = bboxes[qry_idx]
-    print(qry_bbox, 'qry_bbox')
 
     x1, y1, w, h = qry_bbox
 
@@ -282,7 +281,6 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         qry_image_path = paths[qry_idx]
         qry_float = load_image(qry_image_path)
         qry_bbox = bboxes[qry_idx]
-        print(qry_bbox, 'qry_bbox')
 
         x1, y1, w, h = qry_bbox
 
