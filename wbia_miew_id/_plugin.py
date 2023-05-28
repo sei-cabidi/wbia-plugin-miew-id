@@ -49,10 +49,11 @@ CONFIGS = {
     'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
-    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',},
-    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',},
-    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',},
-    'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',}
+    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
+    }
     
 
 MODELS = {
