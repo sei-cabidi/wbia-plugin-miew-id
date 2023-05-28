@@ -1,7 +1,7 @@
 from datasets import MiewIdDataset, get_train_transforms, get_valid_transforms
 from logging_utils import init_wandb
 from models import MiewIdNet
-from etl import preprocess_data, print_intersect_stats
+from etl import preprocess_data, print_intersect_stats, convert_name_to_id
 from losses import fetch_loss
 from schedulers import MiewIdScheduler
 from engine import run_fn
@@ -61,8 +61,12 @@ def run(config_path):
                                 viewpoint_list=config.data.viewpoint_list, 
                                 n_filter_min=config.data.val_n_filter_min, 
                                 n_subsample_max=config.data.val_n_subsample_max)
-
-    print_intersect_stats(df_train, df_val)
+    
+    print_intersect_stats(df_train, df_val, individual_key='name_orig')
+    
+    # df_train['name'] = convert_name_to_id(df_train['name'].values)
+    # df_val['name'] = convert_name_to_id(df_val['name'].values)
+    
 
 
     n_train_classes = df_train['name'].nunique()
