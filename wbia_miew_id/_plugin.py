@@ -54,7 +54,11 @@ CONFIGS = {
     'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'whale_humpback+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
-    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
+    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
+    'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
+    'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
+    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml'
     }
     
 
@@ -75,7 +79,11 @@ MODELS = {
     'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'whale_humpback+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
-    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin'
+    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
+    'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
+    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
+    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin'
 }
 
 
