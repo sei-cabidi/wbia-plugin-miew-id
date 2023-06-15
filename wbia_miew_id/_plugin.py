@@ -58,7 +58,8 @@ CONFIGS = {
     'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
     'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
     'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
-    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml'
+    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
+    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml'
     }
     
 
@@ -83,6 +84,7 @@ MODELS = {
     'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
     'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
     'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
+    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
     'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin'
 }
 
