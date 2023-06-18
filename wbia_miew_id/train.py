@@ -29,10 +29,8 @@ def parse_args():
     )
     return parser.parse_args()
 
-def run(config_path):
+def run(config):
     
-    config = get_config(config_path)
-
     checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.image_size[0]}-{config.engine.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
@@ -121,11 +119,14 @@ def run(config_path):
         load_dotenv()
         init_wandb(config.exp_name, config.project_name, config=None)
 
-    run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
+    best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
+
+    return best_score
 
 if __name__ == '__main__':
     args = parse_args()
     config_path = args.config
-    print(f"Loading config from path: {config_path}")
+    
+    config = get_config(config_path)
 
-    run(config_path)
+    run(config)
