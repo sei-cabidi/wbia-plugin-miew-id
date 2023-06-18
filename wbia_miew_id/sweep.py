@@ -1,12 +1,23 @@
 import optuna
 import yaml
-from train import run  # Replace with your actual function
+from train import run
+from helpers import get_config
 
-def objective(trial):
-    # Load the YAML config file
-    with open('config.yaml', 'r') as file:
-        config = yaml.safe_load(file)
-        
+
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Load configuration file.")
+    parser.add_argument(
+        '--config',
+        type=str,
+        default='configs/default_config.yaml',
+        help='Path to the YAML configuration file. Default: configs/default_config.yaml'
+    )
+    return parser.parse_args()
+
+def objective(trial, config):
+ 
     # Specify the parameters you want to optimize
     config.data.train_n_filter_min = trial.suggest_int('train_n_filter_min', 2, 5)
     image_size = trial.suggest_categorical('image_size', [192, 256, 384, 440, 512])
@@ -28,15 +39,27 @@ def objective(trial):
     
     return result
 
-# Create a study object and optimize the objective
-study = optuna.create_study(direction='maximize')  # or 'minimize' depending on your metric
-study.optimize(objective, n_trials=100)
 
-print('Best trial:')
-trial_ = study.best_trial
 
-print(f'Value: {trial_.value}')
 
-print('Best parameters:')
-for key, value in trial_.params.items():
-    print(f'    {key}: {value}')
+
+if __name__ == '__main__':
+    args = parse_args()
+    config_path = args.config
+    
+    config = get_config(config_path)
+
+    study = optuna.create_study(direction='maximize')
+
+    func = lambda trial: objective(trial, config)
+
+    study.optimize(func, n_trials=100)
+
+    print('Best trial:')
+    trial_ = study.best_trial
+
+    print(f'Value: {trial_.value}')
+
+    print('Best parameters:')
+    for key, value in trial_.params.items():
+        print(f'    {key}: {value}')

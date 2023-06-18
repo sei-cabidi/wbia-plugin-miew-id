@@ -18,8 +18,8 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         
         valid_score = eval_fn(valid_loader, model, device, use_wandb=use_wandb)
         
-        if valid_score.avg > best_score:
-            best_score = valid_score.avg
+        if valid_score > best_score:
+            best_score = valid_score
             torch.save(model.state_dict(), f'{checkpoint_dir}/model_best.bin')
             print('best model found for epoch {}'.format(epoch))
 
