@@ -4,6 +4,7 @@ from train import run
 from helpers import get_config
 from optuna.pruners import MedianPruner
 from optuna.samplers import TPESampler
+import pickle
 
 
 import argparse
@@ -65,3 +66,10 @@ if __name__ == "__main__":
     print("Best parameters:")
     for key, value in trial_.params.items():
         print(f"    {key}: {value}")
+
+    # saves best parameters
+    save_dict = trial_.params
+    save_dict['best_score'] = trial_.value
+
+    with open('sweep.pkl', 'wb') as f:
+        pickle.dump(save_dict, f, pickle.HIGHEST_PROTOCOL)
