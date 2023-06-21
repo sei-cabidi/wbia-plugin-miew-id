@@ -59,7 +59,13 @@ CONFIGS = {
     'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
     'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
     'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
-    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml'
+    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.yaml',
+    'dolphin_spotted+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'stenella_frontalis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
     }
     
 
@@ -85,7 +91,13 @@ MODELS = {
     'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
     'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
     'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin'
+    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
+    'dolphin_spotted+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'stenella_frontalis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin'
 }
 
 
