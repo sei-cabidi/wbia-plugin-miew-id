@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import cv2
 import torch
-from tqdm import tqdm
+from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 
 from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM
@@ -185,6 +185,7 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     return comb_image
 
 def generate_embeddings(config, model, test_loader):
+    print('generating embeddings')
     tk0 = tqdm(test_loader, total=len(test_loader))
     embeddings = []
     labels = []
@@ -221,6 +222,8 @@ def generate_embeddings(config, model, test_loader):
 
 def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False):
 
+    print('** draw_batch started')
+
     # Generate embeddings for query and db
     model.eval()
 
@@ -243,8 +246,9 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
     db_features_batch = torch.Tensor(db_features_batch).to(config.engine.device)
 
     tensors = []
-    stack_target = []
-    for i, db_features in enumerate(db_features_batch):
+    stack_target = []    
+    print('generating similarity targets')
+    for i, db_features in tqdm(enumerate(db_features_batch)):
 
         similarity_to_qry = SimilarityToConceptTarget(qry_features)
         similarity_to_db = SimilarityToConceptTarget(db_features)
@@ -265,7 +269,9 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
     batch_size = test_loader.batch_size
 
     batch_step = max(batch_size//2, 2)
-    for i in range(0, len(stack_target), batch_step):
+    print('generating cams')
+
+    for i in tqdm(range(0, len(stack_target), batch_step)):
         stack_tensor_batch = stack_tensor[i:i+batch_step]
         stack_target_batch = stack_target[i:i+batch_step]
         results_cam_batch = generate_cam(input_tensor=stack_tensor_batch,targets=stack_target_batch,aug_smooth=False,eigen_smooth=eigen_smooth)
@@ -273,7 +279,8 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
 
     results_cam = np.array(results_cam)
 
-    for i in range(0, results_cam.shape[0], 2):
+    print('generating image tile')
+    for i in tqdm(range(0, results_cam.shape[0], 2)):
         qry_grayscale_cam = results_cam[i, :]
         db_grayscale_cam = results_cam[i+1, :]
 
