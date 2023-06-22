@@ -73,12 +73,16 @@ def run(config):
         csv=df_train,
         images_dir = config.data.images_dir,
         transforms=get_train_transforms(config),
+        fliplr=config.test.fliplr,
+        fliplr_view=config.test.fliplr_view
     )
         
     valid_dataset = MiewIdDataset(
         csv=df_val,
         images_dir=config.data.images_dir,
         transforms=get_valid_transforms(config),
+        fliplr=config.test.fliplr,
+        fliplr_view=config.test.fliplr_view
     )
         
     train_loader = torch.utils.data.DataLoader(
