@@ -65,7 +65,11 @@ CONFIGS = {
     'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
-    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
+    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'phocoena_phocoena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'harbour_porpoise+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'balaenoptera_acutorostrata+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
     }
     
 
@@ -97,7 +101,11 @@ MODELS = {
     'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
-    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin'
+    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'phocoena_phocoena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'harbour_porpoise+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'balaenoptera_acutorostrata+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin'
 }
 
 
