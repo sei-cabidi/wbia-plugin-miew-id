@@ -14,7 +14,7 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
 
         train_loss = train_fn(train_loader, model,criterion, optimizer, device,scheduler=scheduler,epoch=epoch, use_wandb=use_wandb)
 
-        torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
+        # torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
         
         valid_score = eval_fn(valid_loader, model, device, use_wandb=use_wandb)
         
