@@ -4,3 +4,5 @@ wbia_miew_id/wandb/
 wbia_miew_id/runs/
 .env
 TODO.md
+.DS_store
+wbia_miew_id/configs/*
