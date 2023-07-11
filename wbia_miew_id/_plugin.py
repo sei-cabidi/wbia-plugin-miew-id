@@ -121,7 +121,7 @@ GLOBAL_EMBEDDING_CACHE = {}
 @register_ibs_method
 def miew_id_embedding(ibs, aid_list, config=None, use_depc=True):
     r"""
-    Generate embeddings using the Pose-Invariant Embedding (TBD)
+    Generate embeddings for MiewID
     Args:
         ibs (IBEISController): IBEIS / WBIA controller object
         aid_list  (int): annot ids specifying the input
