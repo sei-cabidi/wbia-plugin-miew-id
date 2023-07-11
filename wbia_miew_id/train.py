@@ -1,5 +1,5 @@
 from datasets import MiewIdDataset, get_train_transforms, get_valid_transforms
-from logging_utils import init_wandb
+from logging_utils import WandbContext
 from models import MiewIdNet
 from etl import preprocess_data, print_intersect_stats, convert_name_to_id
 from losses import fetch_loss
@@ -118,12 +118,10 @@ def run(config):
 
     scheduler = MiewIdScheduler(optimizer,**dict(config.scheduler_params))
 
+    with WandbContext(config):
+        best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
 
-    if config.engine.use_wandb:
-        load_dotenv()
-        init_wandb(config.exp_name, config.project_name, config=None)
 
-    best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
 
     return best_score
 
