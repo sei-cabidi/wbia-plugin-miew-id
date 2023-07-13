@@ -23,6 +23,7 @@ class Data(DictableClass):
     train_n_subsample_max: int = None
     val_n_subsample_max: int = None
     name_keys: List = field(default_factory=['name'])
+    crop_bbox: bool = False
 
 
 @dataclass

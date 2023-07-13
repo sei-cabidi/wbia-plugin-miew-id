@@ -13,6 +13,7 @@ data:
   train_n_subsample_max: null
   val_n_subsample_max: 10
   name_keys: ['name', 'viewpoint']
+  crop_bbox: False
   image_size:
     - 440
     - 440

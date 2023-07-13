@@ -23,6 +23,10 @@ class MiewIdDataset(Dataset):
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+        if self.crop_bbox:
+            x1, y1, w, h = [int(x) for x in row['bbox']]
+            image = image[y1 : y1 + h, x1 : x1 + w]
+
         if self.augmentations:
             augmented = self.augmentations(image=image)
             image = augmented['image']
@@ -30,6 +34,7 @@ class MiewIdDataset(Dataset):
         if self.fliplr:
             if row['viewpoint'] in self.fliplr_view:
                 image = np.fliplr(image)
+
 
         
         return {"image": image, "label":torch.tensor(row['name']), "image_idx": self.csv.index[index], "file_path": image_path}
