@@ -74,7 +74,8 @@ def run(config):
         images_dir = config.data.images_dir,
         transforms=get_train_transforms(config),
         fliplr=config.test.fliplr,
-        fliplr_view=config.test.fliplr_view
+        fliplr_view=config.test.fliplr_view,
+        crop_bbox=config.data.crop_bbox
     )
         
     valid_dataset = MiewIdDataset(
@@ -82,7 +83,8 @@ def run(config):
         images_dir=config.data.images_dir,
         transforms=get_valid_transforms(config),
         fliplr=config.test.fliplr,
-        fliplr_view=config.test.fliplr_view
+        fliplr_view=config.test.fliplr_view,
+        crop_bbox=config.data.crop_bbox
     )
         
     train_loader = torch.utils.data.DataLoader(

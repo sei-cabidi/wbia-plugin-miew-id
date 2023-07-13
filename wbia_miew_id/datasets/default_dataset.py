@@ -5,13 +5,14 @@ from torch.utils.data import Dataset
 import numpy as np
 
 class MiewIdDataset(Dataset):
-    def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[]):
+    def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False):
 
         self.csv = csv#.reset_index()
         self.augmentations = transforms
         self.images_dir = images_dir
         self.fliplr = fliplr
         self.fliplr_view = fliplr_view
+        self.crop_bbox = crop_bbox
 
     def __len__(self):
         return self.csv.shape[0]
