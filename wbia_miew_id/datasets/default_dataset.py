@@ -34,8 +34,7 @@ class MiewIdDataset(Dataset):
 
         if self.fliplr:
             if row['viewpoint'] in self.fliplr_view:
-                image = np.fliplr(image)
-
+                image = torch.from_numpy(np.fliplr(image).copy())
 
         
         return {"image": image, "label":torch.tensor(row['name']), "image_idx": self.csv.index[index], "file_path": image_path}
