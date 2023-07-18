@@ -1,13 +1,28 @@
 
 import numpy as np
 
+
+def print_basic_stats(df_stat, individual_key='name', min_filt=2, max_filt=None):
+    if min_filt:
+        df_stat = df_stat.groupby(individual_key).filter(lambda g: len(g)>=min_filt)
+        print(f'Min filtering applied: {min_filt}')
+    if max_filt:
+        df_stat = df_stat.groupby(individual_key).head(10)
+        print(f'Max filtering applied: {max_filt}')
+
+    print('Number of individuals:', len(df_stat[individual_key].unique()))
+    print('Number of annotations:', len(df_stat))
+    avg = (len(df_stat) / df_stat[individual_key].nunique() )
+    
+    print(f'Average number of images per individual: {avg:.2f}')
+
+
 def print_intersect_stats(df_a, df_b, individual_key="name"):
     print("** cross-set stats **")
     print()
     print(' - Counts: ')
     names_a = df_a[individual_key].unique()
     names_b = df_b[individual_key].unique()
-    
     
     print("     number of individuals in train: ", len(names_a))
     print("     number of annotations in train: ", len(df_a))
@@ -47,8 +62,7 @@ def print_min_max_counts(df, key, min_thresh, max_thresh = None):
     print(f"min-max {min_thresh}-{max_thresh}, ids {num_ids}, samples {num_annos}")
     
 def print_min_max_stats(df, key, threshold_list = [
-    (0,2), (0, 3), (10, None), (3,10), (0, 10), (3,None), (0, None), (2,10)]
-                     ):
+    (0,2), (0, 3), (10, None), (3,10), (0, 10), (3,None), (0, None), (2,10)]):
     print("** min-max stats **")
     for min_thresh, max_thresh in threshold_list:
         print_min_max_counts(df, key, min_thresh, max_thresh)

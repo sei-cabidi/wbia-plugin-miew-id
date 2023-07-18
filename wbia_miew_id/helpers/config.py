@@ -12,16 +12,32 @@ class DictableClass:
         yield from dataclass_to_dict(self).items()
 
 @dataclass
+class Train(DictableClass):
+    anno_path: str
+    n_filter_min: 4
+    n_subsample_max: None
+
+@dataclass
+class Val(DictableClass):
+    anno_path: str
+    n_filter_min: 2
+    n_subsample_max: 10
+
+@dataclass
+class Test(DictableClass):
+    anno_path: str
+    n_filter_min: 2
+    n_subsample_max: 10
+    checkpoint_path: str
+
+@dataclass
 class Data(DictableClass):
     images_dir: str
-    train_anno_path: str
-    val_anno_path: str
+    train: Train
+    val: Val
     image_size: Tuple[int, int]
+    test: Test = None
     viewpoint_list: List = None
-    train_n_filter_min: int = None
-    val_n_filter_min: int = 2
-    train_n_subsample_max: int = None
-    val_n_subsample_max: int = None
     name_keys: List = field(default_factory=['name'])
     crop_bbox: bool = False
 
@@ -36,8 +52,6 @@ class Engine(DictableClass):
     loss_module: str
     use_wandb: bool
     num_workers: int = 0
-
-
 
 @dataclass
 class SchedulerParams(DictableClass):
@@ -87,6 +101,9 @@ def get_config(file_path: str) -> Config:
         config_dict = yaml.safe_load(file)
 
     config_dict['data'] = Data(**config_dict['data'])
+    config_dict['data'].train = Train(**config_dict['data'].train)
+    config_dict['data'].val = Val(**config_dict['data'].val)
+    config_dict['data'].test = Test(**config_dict['data'].test)
     config_dict['engine'] = Engine(**config_dict['engine'])
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])

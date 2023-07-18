@@ -24,7 +24,7 @@ def parse_args():
 def objective(trial, config):
 
     # Specify the parameters you want to optimize
-    config.data.train_n_filter_min = trial.suggest_int("train_n_filter_min", 2, 5)
+    config.data.train.n_filter_min = trial.suggest_int("train.n_filter_min", 2, 5)
     image_size = trial.suggest_categorical("image_size", [192, 256, 384, 440, 512])
     config.data.image_size = [image_size, image_size]
     n_epochs = trial.suggest_int("epochs", 20, 40)

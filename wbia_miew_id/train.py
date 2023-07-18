@@ -46,19 +46,19 @@ def run(config):
         
     set_seed_torch(config.engine.seed)
 
-    df_train = preprocess_data(config.data.train_anno_path, 
+    df_train = preprocess_data(config.data.train.anno_path, 
                                 name_keys=config.data.name_keys,
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
-                                n_filter_min=config.data.train_n_filter_min, 
-                                n_subsample_max=config.data.train_n_subsample_max)
+                                n_filter_min=config.data.train.n_filter_min, 
+                                n_subsample_max=config.data.train.n_subsample_max)
     
-    df_val = preprocess_data(config.data.val_anno_path, 
+    df_val = preprocess_data(config.data.val.anno_path, 
                                 name_keys=config.data.name_keys,
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
-                                n_filter_min=config.data.val_n_filter_min, 
-                                n_subsample_max=config.data.val_n_subsample_max)
+                                n_filter_min=config.data.val.n_filter_min, 
+                                n_subsample_max=config.data.val.n_subsample_max)
     
     print_intersect_stats(df_train, df_val, individual_key='name_orig')
     

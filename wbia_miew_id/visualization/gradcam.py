@@ -6,13 +6,19 @@ import cv2
 import torch
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
+from torchvision import transforms
 
 from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
+def unnormalize(img_base):
+    aug_mean = np.array([0.485, 0.456, 0.406])
+    aug_std = np.array([0.229, 0.224, 0.225])
+    unnormalize = transforms.Normalize((-aug_mean / aug_std).tolist(), (1.0 / aug_std).tolist())
+    img_unnorm = unnormalize(img_base)
 
-from wbia_miew_id.datasets import MiewIdDataset, get_valid_transforms
-from wbia_miew_id.models import MiewIdNet
+    return img_unnorm
+
 
 def resize_image(image, new_height):
     aspect_ratio = image.shape[1] / image.shape[0]
@@ -194,10 +200,17 @@ def generate_embeddings(config, model, test_loader):
     bboxes = []
     with torch.no_grad():   
         for batch in tk0:
-            batch_image = batch[0]
-            batch_name = batch[1]
-            batch_path = batch[2]
-            batch_bbox = batch[3]
+
+            try:
+                batch_image = batch[0]
+                batch_name = batch[1]
+                batch_path = batch[2]
+                batch_bbox = batch[3]
+            except:
+                batch_image = batch['image']
+                batch_name = batch['label']
+                batch_path = batch["file_path"]
+                batch_bbox = batch["bbox"]
 
 
             images.extend(batch_image)
@@ -220,7 +233,7 @@ def generate_embeddings(config, model, test_loader):
     embeddings = pd.concat(embeddings)
     return embeddings, labels, images, paths, bboxes
 
-def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False):
+def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, render_transformed=False, show=False):
 
     print('** draw_batch started')
 
@@ -285,16 +298,18 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         db_grayscale_cam = results_cam[i+1, :]
 
         # query image results
-        qry_image_path = paths[qry_idx]
-        qry_float = load_image(qry_image_path)
-        qry_bbox = bboxes[qry_idx]
-
-        x1, y1, w, h = qry_bbox
-
-        qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
-        if min(qry_float.shape) < 1:
-            # Use original image
-            qry_float = qry_float = load_image(qry_image_path)
+        if render_transformed:
+            qry_tensor_unnorm = unnormalize(qry_tensor)
+            qry_float = qry_tensor_unnorm.numpy().squeeze().transpose(1,2,0)
+        else:
+            qry_image_path = paths[qry_idx]
+            qry_float = load_image(qry_image_path)
+            qry_bbox = bboxes[qry_idx]
+            x1, y1, w, h = qry_bbox
+            qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
+            if min(qry_float.shape) < 1:
+                # Use original image
+                qry_float = qry_float = load_image(qry_image_path)
 
         qry_float_norm = (qry_float - qry_float.min()) / (qry_float.max() - qry_float.min())
         db_grayscale_cam_res = cv2.resize(db_grayscale_cam, (qry_float_norm.shape[1], qry_float_norm.shape[0]))
@@ -304,14 +319,18 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         ai1 = qry_float
 
         # db image results
-        db_image_path = paths[db_idx + i//2]
-        db_float = load_image(db_image_path)
-        db_bbox = bboxes[db_idx + i//2]
-        x1, y1, w, h = db_bbox
-        db_float = db_float[y1 : y1 + h, x1 : x1 + w]
-        if min(db_float.shape) < 1:
-            # Use original image
-            db_float = db_float = load_image(db_image_path)
+        if render_transformed:
+            db_tensor_unnorm = unnormalize(stack_tensor[i])
+            db_float = db_tensor_unnorm.numpy().squeeze().transpose(1,2,0)
+        else:
+            db_image_path = paths[db_idx + i//2]
+            db_float = load_image(db_image_path)
+            db_bbox = bboxes[db_idx + i//2]
+            x1, y1, w, h = db_bbox
+            db_float = db_float[y1 : y1 + h, x1 : x1 + w]
+            if min(db_float.shape) < 1:
+                # Use original image
+                db_float = db_float = load_image(db_image_path)
 
         db_float_norm = (db_float - db_float.min()) / (db_float.max() - db_float.min())
         qry_grayscale_cam_res = cv2.resize(qry_grayscale_cam, (db_float_norm.shape[1], db_float_norm.shape[0]))
@@ -323,9 +342,18 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         image_list = [ai0, ai1, ai2, ai3]
         resize_height = 440
         resized_image_list = [resize_image(img, resize_height) for img in image_list]
+
+        if render_transformed:
+            ai0_float = ai0.astype(np.float32) / 255
+            ai2_float = ai2.astype(np.float32) / 255
+            image_list = [ai0_float, ai1, ai2_float, ai3]
+            resized_image_list = image_list.copy()
+
         comb_image = np.hstack(resized_image_list)
         if show:
+            plt.figure(figsize=(12, 8))
             plt.imshow(comb_image)
+            plt.show()
 
         comb_image = cv2.cvtColor(comb_image, cv2.COLOR_BGR2RGB)
 

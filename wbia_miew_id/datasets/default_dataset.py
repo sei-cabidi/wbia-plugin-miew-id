@@ -21,11 +21,13 @@ class MiewIdDataset(Dataset):
         row = self.csv.iloc[index]
 
         image_path = os.path.join(self.images_dir, row['file_name'])
+
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        bbox = row['bbox']
 
         if self.crop_bbox:
-            x1, y1, w, h = [int(x) for x in row['bbox']]
+            x1, y1, w, h = [int(x) for x in bbox]
             image = image[y1 : y1 + h, x1 : x1 + w]
 
         if self.augmentations:
@@ -37,4 +39,4 @@ class MiewIdDataset(Dataset):
                 image = torch.from_numpy(np.fliplr(image).copy())
 
         
-        return {"image": image, "label":torch.tensor(row['name']), "image_idx": self.csv.index[index], "file_path": image_path}
+        return {"image": image, "label":torch.tensor(row['name']), "image_idx": self.csv.index[index], "file_path": image_path, "bbox": torch.Tensor(bbox)}

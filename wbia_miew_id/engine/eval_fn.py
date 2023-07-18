@@ -7,7 +7,7 @@ import wandb
 from metrics import AverageMeter, compute_distance_matrix, eval_onevsall
 
 
-def eval_fn(data_loader,model,device, use_wandb=True):
+def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
 
     model.eval()
     tk0 = tqdm(data_loader, total=len(data_loader))
@@ -49,7 +49,10 @@ def eval_fn(data_loader,model,device, use_wandb=True):
         
     if use_wandb: wandb.log({"mAP": mAP})
 
-    return mAP
+    if return_outputs:
+        return mAP, (embeddings.values, q_pids, distmat)
+    else:
+        return mAP
 
 
 

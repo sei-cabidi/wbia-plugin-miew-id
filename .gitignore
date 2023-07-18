@@ -5,4 +5,7 @@ wbia_miew_id/runs/
 .env
 TODO.md
 .DS_store
+wbia_miew_id/*.ipynb
+wbia_miew_id/.ipynb_checkpoints*
 wbia_miew_id/configs/*
+!configs/default_config_new.yaml
