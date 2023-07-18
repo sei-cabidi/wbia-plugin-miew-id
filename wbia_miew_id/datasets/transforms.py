@@ -29,8 +29,7 @@ def get_train_transforms(config):
     return albumentations.Compose(
         [   Triangle(p = 0.5),
             albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
-            albumentations.HorizontalFlip(p=0.5),
-            
+            # albumentations.HorizontalFlip(p=0.5),
             #albumentations.VerticalFlip(p=0.5),
             #albumentations.ImageCompression (quality_lower=50, quality_upper=100, p = 0.5),
             albumentations.OneOf([
@@ -42,7 +41,7 @@ def get_train_transforms(config):
             #albumentations.RandomBrightness(limit=(0.09, 0.6), p=0.7),
             #albumentations.Cutout(num_holes=8, max_h_size=8, max_w_size=8, fill_value=0, always_apply=False, p=0.3),
             albumentations.ShiftScaleRotate(
-               shift_limit=0.25, scale_limit=0.2, rotate_limit=4,p = 0.5
+                shift_limit=0.25, scale_limit=0.2, rotate_limit=4,p = 0.5
             ),
             albumentations.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1),
             albumentations.Normalize(),
@@ -59,7 +58,6 @@ def get_valid_transforms(config):
         ToTensorV2(p=1.0)
         ]
     )
-
 
 
 def get_test_transforms(config):
