@@ -10,7 +10,7 @@ def init_wandb(exp_name, project_name, config=None):
     print('exp_name:', exp_name)
     print('project_name:', project_name)
 
-    export_config = {k:v for k,v in dict(vars(config)).items() if not k.startswith('__')} if config else None
+    export_config = dict(config) if config else None
 
     run = wandb.init(
         project=project_name, 
@@ -34,7 +34,7 @@ class WandbContext:
     def __enter__(self):
         if self.config.engine.use_wandb:
             load_dotenv()
-            init_wandb(self.config.exp_name, self.config.project_name, config=None)
+            init_wandb(self.config.exp_name, self.config.project_name, config=self.config)
 
     def __exit__(self, type, value, traceback):
         if self.config.engine.use_wandb:

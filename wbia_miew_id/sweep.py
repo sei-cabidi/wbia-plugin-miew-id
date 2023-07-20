@@ -37,16 +37,24 @@ def objective(trial, config):
     config.scheduler_params.lr_start = lr_base
     config.scheduler_params.lr_max = lr_base * 10
     config.scheduler_params.lr_min = lr_base / 2
-    result = run(config)
 
-    print("cfg", config.engine)
+    print("trial number: ", trial.number)
+    print("config: ", dict(config))
+
+    if trial.number > 0:
+        config.exp_name = config.exp_name.rsplit('_', 1)[0] + f"_t{trial.number}"
+    else:
+        config.exp_name = config.exp_name + f"_t{trial.number}"
+
+
+    result = run(config)
 
     return result
 
 
 if __name__ == "__main__":
-    #     args = parse_args()
-    config_path = "configs/default_config.yaml"  # args.config
+    args = parse_args()
+    config_path = args.config
 
     config = get_config(config_path)
 
