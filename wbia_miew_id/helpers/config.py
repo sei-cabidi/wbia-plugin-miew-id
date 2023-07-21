@@ -95,10 +95,46 @@ class Config(DictableClass):
     test: TestParams
     
 
-def get_config(file_path: str) -> Config:
+
+def load_yaml(file_path: str) -> Dict:
     print(f"Loading config from path: {file_path}")
     with open(file_path, 'r') as file:
         config_dict = yaml.safe_load(file)
+
+    return config_dict
+
+def convert_config_dict(input_dict):
+    
+    input_dict['data']['train'] = {
+        'anno_path': input_dict['data'].pop('train_anno_path'),
+        'n_filter_min': input_dict['data'].pop('train_n_filter_min'),
+        'n_subsample_max': input_dict['data'].pop('train_n_subsample_max')
+    }
+    
+    input_dict['data']['val'] = {
+        'anno_path': input_dict['data'].pop('val_anno_path'),
+        'n_filter_min': input_dict['data'].pop('val_n_filter_min'),
+        'n_subsample_max': input_dict['data'].pop('val_n_subsample_max')
+    }
+
+    input_dict['data']['test'] = {
+        'anno_path': input_dict['data']['val']['anno_path'],
+        'n_filter_min': input_dict['data']['val']['anno_path'],
+        'n_subsample_max': input_dict['data']['val']['anno_path'],
+        'checkpoint_path': ''
+    }
+    
+
+    return input_dict
+
+
+def get_config(file_path: str) -> Config:
+
+    config_dict = load_yaml(file_path)
+
+    if not config_dict['data'].get('train', False):
+        print("Attempting to convert config dict to compatible format...")
+        config_dict = convert_config_dict(config_dict)
 
     config_dict['data'] = Data(**config_dict['data'])
     config_dict['data'].train = Train(**config_dict['data'].train)
