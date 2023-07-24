@@ -57,12 +57,12 @@ def run_test(config, visualize=False):
 
     ## TODO modify config.py and switch to test_* variables
     
-    df_test = preprocess_data(config.data.val.anno_path, 
+    df_test = preprocess_data(config.data.test.anno_path, 
                                 name_keys=config.data.name_keys,
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
-                                n_filter_min=config.data.val.n_filter_min, 
-                                n_subsample_max=config.data.val.n_subsample_max)
+                                n_filter_min=config.data.test.n_filter_min, 
+                                n_subsample_max=config.data.test.n_subsample_max)
     
     # print_basic_stats(df_test, individual_key='name_orig')
     
@@ -71,7 +71,7 @@ def run_test(config, visualize=False):
     test_dataset = MiewIdDataset(
         csv=df_test,
         images_dir=config.data.images_dir,
-        transforms=get_valid_transforms(config),
+        transforms=get_test_transforms(config),
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
         crop_bbox=config.data.crop_bbox
