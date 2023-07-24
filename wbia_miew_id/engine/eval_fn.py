@@ -50,9 +50,9 @@ def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
     if use_wandb: wandb.log({"mAP": mAP})
 
     if return_outputs:
-        return mAP, (embeddings.values, q_pids, distmat)
+        return mAP, cmc, (embeddings.values, q_pids, distmat)
     else:
-        return mAP
+        return mAP, cmc
 
 
 

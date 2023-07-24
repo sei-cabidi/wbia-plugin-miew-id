@@ -99,6 +99,7 @@ def run_test(config, visualize=False):
     model.to(device)
 
     checkpoint_path = config.data.test.checkpoint_path
+
     if checkpoint_path:
         model.load_state_dict(torch.load(checkpoint_path, map_location=torch.device(device)))
         print('loaded checkpoint from', checkpoint_path)
@@ -115,7 +116,7 @@ def run_test(config, visualize=False):
     #     best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
     ####
 
-    test_score, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
+    test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
     ###
     # if visualize:

@@ -16,7 +16,7 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
 
         # torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
         
-        valid_score = eval_fn(valid_loader, model, device, use_wandb=use_wandb)
+        valid_score, cmc = eval_fn(valid_loader, model, device, use_wandb=use_wandb)
         
         if valid_score > best_score:
             best_score = valid_score
