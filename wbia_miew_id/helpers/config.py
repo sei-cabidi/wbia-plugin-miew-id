@@ -14,21 +14,22 @@ class DictableClass:
 @dataclass
 class Train(DictableClass):
     anno_path: str
-    n_filter_min: 4
-    n_subsample_max: None
+    n_filter_min: int = 4
+    n_subsample_max: int = None
 
 @dataclass
 class Val(DictableClass):
     anno_path: str
-    n_filter_min: 2
-    n_subsample_max: 10
+    n_filter_min: int = 2
+    n_subsample_max: int = 10
 
 @dataclass
 class Test(DictableClass):
     anno_path: str
-    n_filter_min: 2
-    n_subsample_max: 10
-    checkpoint_path: str
+    n_filter_min: int = 2
+    n_subsample_max: int = 10
+    checkpoint_path: str = None
+    eval_groups: List = field(default_factory=list)
 
 @dataclass
 class Data(DictableClass):
@@ -38,7 +39,7 @@ class Data(DictableClass):
     image_size: Tuple[int, int]
     test: Test = None
     viewpoint_list: List = None
-    name_keys: List = field(default_factory=['name'])
+    name_keys: List = field(default_factory=lambda: ['name'])
     crop_bbox: bool = False
 
 
