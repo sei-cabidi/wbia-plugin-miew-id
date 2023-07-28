@@ -1,31 +1,13 @@
-import os
-import time
+import cv2
 import pandas as pd
 import numpy as np
-import cv2
 import torch
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
-from torchvision import transforms
+from .helpers import resize_image, unnormalize
 
 from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
-
-def unnormalize(img_base):
-    aug_mean = np.array([0.485, 0.456, 0.406])
-    aug_std = np.array([0.229, 0.224, 0.225])
-    unnormalize = transforms.Normalize((-aug_mean / aug_std).tolist(), (1.0 / aug_std).tolist())
-    img_unnorm = unnormalize(img_base)
-
-    return img_unnorm
-
-
-def resize_image(image, new_height):
-    aspect_ratio = image.shape[1] / image.shape[0]
-    new_width = int(new_height * aspect_ratio)
-    resized_image = cv2.resize(image, (new_width, new_height))
-    return resized_image
-
 
 class SimilarityToConceptTarget:
     def __init__(self, features):
@@ -46,10 +28,10 @@ def load_image(image_path):
     return image
 
 def show_cam_on_image(img: np.ndarray,
-                      mask: np.ndarray,
-                      use_rgb: bool = False,
-                      colormap: int = cv2.COLORMAP_JET,
-                      image_weight: float = 0.6) -> np.ndarray:
+                        mask: np.ndarray,
+                        use_rgb: bool = False,
+                        colormap: int = cv2.COLORMAP_JET,
+                        image_weight: float = 0.6) -> np.ndarray:
     heatmap = cv2.applyColorMap(np.uint8(255 * mask), colormap)
 
     # Keep heatmap areas lower than threshold transparent
@@ -72,7 +54,7 @@ def show_cam_on_image(img: np.ndarray,
     cam = cam / np.max(cam)
     return np.uint8(255 * cam)
 
-def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False):
+def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False, use_cuda=True):
 
     # Generate embeddings for query and db
     model.eval()
@@ -112,9 +94,9 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
     target_layers = model.backbone.conv_head
 
     if method=='gradcam_plus_plus':
-        generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=True)
+        generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=use_cuda)
     elif method=='eigencam':
-        generate_cam = EigenCAM(model=model,target_layers=[target_layers],use_cuda=True)
+        generate_cam = EigenCAM(model=model,target_layers=[target_layers],use_cuda=use_cuda)
 
     qry_idx = 0
     db_idx = 1
@@ -233,7 +215,7 @@ def generate_embeddings(config, model, test_loader):
     embeddings = pd.concat(embeddings)
     return embeddings, labels, images, paths, bboxes
 
-def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, render_transformed=False, show=False):
+def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, render_transformed=False, show=False, use_cuda=True):
 
     print('** draw_batch started')
 
@@ -245,9 +227,9 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
     target_layers = model.backbone.conv_head
 
     if method=='gradcam_plus_plus':
-        generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=True)
+        generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=use_cuda)
     elif method=='eigencam':
-        generate_cam = EigenCAM(model=model,target_layers=[target_layers],use_cuda=True)
+        generate_cam = EigenCAM(model=model,target_layers=[target_layers],use_cuda=use_cuda)
 
     qry_idx = 0
     db_idx = 1

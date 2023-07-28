@@ -1,7 +1,5 @@
 import torch
 import sys
-# sys.path.append('..'); from wbia_pie_v2.models import MiewIdNet
-# from datasets import MiewIdDataset
 from .model import MiewIdNet
 
 def get_model(cfg, checkpoint_path=None, use_gpu=True):
