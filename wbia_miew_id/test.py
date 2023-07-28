@@ -2,7 +2,7 @@ from datasets import MiewIdDataset, get_train_transforms, get_valid_transforms, 
 from logging_utils import WandbContext
 from models import MiewIdNet
 from etl import preprocess_data, print_basic_stats
-from engine import eval_fn
+from engine import eval_fn, group_eval
 from helpers import get_config
 from visualization import render_query_results
 
@@ -88,9 +88,16 @@ def run_test(config, visualize=False):
 
     test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
+
+
+
+    eval_groups = config.data.test.eval_groups
+
+    if eval_groups:
+        grioup_results = group_eval(config, df_test, eval_groups, model)
+
     if visualize:
         render_query_results(config, model, test_dataset, df_test, test_outputs)
-
 
     return test_score
 
