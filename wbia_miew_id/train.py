@@ -5,8 +5,7 @@ from etl import preprocess_data, print_intersect_stats, convert_name_to_id
 from losses import fetch_loss
 from schedulers import MiewIdScheduler
 from engine import run_fn
-from helpers import get_config
-
+from helpers import get_config, write_config
 
 import os
 import torch
@@ -34,6 +33,9 @@ def run(config):
     checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.image_size[0]}-{config.engine.loss_module}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
+
+    config_path_out = f'{checkpoint_dir}/{config.exp_name}.yaml'
+    write_config(config, config_path_out)
 
 
     def set_seed_torch(seed):

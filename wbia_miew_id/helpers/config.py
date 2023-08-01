@@ -149,3 +149,8 @@ def get_config(file_path: str) -> Config:
 
     config = Config(**config_dict)
     return config
+
+def write_config(config: Config, file_path: str):
+    config_dict = dict(config)
+    with open(file_path, 'w') as file:
+        yaml.dump(config_dict, file)
