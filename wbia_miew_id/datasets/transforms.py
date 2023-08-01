@@ -39,9 +39,9 @@ def get_train_transforms(config):
             ], p=0.5),
             #albumentations.Rotate(limit=30, p=0.8),
             #albumentations.RandomBrightness(limit=(0.09, 0.6), p=0.7),
-            #albumentations.Cutout(num_holes=8, max_h_size=8, max_w_size=8, fill_value=0, always_apply=False, p=0.3),
+            # albumentations.Cutout(num_holes=8, max_h_size=8, max_w_size=8, fill_value=0, always_apply=False, p=0.3),
             albumentations.ShiftScaleRotate(
-                shift_limit=0.25, scale_limit=0.2, rotate_limit=4,p = 0.5
+                shift_limit=0.25, scale_limit=0.2, rotate_limit=15,p = 0.5
             ),
             albumentations.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1),
             albumentations.Normalize(),
