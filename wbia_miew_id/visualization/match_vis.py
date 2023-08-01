@@ -53,7 +53,7 @@ def render_single_query_result(config, model, vis_loader, df_vis, qry_row, qry_i
     vis_result = stack_match_images(batch_images, descriptions, vis_match_mask)
 
     output_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/visualizations"
-    output_name = f"vis_{qry_name}_{qry_viewpoint}_{qry_idx}_top{k}.png"
+    output_name = f"vis_{qry_name}_{qry_viewpoint}_{qry_idx}_top{k}.jpg"
     output_path = os.path.join(output_dir, output_name)
 
     os.makedirs(output_dir, exist_ok=True)
