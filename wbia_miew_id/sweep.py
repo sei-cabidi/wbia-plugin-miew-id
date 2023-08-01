@@ -35,8 +35,8 @@ def objective(trial, config):
     # The scheduler params are derived from one base paremeter to minimize the number of parameters to optimzie
     lr_base = trial.suggest_loguniform("lr_base", 1e-6, 1e-2)
     config.scheduler_params.lr_start = lr_base
-    config.scheduler_params.lr_max = lr_base * 10
-    config.scheduler_params.lr_min = lr_base / 2
+    config.scheduler_params.lr_max = lr_base * 20
+    config.scheduler_params.lr_min = lr_base / 10
 
     print("trial number: ", trial.number)
     print("config: ", dict(config))
