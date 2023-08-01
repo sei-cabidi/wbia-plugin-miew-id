@@ -53,9 +53,8 @@ def run_test(config, visualize=False):
                                 n_filter_min=config.data.test.n_filter_min, 
                                 n_subsample_max=config.data.test.n_subsample_max)
     
-    top_names = df_test['name'].value_counts().index[:10]
-
-    df_test = df_test[df_test['name'].isin(top_names)]
+    # top_names = df_test['name'].value_counts().index[:10]
+    # df_test = df_test[df_test['name'].isin(top_names)]
     
     test_dataset = MiewIdDataset(
         csv=df_test,
