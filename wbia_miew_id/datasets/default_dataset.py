@@ -4,6 +4,8 @@ import torch
 from torch.utils.data import Dataset
 import numpy as np
 
+
+
 class MiewIdDataset(Dataset):
     def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False):
 
@@ -16,6 +18,12 @@ class MiewIdDataset(Dataset):
 
     def __len__(self):
         return self.csv.shape[0]
+    
+    def load_image(self, image_path):
+        image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return image
+
 
     def __getitem__(self, index):
         row = self.csv.iloc[index]
@@ -29,6 +37,11 @@ class MiewIdDataset(Dataset):
         if self.crop_bbox:
             x1, y1, w, h = [int(x) for x in bbox]
             image = image[y1 : y1 + h, x1 : x1 + w]
+            if min(image.shape) < 1:
+                # Use original image
+                print('Using original image. Invalid bbox', bbox)
+                image = self.load_image(image_path)
+                bbox = [0, 0, image.shape[1], image.shape[0]]
 
         if self.augmentations:
             augmented = self.augmentations(image=image)
