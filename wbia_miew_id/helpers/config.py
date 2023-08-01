@@ -41,6 +41,7 @@ class Data(DictableClass):
     viewpoint_list: List = None
     name_keys: List = field(default_factory=lambda: ['name'])
     crop_bbox: bool = False
+    use_full_image_path: bool = False
 
 
 @dataclass

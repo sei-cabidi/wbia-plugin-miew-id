@@ -7,7 +7,7 @@ import numpy as np
 
 
 class MiewIdDataset(Dataset):
-    def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False):
+    def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False, use_full_image_path=False):
 
         self.csv = csv#.reset_index()
         self.augmentations = transforms
@@ -15,6 +15,7 @@ class MiewIdDataset(Dataset):
         self.fliplr = fliplr
         self.fliplr_view = fliplr_view
         self.crop_bbox = crop_bbox
+        self.use_full_image_path = use_full_image_path
 
     def __len__(self):
         return self.csv.shape[0]
@@ -28,7 +29,10 @@ class MiewIdDataset(Dataset):
     def __getitem__(self, index):
         row = self.csv.iloc[index]
 
-        image_path = os.path.join(self.images_dir, row['file_name'])
+        if self.use_full_image_path:
+            image_path = row['file_path']
+        else:
+            image_path = os.path.join(self.images_dir, row['file_name'])
 
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
