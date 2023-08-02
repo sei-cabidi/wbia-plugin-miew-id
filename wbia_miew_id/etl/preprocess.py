@@ -17,7 +17,13 @@ def load_to_df(anno_path):
     dfa = pd.DataFrame(data['annotations'])
     dfi = pd.DataFrame(data['images'])
 
-    df = dfa.merge(dfi, left_on='image_id', right_on='id')
+    merge_on_uuid = 'image_uuid' in dfa.columns and 'uuid' in dfi.columns
+    if merge_on_uuid:
+        print('Merging on image uuid')
+        df = dfa.merge(dfi, left_on='image_uuid', right_on='uuid')
+    else:
+        df = dfa.merge(dfi, left_on='image_id', right_on='id') 
+
 
     return df
 
