@@ -36,7 +36,10 @@ class PluginDataset(Dataset):
 
     def load_image(self, image_path):
         image = cv2.imread(image_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        if len(image.shape) == 2: 
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+        else:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         return image
 
 
