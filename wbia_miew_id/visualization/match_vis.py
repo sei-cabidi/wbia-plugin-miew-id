@@ -3,10 +3,21 @@ import cv2
 import numpy as np
 from tqdm.auto import tqdm
 import torch
+from torch.utils.data import Sampler
 
-from datasets import IdxSampler
-from metrics import precision_at_k
+
 from .gradcam import draw_batch
+
+class IdxSampler(Sampler):
+    """Samples elements sequentially, in the order of indices"""
+    def __init__(self, indices):
+        self.indices = indices
+
+    def __iter__(self):
+        return iter(self.indices)
+
+    def __len__(self):
+        return len(self.indices)
 
 def stack_match_images(images, descriptions, match_mask, text_color=(0, 0, 0)):  # OpenCV uses BGR
     assert len(images) == len(descriptions) == len(match_mask), "Number of images, descriptions and match_mask must be the same."
@@ -61,10 +72,9 @@ def render_single_query_result(config, model, vis_loader, df_vis, qry_row, qry_i
 
     print(f"Saved visualization to {output_path}")
 
-def render_query_results(config, model, test_dataset, df_test, test_outputs, k=5):
+def render_query_results(config, model, test_dataset, df_test, match_results, k=5):
 
-    embeddings, q_pids, distmat = test_outputs
-    score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
+    q_pids, topk_idx, topk_names, match_mat = match_results
 
     print("Generating visualizations...")
     for i in tqdm(range(len(q_pids))):

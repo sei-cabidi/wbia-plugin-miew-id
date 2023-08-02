@@ -5,6 +5,7 @@ from etl import preprocess_data, print_basic_stats
 from engine import eval_fn, group_eval
 from helpers import get_config
 from visualization import render_query_results
+from metrics import precision_at_k
 
 import os
 import torch
@@ -94,10 +95,14 @@ def run_test(config, visualize=False):
     eval_groups = config.data.test.eval_groups
 
     if eval_groups:
-        grioup_results = group_eval(config, df_test, eval_groups, model)
+        group_results = group_eval(config, df_test, eval_groups, model)
 
     if visualize:
-        render_query_results(config, model, test_dataset, df_test, test_outputs)
+        k=5
+        embeddings, q_pids, distmat = test_outputs
+        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
+        match_results = (q_pids, topk_idx, topk_names, match_mat)
+        render_query_results(config, model, test_dataset, df_test, match_results, k=k)
 
     return test_score
 
