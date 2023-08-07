@@ -88,9 +88,10 @@ def run(config):
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=config.engine.train_batch_size,
+        num_workers=config.engine.num_workers,
+        shuffle=True,
         pin_memory=True,
         drop_last=True,
-        num_workers=config.engine.num_workers
     )
 
     valid_loader = torch.utils.data.DataLoader(
