@@ -17,7 +17,9 @@ def group_eval(config, df_test, eval_groups, model):
                 transforms=get_test_transforms(config),
                 fliplr=config.test.fliplr,
                 fliplr_view=config.test.fliplr_view,
-                crop_bbox=config.data.crop_bbox
+                crop_bbox=config.data.crop_bbox,
+                use_full_image_path=config.data.use_full_image_path
+
             )
                 
             test_loader = torch.utils.data.DataLoader(
