@@ -29,8 +29,7 @@ def parse_args():
     return parser.parse_args()
 
 def run(config):
-    
-    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.image_size[0]}-{config.engine.loss_module}"
+    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}"
     os.makedirs(checkpoint_dir, exist_ok=True)
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
@@ -64,11 +63,6 @@ def run(config):
     
     print_intersect_stats(df_train, df_val, individual_key='name_orig')
     
-    # df_train['name'] = convert_name_to_id(df_train['name'].values)
-    # df_val['name'] = convert_name_to_id(df_val['name'].values)
-    
-
-
     n_train_classes = df_train['name'].nunique()
 
     train_dataset = MiewIdDataset(
