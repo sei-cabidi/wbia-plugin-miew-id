@@ -44,6 +44,7 @@ class MiewIdDataset(Dataset):
             if min(image.shape) < 1:
                 # Use original image
                 print('Using original image. Invalid bbox', bbox)
+                print(image_path)
                 image = self.load_image(image_path)
                 bbox = [0, 0, image.shape[1], image.shape[0]]
 
