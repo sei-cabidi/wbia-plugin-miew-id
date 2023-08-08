@@ -34,6 +34,7 @@ def run(config):
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
     config_path_out = f'{checkpoint_dir}/{config.exp_name}.yaml'
+    config.test.checkpoint_path = f'{checkpoint_dir}/model_best.bin'
     write_config(config, config_path_out)
 
 
