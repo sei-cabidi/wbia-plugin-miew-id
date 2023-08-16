@@ -224,9 +224,7 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
 
     embeddings, labels, images, paths, bboxes = generate_embeddings(config, model, test_loader)
 
-    print(embeddings)
     print('*** embeddings generated ***')
-
 
     target_layers = model.backbone.conv_head
 
