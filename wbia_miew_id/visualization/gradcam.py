@@ -224,6 +224,10 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
 
     embeddings, labels, images, paths, bboxes = generate_embeddings(config, model, test_loader)
 
+    print(embeddings)
+    print('*** embeddings generated ***')
+
+
     target_layers = model.backbone.conv_head
 
     if method=='gradcam_plus_plus':
@@ -263,7 +267,7 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
     
     batch_size = test_loader.batch_size
 
-    batch_step = max(batch_size//2, 2)
+    batch_step = 2
     print('generating cams')
 
     for i in tqdm(range(0, len(stack_target), batch_step)):
