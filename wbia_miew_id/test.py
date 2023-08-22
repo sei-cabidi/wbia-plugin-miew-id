@@ -78,14 +78,28 @@ def run_test(config, visualize=False):
 
     device = torch.device(config.engine.device)
 
-    model = MiewIdNet(**dict(config.model_params))
-    model.to(device)
+
 
     checkpoint_path = config.data.test.checkpoint_path
 
     if checkpoint_path:
-        model.load_state_dict(torch.load(checkpoint_path, map_location=torch.device(device)))
+        weights = torch.load(config.data.test.checkpoint_path, map_location=torch.device(config.engine.device))
+        n_train_classes = weights['final.kernel'].shape[-1]
+        if config.model_params.n_classes != n_train_classes:
+            print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the checkpoint -  ({n_train_classes}).")
+            config.model_params.n_classes = n_train_classes
+
+        model = MiewIdNet(**dict(config.model_params))
+        model.to(device)
+
+        model.load_state_dict(weights)
         print('loaded checkpoint from', checkpoint_path)
+        
+    else:
+        model = MiewIdNet(**dict(config.model_params))
+        model.to(device)
+
+    
 
     test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
