@@ -32,11 +32,6 @@ def parse_args():
 
 def run_test(config, visualize=False):
     
-    checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/{config.model_params.model_name}-{config.data.image_size[0]}-{config.engine.loss_module}"
-    os.makedirs(checkpoint_dir, exist_ok=True)
-    print('Checkpoints will be saved at: ', checkpoint_dir)
-
-
     def set_seed_torch(seed):
         random.seed(seed)
         os.environ['PYTHONHASHSEED'] = str(seed)
