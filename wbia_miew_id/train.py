@@ -34,8 +34,7 @@ def run(config):
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
     config_path_out = f'{checkpoint_dir}/{config.exp_name}.yaml'
-    config.test.checkpoint_path = f'{checkpoint_dir}/model_best.bin'
-    write_config(config, config_path_out)
+    config.data.test.checkpoint_path = f'{checkpoint_dir}/model_best.bin'
 
 
     def set_seed_torch(seed):
@@ -107,7 +106,7 @@ def run(config):
     device = torch.device(config.engine.device)
 
     if config.model_params.n_classes != n_train_classes:
-        print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes ({n_train_classes}). This parameters has to be readjusted in config for proper checkpoint loading after training.")
+        print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the dataset - ({n_train_classes}).")
         config.model_params.n_classes = n_train_classes
     model = MiewIdNet(**dict(config.model_params))
     model.to(device)
@@ -119,6 +118,9 @@ def run(config):
     optimizer = torch.optim.Adam(model.parameters(), lr=config.scheduler_params.lr_start)
 
     scheduler = MiewIdScheduler(optimizer,**dict(config.scheduler_params))
+
+    write_config(config, config_path_out)
+
 
     with WandbContext(config):
         best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
