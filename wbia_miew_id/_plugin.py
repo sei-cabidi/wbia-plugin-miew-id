@@ -10,6 +10,7 @@ import wbia
 from wbia import dtool as dt
 import os
 import torch
+from torch.cuda.amp import autocast, GradScaler
 import torchvision.transforms as transforms  # noqa: E402
 from scipy.spatial import distance_matrix
 import pandas as pd
@@ -21,6 +22,7 @@ from wbia_miew_id.models import get_model
 from wbia_miew_id.datasets import PluginDataset, get_test_transforms
 from wbia_miew_id.metrics import pred_light, compute_distance_matrix, eval_onevsall
 from wbia_miew_id.visualization import draw_one, draw_batch
+
 
 (print, rrr, profile) = ut.inject2(__name__)
 
@@ -222,6 +224,9 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
 
     # Load model
     model = _load_model(config, MODELS[species])
+    
+    # Initialize the gradient scaler
+    scaler = GradScaler()
 
     # Preprocess images to model input
     test_loader, test_dataset = _load_data(ibs, aid_list, config, multithread)
@@ -234,7 +239,9 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
             if config.use_gpu:
                 images = images.cuda(non_blocking=True)
 
-            output = model(images.float())
+            with autocast():
+                output = model(images.float())
+
             embeddings.append(output.detach().cpu().numpy())
 
     embeddings = np.concatenate(embeddings)
