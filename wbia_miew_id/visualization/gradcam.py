@@ -118,7 +118,7 @@ def draw_one(config, test_loader, model, images_dir = '', method='gradcam_plus_p
 
 
     # generate results
-    stack_tensor = torch.concatenate([db_tensor, qry_tensor])
+    stack_tensor = torch.cat([db_tensor, qry_tensor])
     stack_target = [similarity_to_qry, similarity_to_db]
     results_cam = generate_cam(input_tensor=stack_tensor,targets=stack_target,aug_smooth=False,eigen_smooth=eigen_smooth)
     qry_grayscale_cam = results_cam[0, :]
@@ -258,7 +258,7 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         tensors.extend([db_tensor, qry_tensor])
         stack_target.extend([similarity_to_qry, similarity_to_db])
 
-    stack_tensor = torch.concatenate(tensors)
+    stack_tensor = torch.cat(tensors)
 
     batch_images = []
     results_cam = []
