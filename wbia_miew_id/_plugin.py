@@ -74,7 +74,8 @@ CONFIGS = {
     'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
     'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
-    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml'
+    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.yaml',
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.yaml'
     }
     
 
@@ -113,7 +114,8 @@ MODELS = {
     'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
     'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
-    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin'
+    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.bottlenose.bin',
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin'
 }
 
 
