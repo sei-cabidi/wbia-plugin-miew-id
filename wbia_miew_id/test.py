@@ -70,7 +70,7 @@ def run_test(config, visualize=False):
     test_loader = torch.utils.data.DataLoader(
         test_dataset,
         batch_size=config.engine.valid_batch_size,
-        num_workers=0,
+        num_workers=config.engine.num_workers,
         shuffle=False,
         pin_memory=True,
         drop_last=False,
