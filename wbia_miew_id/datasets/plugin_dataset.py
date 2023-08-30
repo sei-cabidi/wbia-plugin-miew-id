@@ -13,6 +13,7 @@ class PluginDataset(Dataset):
 
     def __init__(
         self,
+        chips,
         image_paths,
         names,
         bboxes,
@@ -21,14 +22,17 @@ class PluginDataset(Dataset):
         transform,
         fliplr=False,
         fliplr_view=None,
-        crop_bbox=True
+        crop_bbox=True,
+        use_chips=True
     ):
+        self.chips = chips
         self.image_paths = image_paths
         self.bboxes = bboxes
         self.names = names
         self.transform = transform
         self.viewpoints = viewpoints
         self.crop_bbox = crop_bbox
+        self.use_chips = use_chips
 
         thetas = [t if t is not None else 0 for t in thetas]
         self.thetas = thetas
@@ -49,31 +53,34 @@ class PluginDataset(Dataset):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         return image
 
-
     def __len__(self):
         return len(self.image_paths)
 
     def __getitem__(self, idx):
-        image_path = self.image_paths[idx]
-        bbox = self.bboxes[idx]
-        theta = self.thetas[idx]
 
-        image = self.load_image(image_path)
-        if image is None:
-            raise ValueError('Fail to read {}'.format(self.image_paths[id]))
+        if self.use_chips:
+            image = self.chips[idx]
+        else:
+            image_path = self.image_paths[idx]
+            bbox = self.bboxes[idx]
+            theta = self.thetas[idx]
 
-        # # Crop bounding box area
-        # if  self.crop_bbox:
-        #     x1, y1, w, h = bbox
-        #     image = image[y1 : y1 + h, x1 : x1 + w]
-        #     if min(image.shape) < 1:
-        #         # Use original image
-        #         image = self.load_image(image_path)
-        #         self.bboxes[idx] = [0, 0, image.shape[1], image.shape[0]]
-        
-        # Crop a rotated bbox
-        if self.crop_bbox:
-            image = get_chip_from_img(image, bbox, theta)
+            image = self.load_image(image_path)
+            if image is None:
+                raise ValueError('Fail to read {}'.format(self.image_paths[id]))
+
+            # # Crop bounding box area
+            # if  self.crop_bbox:
+            #     x1, y1, w, h = bbox
+            #     image = image[y1 : y1 + h, x1 : x1 + w]
+            #     if min(image.shape) < 1:
+            #         # Use original image
+            #         image = self.load_image(image_path)
+            #         self.bboxes[idx] = [0, 0, image.shape[1], image.shape[0]]
+            
+            # Crop a rotated bbox
+            if self.crop_bbox:
+                image = get_chip_from_img(image, bbox, theta)
 
         if self.fliplr:
             if self.viewpoints[idx] in self.fliplr_view:

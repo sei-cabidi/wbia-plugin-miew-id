@@ -517,14 +517,15 @@ def _load_data(ibs, aid_list, config, multithread=False):
     """
 
     test_transform = get_test_transforms(config)
-
     image_paths = ibs.get_annot_image_paths(aid_list)
     bboxes = ibs.get_annot_bboxes(aid_list)
     names = ibs.get_annot_name_rowids(aid_list)
     viewpoints = ibs.get_annot_viewpoints(aid_list)
     thetas = ibs.get_annot_thetas(aid_list)
+    chips = ibs.get_annot_chips(aid_list)
 
     dataset = PluginDataset(
+        chips,
         image_paths,
         names,
         bboxes,
@@ -533,6 +534,7 @@ def _load_data(ibs, aid_list, config, multithread=False):
         test_transform,
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
+        use_chips=True
     )
 
     if multithread:
