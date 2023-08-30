@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
-from .helpers import resize_image, unnormalize
+from .helpers import resize_image, unnormalize, get_chip_from_img
 
 from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
@@ -180,6 +180,7 @@ def generate_embeddings(config, model, test_loader):
     images = []
     paths = []
     bboxes = []
+    thetas = []
     with torch.no_grad():   
         for batch in tk0:
 
@@ -188,11 +189,13 @@ def generate_embeddings(config, model, test_loader):
                 batch_name = batch[1]
                 batch_path = batch[2]
                 batch_bbox = batch[3]
+                batch_theta = batch[4]
             except:
                 batch_image = batch['image']
                 batch_name = batch['label']
                 batch_path = batch["file_path"]
                 batch_bbox = batch["bbox"]
+                batch_theta = batch["theta"]
 
 
             images.extend(batch_image)
@@ -207,13 +210,16 @@ def generate_embeddings(config, model, test_loader):
             labels.extend(batch_labels)
             
             paths.extend(batch_path)
-
             bboxes.extend(batch_bbox)
+        
+            batch_theta = batch_theta.tolist()
+            thetas.extend(batch_theta)
+
 
     bboxes = [t.int().tolist() for t in bboxes]
 
     embeddings = pd.concat(embeddings)
-    return embeddings, labels, images, paths, bboxes
+    return embeddings, labels, images, paths, bboxes, thetas
 
 def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, render_transformed=False, show=False, use_cuda=True):
 
@@ -222,7 +228,7 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
     # Generate embeddings for query and db
     model.eval()
 
-    embeddings, labels, images, paths, bboxes = generate_embeddings(config, model, test_loader)
+    embeddings, labels, images, paths, bboxes, thetas = generate_embeddings(config, model, test_loader)
 
     print('*** embeddings generated ***')
 
@@ -289,11 +295,14 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
             qry_image_path = paths[qry_idx]
             qry_float = load_image(qry_image_path)
             qry_bbox = bboxes[qry_idx]
-            x1, y1, w, h = qry_bbox
-            qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
-            if min(qry_float.shape) < 1:
-                # Use original image
-                qry_float = qry_float = load_image(qry_image_path)
+            # x1, y1, w, h = qry_bbox
+            # qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
+            # if min(qry_float.shape) < 1:
+            #     # Use original image
+            #     qry_float = qry_float = load_image(qry_image_path)
+            qry_theta = thetas[qry_idx]
+            qry_float = get_chip_from_img(qry_float, qry_bbox, qry_theta)
+
 
         qry_float_norm = (qry_float - qry_float.min()) / (qry_float.max() - qry_float.min())
         db_grayscale_cam_res = cv2.resize(db_grayscale_cam, (qry_float_norm.shape[1], qry_float_norm.shape[0]))
@@ -310,11 +319,14 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
             db_image_path = paths[db_idx + i//2]
             db_float = load_image(db_image_path)
             db_bbox = bboxes[db_idx + i//2]
-            x1, y1, w, h = db_bbox
-            db_float = db_float[y1 : y1 + h, x1 : x1 + w]
-            if min(db_float.shape) < 1:
-                # Use original image
-                db_float = db_float = load_image(db_image_path)
+            # x1, y1, w, h = db_bbox
+            # db_float = db_float[y1 : y1 + h, x1 : x1 + w]
+            # if min(db_float.shape) < 1:
+            #     # Use original image
+            #     db_float = db_float = load_image(db_image_path)
+            db_theta = thetas[db_idx + i//2]
+            db_float = get_chip_from_img(db_float, db_bbox, db_theta)
+
 
         db_float_norm = (db_float - db_float.min()) / (db_float.max() - db_float.min())
         qry_grayscale_cam_res = cv2.resize(qry_grayscale_cam, (db_float_norm.shape[1], db_float_norm.shape[0]))

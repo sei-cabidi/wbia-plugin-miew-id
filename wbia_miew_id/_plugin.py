@@ -237,7 +237,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     embeddings = []
     model.eval()
     with torch.no_grad():
-        for images, names, image_paths, image_bboxes in test_loader:
+        for images, names, image_paths, image_bboxes, image_thetas in test_loader:
             if config.use_gpu:
                 images = images.cuda(non_blocking=True)
 
@@ -522,12 +522,14 @@ def _load_data(ibs, aid_list, config, multithread=False):
     bboxes = ibs.get_annot_bboxes(aid_list)
     names = ibs.get_annot_name_rowids(aid_list)
     viewpoints = ibs.get_annot_viewpoints(aid_list)
+    thetas = ibs.get_annot_thetas(aid_list)
 
     dataset = PluginDataset(
         image_paths,
         names,
         bboxes,
         viewpoints,
+        thetas,
         test_transform,
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,

@@ -72,4 +72,16 @@ def get_chip_from_img(img, bbox, theta):
     xm = (x1 + x2) // 2
     ym = (y1 + y2) // 2
 
-    return crop_rect(img, ((xm, ym), (x2-x1, y2-y1), theta))[0]
+    # Do a faster, regular crop if theta is negligible
+    if abs(theta) < 0.1:
+        x1, y1, w, h = [int(x) for x in bbox]
+        cropped_image = img[y1 : y1 + h, x1 : x1 + w]
+    else:
+        cropped_image = crop_rect(img, ((xm, ym), (x2-x1, y2-y1), theta))[0]
+
+    if min(cropped_image.shape) < 1:
+        # Use original image
+        print(f'Using original image. Invalid parameters - theta: {theta}, bbox: {bbox}')
+        cropped_image = img
+
+    return cropped_image

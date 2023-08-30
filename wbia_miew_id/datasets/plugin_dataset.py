@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 import cv2
 import numpy as np
 import torch
+from .helpers import get_chip_from_img
 
 
 class PluginDataset(Dataset):
@@ -16,15 +17,21 @@ class PluginDataset(Dataset):
         names,
         bboxes,
         viewpoints,
+        thetas,
         transform,
         fliplr=False,
         fliplr_view=None,
+        crop_bbox=True
     ):
         self.image_paths = image_paths
         self.bboxes = bboxes
         self.names = names
         self.transform = transform
         self.viewpoints = viewpoints
+        self.crop_bbox = crop_bbox
+
+        thetas = [t if t is not None else 0 for t in thetas]
+        self.thetas = thetas
 
         if fliplr:
             assert isinstance(fliplr_view, list) and all(
@@ -48,19 +55,25 @@ class PluginDataset(Dataset):
 
     def __getitem__(self, idx):
         image_path = self.image_paths[idx]
+        bbox = self.bboxes[idx]
+        theta = self.thetas[idx]
 
         image = self.load_image(image_path)
         if image is None:
             raise ValueError('Fail to read {}'.format(self.image_paths[id]))
 
-        # Crop bounding box area'
-        x1, y1, w, h = self.bboxes[idx]
-        image = image[y1 : y1 + h, x1 : x1 + w]
-        if min(image.shape) < 1:
-            # Use original image
-            image = self.load_image(image_path)
-            self.bboxes[idx] = [0, 0, image.shape[1], image.shape[0]]
-
+        # # Crop bounding box area
+        # if  self.crop_bbox:
+        #     x1, y1, w, h = bbox
+        #     image = image[y1 : y1 + h, x1 : x1 + w]
+        #     if min(image.shape) < 1:
+        #         # Use original image
+        #         image = self.load_image(image_path)
+        #         self.bboxes[idx] = [0, 0, image.shape[1], image.shape[0]]
+        
+        # Crop a rotated bbox
+        if self.crop_bbox:
+            image = get_chip_from_img(image, bbox, theta)
 
         if self.fliplr:
             if self.viewpoints[idx] in self.fliplr_view:
@@ -71,6 +84,4 @@ class PluginDataset(Dataset):
             image = augmented['image']
             # image = self.transform(image.copy())
             
-        return image, self.names[idx], self.image_paths[idx], torch.Tensor(self.bboxes[idx])
-
-
+        return image, self.names[idx], self.image_paths[idx], torch.Tensor(self.bboxes[idx]), self.thetas[idx]
