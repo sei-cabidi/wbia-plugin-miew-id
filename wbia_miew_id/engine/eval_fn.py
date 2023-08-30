@@ -5,9 +5,9 @@ import numpy as np
 import wandb
 
 from metrics import AverageMeter, compute_distance_matrix, eval_onevsall
+from torch.cuda.amp import autocast  
 
-
-def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
+def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, max_rank=50, use_autocast=True):
 
     model.eval()
     tk0 = tqdm(data_loader, total=len(data_loader))
@@ -16,7 +16,8 @@ def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
     
     with torch.no_grad():
         for batch in tk0:
-            batch_embeddings = model.extract_feat(batch["image"].to(device))
+            with autocast():
+                batch_embeddings = model.extract_feat(batch["image"].to(device))
             
             batch_embeddings = batch_embeddings.detach().cpu().numpy()
             
@@ -37,7 +38,7 @@ def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
     distmat = distmat.numpy()
 
     print("Computing CMC and mAP ...")
-    cmc, mAP = eval_onevsall(distmat, q_pids)
+    cmc, mAP = eval_onevsall(distmat, q_pids, max_rank=max_rank)
 
     ranks=[1, 5, 10, 20]
     print("** Results **")
@@ -53,6 +54,3 @@ def eval_fn(data_loader,model,device, use_wandb=True, return_outputs=False):
         return mAP, cmc, (embeddings.values, q_pids, distmat)
     else:
         return mAP, cmc
-
-
-
