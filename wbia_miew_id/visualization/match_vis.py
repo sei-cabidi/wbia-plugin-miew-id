@@ -68,7 +68,7 @@ def render_single_query_result(config, model, vis_loader, df_vis, qry_row, qry_i
     output_path = os.path.join(output_dir, output_name)
 
     os.makedirs(output_dir, exist_ok=True)
-    cv2.imwrite(output_path, vis_result, [cv2.IMWRITE_JPEG_QUALITY, 90])
+    cv2.imwrite(output_path, vis_result, [cv2.IMWRITE_JPEG_QUALITY, 60])
 
     print(f"Saved visualization to {output_path}")
 
