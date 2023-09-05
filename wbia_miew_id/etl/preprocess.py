@@ -17,6 +17,8 @@ def load_to_df(anno_path):
     dfa = pd.DataFrame(data['annotations'])
     dfi = pd.DataFrame(data['images'])
 
+    dfi = dfi.drop_duplicates(subset=['uuid'])
+
     merge_on_uuid = 'image_uuid' in dfa.columns and 'uuid' in dfi.columns
     if merge_on_uuid:
         print('Merging on image uuid')
