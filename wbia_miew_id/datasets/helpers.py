@@ -74,7 +74,7 @@ def get_chip_from_img(img, bbox, theta):
 
     # Do a faster, regular crop if theta is negligible
     if abs(theta) < 0.1:
-        x1, y1, w, h = [int(x) for x in bbox]
+        x1, y1, w, h = [max(0, int(x)) for x in bbox]
         cropped_image = img[y1 : y1 + h, x1 : x1 + w]
     else:
         cropped_image = crop_rect(img, ((xm, ym), (x2-x1, y2-y1), theta))[0]
