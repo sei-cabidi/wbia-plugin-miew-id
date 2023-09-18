@@ -33,12 +33,13 @@ def filter_viewpoint_df(df, viewpoint_list):
     df = df[df['viewpoint'].isin(viewpoint_list)]
     return df
 
-def filter_min_names_df(df, n_filter_min):
-    df = df.groupby('name').filter(lambda g: len(g)>=n_filter_min)
+def filter_min_names_df(df, n_filter_min, filter_key='name_species'):
+    print(filter_key)
+    df = df.groupby(filter_key).filter(lambda g: len(g)>=n_filter_min)
     return df
 
-def subsample_max_df(df, n_subsample_max):
-    df = df.groupby('name').apply(lambda g: g.sample(frac=1, random_state=0).head(n_subsample_max)).sample(frac=1, random_state=1).reset_index(drop=True)
+def subsample_max_df(df, n_subsample_max, subsample_name_key='name_species'):
+    df = df.groupby(subsample_name_key).apply(lambda g: g.sample(frac=1, random_state=0).head(n_subsample_max)).sample(frac=1, random_state=1).reset_index(drop=True)
     return df
 
 def convert_name_to_id(names):
@@ -55,6 +56,10 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
 
     df['name_orig'] = df['name'].copy()
     df['name'] = df[name_keys].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+    
+
+    # df.loc[df['name_species'].isna(), 'name_species'] = df.loc[df['name_species'].isna(), 'name'].astype(str) + '_' + df.loc[df['name_species'].isna(), 'species']
+    df['name_species'] = df['name'] + '_' + df['species']
 
     if viewpoint_list:
         df = filter_viewpoint_df(df, viewpoint_list)
