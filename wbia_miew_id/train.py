@@ -61,7 +61,7 @@ def run(config):
                                 n_filter_min=config.data.val.n_filter_min, 
                                 n_subsample_max=config.data.val.n_subsample_max)
     
-    print_intersect_stats(df_train, df_val, individual_key='name')
+    print_intersect_stats(df_train, df_val, individual_key='name_orig')
     
     n_train_classes = df_train['name'].nunique()
 

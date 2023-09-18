@@ -54,12 +54,12 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
     print(f'** Loaded {anno_path} **')
     print('     ', f'Found {len(df)} annotations')
 
-    df['name_orig'] = df['name'].copy()
     df['name'] = df[name_keys].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
-    
 
     # df.loc[df['name_species'].isna(), 'name_species'] = df.loc[df['name_species'].isna(), 'name'].astype(str) + '_' + df.loc[df['name_species'].isna(), 'species']
     df['name_species'] = df['name'] + '_' + df['species']
+
+    df['name_orig'] = df['name'].copy()
 
     if viewpoint_list:
         df = filter_viewpoint_df(df, viewpoint_list)
