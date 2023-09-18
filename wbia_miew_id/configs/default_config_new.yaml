@@ -3,35 +3,35 @@ project_name: default_config
 checkpoint_dir: ./runs
 comment: Experiment comment goes here
 data:
-  images_dir: "/mnt/space/space-home/wild-me/PIE/bottlenose-dolphin/data/flukebook-384"
-  viewpoint_list: ['left', 'right']
+  images_dir: "/mnt/space/space-home/wild-me/multi-species/exports/coco_ms1_2/coco/images/test2023"
+  viewpoint_list: null
   name_keys: ['name']
   crop_bbox: false
   image_size:
-    - 384
-    - 384
+    - 256
+    - 256
+  test:
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
+    checkpoint_path: ''
+    eval_groups:
+    - species
+    n_filter_min: 2
+    n_subsample_max: 10
   train:
-    anno_path: "/mnt/space/space-home/wild-me/PIE/bottlenose-dolphin/data/flukebook-coco/instances_train2021.json"
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_train2023.json
     n_filter_min: 4
     n_subsample_max: null
   val:
-    anno_path: "/mnt/space/space-home/wild-me/PIE/bottlenose-dolphin/data/flukebook-coco/instances_val2021.json"
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
     n_filter_min: 2
     n_subsample_max: 10
-  test:
-    anno_path: "/mnt/space/space-home/wild-me/PIE/bottlenose-dolphin/data/flukebook-coco/instances_val2021.json"
-    n_filter_min: 2
-    n_subsample_max: 10
-    checkpoint_path:  "/mnt/space/space-home/wild-me/wbia-plugin-miew-id/wbia_miew_id/runs/bottlenose-dolphin/l2r_1/efficientnetv2_rw_m-384-arcface/model_best.bin"
-
 engine:
-  num_workers: 0
+  num_workers: 8
   train_batch_size: 6
   valid_batch_size: 12
   epochs: 30
   seed: 42
   device: cuda
-  loss_module: arcface
   use_wandb: false
 
 scheduler_params:

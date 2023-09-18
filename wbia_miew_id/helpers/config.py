@@ -51,9 +51,9 @@ class Engine(DictableClass):
     epochs: int
     seed: int
     device: str
-    loss_module: str
     use_wandb: bool
     num_workers: int = 0
+    loss_module: str = 'softmax'
 
 @dataclass
 class SchedulerParams(DictableClass):
