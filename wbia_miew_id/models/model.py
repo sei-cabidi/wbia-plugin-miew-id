@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import timm
 
-from .heads import ArcMarginProduct, ElasticArcFace
+from .heads import ArcMarginProduct, ElasticArcFace, ArcFaceSubCenterDynamic
 
 def weights_init_kaiming(m):
     classname = m.__class__.__name__
@@ -59,13 +59,9 @@ class MiewIdNet(nn.Module):
                  margin=0.50,
                  ls_eps=0.0,
                  theta_zero=0.785,
-                 pretrained=True):
+                 pretrained=True,
+                 margins=None):
         """
-        :param n_classes:
-        :param model_name: name of model from pretrainedmodels
-            e.g. resnet50, resnext101_32x4d, pnasnet5large
-        :param pooling: One of ('SPoC', 'MAC', 'RMAC', 'GeM', 'Rpool', 'Flatten', 'CompactBilinearPooling')
-        :param loss_module: One of ('arcface', 'cosface', 'softmax')
         """
         super(MiewIdNet, self).__init__()
         print('Building Model Backbone for {} model'.format(model_name))
@@ -92,6 +88,12 @@ class MiewIdNet(nn.Module):
         if loss_module == 'arcface':
             self.final = ElasticArcFace(final_in_features, n_classes,
                                           s=s, m=margin)
+        elif loss_module == 'arcface_subcenter_dynamic':
+            self.final = ArcFaceSubCenterDynamic(
+                embedding_dim=final_in_features, 
+                output_classes=n_classes, 
+                margins=margins,
+                s=s )
         # elif loss_module == 'cosface':
         #     self.final = AddMarginProduct(final_in_features, n_classes, s=s, m=margin)
         # elif loss_module == 'adacos':
@@ -111,7 +113,7 @@ class MiewIdNet(nn.Module):
             return feature
         else:
             assert label is not None
-        if self.loss_module in ('arcface', 'cosface', 'adacos'):
+        if self.loss_module in ('arcface', 'arcface_subcenter_dynamic'):
             logits = self.final(feature, label)
         else:
             logits = self.final(feature)

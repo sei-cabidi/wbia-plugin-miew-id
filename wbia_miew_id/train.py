@@ -108,7 +108,16 @@ def run(config):
     if config.model_params.n_classes != n_train_classes:
         print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the dataset - ({n_train_classes}).")
         config.model_params.n_classes = n_train_classes
-    model = MiewIdNet(**dict(config.model_params))
+
+    if config.model_params.loss_module == 'arcface_subcenter_dynamic':
+        margin_min = 0.2
+        margin_max = 0.5
+        tmp = np.sqrt(1 / np.sqrt(df_train['name'].value_counts().sort_index().values))
+        margins = (tmp - tmp.min()) / (tmp.max() - tmp.min()) * (margin_max - margin_min) + margin_min
+    else:
+        margins = None
+
+    model = MiewIdNet(**dict(config.model_params), margins=margins)
     model.to(device)
 
     criterion = fetch_loss()

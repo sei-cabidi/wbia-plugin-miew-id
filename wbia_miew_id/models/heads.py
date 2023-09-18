@@ -88,3 +88,73 @@ class ElasticArcFace(nn.Module):
         cos_theta[index] += m_hot
         cos_theta.cos_().mul_(self.s)
         return cos_theta
+    
+########## Subcenter Arcface with dynamic margin ##########
+
+class ArcMarginProduct_subcenter(nn.Module):
+    def __init__(self, in_features, out_features, k=3):
+        super().__init__()
+        self.weight = nn.Parameter(torch.FloatTensor(out_features*k, in_features))
+        self.reset_parameters()
+        self.k = k
+        self.out_features = out_features
+        
+    def reset_parameters(self):
+        stdv = 1. / math.sqrt(self.weight.size(1))
+        self.weight.data.uniform_(-stdv, stdv)
+        
+    def forward(self, features):
+        cosine_all = F.linear(F.normalize(features), F.normalize(self.weight))
+        cosine_all = cosine_all.view(-1, self.out_features, self.k)
+        cosine, _ = torch.max(cosine_all, dim=2)
+        return cosine
+    
+class ArcFaceLossAdaptiveMargin(nn.modules.Module):
+    def __init__(self, margins, out_dim, s):
+        super().__init__()
+#         self.crit = nn.CrossEntropyLoss()
+        self.s = s
+        self.register_buffer('margins', torch.tensor(margins))
+        self.out_dim = out_dim
+            
+    def forward(self, logits, labels):
+        #ms = []
+        #ms = self.margins[labels.cpu().numpy()]
+        ms = self.margins[labels]
+        cos_m = torch.cos(ms) #torch.from_numpy(np.cos(ms)).float().cuda()
+        sin_m = torch.sin(ms) #torch.from_numpy(np.sin(ms)).float().cuda()
+        th = torch.cos(math.pi - ms)#torch.from_numpy(np.cos(math.pi - ms)).float().cuda()
+        mm = torch.sin(math.pi - ms) * ms#torch.from_numpy(np.sin(math.pi - ms) * ms).float().cuda()
+        labels = F.one_hot(labels, self.out_dim).float()
+        cosine = logits
+        sine = torch.sqrt(1.0 - cosine * cosine)
+        phi = cosine * cos_m.view(-1,1) - sine * sin_m.view(-1,1)
+        phi = torch.where(cosine > th.view(-1,1), phi, cosine - mm.view(-1,1))
+        output = (labels * phi) + ((1.0 - labels) * cosine)
+        output *= self.s
+        return output
+    
+class ArcFaceSubCenterDynamic(nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        output_classes,
+        margins,
+        s
+    ):
+        super().__init__()
+        
+        self.embedding_dim = embedding_dim
+        self.output_classes = output_classes
+        self.margins = margins
+        self.s = s
+        self.wmetric_classify = ArcMarginProduct_subcenter(self.embedding_dim, self.output_classes, k=3)
+        
+        self.warcface_margin = ArcFaceLossAdaptiveMargin(margins=self.margins, 
+                                                         out_dim=self.output_classes, 
+                                                         s=self.s)
+    
+    def forward(self, features, labels):
+        logits = self.wmetric_classify(features.float())
+        logits = self.warcface_margin(logits, labels)
+        return logits
