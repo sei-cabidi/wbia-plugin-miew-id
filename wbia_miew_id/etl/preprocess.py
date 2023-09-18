@@ -34,11 +34,12 @@ def filter_viewpoint_df(df, viewpoint_list):
     return df
 
 def filter_min_names_df(df, n_filter_min, filter_key='name_species'):
-    print(filter_key)
+    print(f"Filtering by min {n_filter_min} annotations per {filter_key}")
     df = df.groupby(filter_key).filter(lambda g: len(g)>=n_filter_min)
     return df
 
 def subsample_max_df(df, n_subsample_max, subsample_name_key='name_species'):
+    print(f"Subsampling by max {n_subsample_max} annotations per {subsample_name_key}")
     df = df.groupby(subsample_name_key).apply(lambda g: g.sample(frac=1, random_state=0).head(n_subsample_max)).sample(frac=1, random_state=1).reset_index(drop=True)
     return df
 
