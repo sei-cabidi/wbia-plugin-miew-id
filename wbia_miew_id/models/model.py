@@ -89,6 +89,8 @@ class MiewIdNet(nn.Module):
             self.final = ElasticArcFace(final_in_features, n_classes,
                                           s=s, m=margin)
         elif loss_module == 'arcface_subcenter_dynamic':
+            if margins == None:
+                margins = [0.3] * n_classes
             self.final = ArcFaceSubCenterDynamic(
                 embedding_dim=final_in_features, 
                 output_classes=n_classes, 
