@@ -1,6 +1,6 @@
 import torch
 
-def precision_at_k(names, distmat, k=5, return_matches=False):
+def precision_at_k(names, distmat, ranks=list(range(1, 21)), return_matches=False):
     """Computes precision at k given a distance matrix. 
     Assumes the distance matrix is square and does one-vs-all evaluation"""
     assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
@@ -9,18 +9,29 @@ def precision_at_k(names, distmat, k=5, return_matches=False):
     y = torch.Tensor(names[:]).squeeze(0)
     ids_tensor = torch.Tensor(names)
 
-    topk_idx = output.topk(k+1)[1][:, 1:]
+    max_k = max(ranks)
+
+    topk_idx = output.topk(max_k+1)[1][:, 1:]
     topk_names = ids_tensor[topk_idx]
 
     match_mat = topk_names == y[:, None].expand(topk_names.shape)
-    rank_mat = match_mat.any(axis=1)
 
-    score = rank_mat.sum() / len(rank_mat)
+    scores = []
+    for k in ranks:
+        match_mat_k = match_mat[:, :k]
+        rank_mat = match_mat_k.any(axis=1)
+
+        score = rank_mat.sum() / len(rank_mat)
+        scores.append(score)
 
     if return_matches:
-        return score, match_mat, topk_idx, topk_names
+        return scores, match_mat, topk_idx, topk_names
     else:
-        return score
+        return scores
+
+
+
+
     
 
 def topk_average_precision(names, distmat, k=None):
@@ -45,4 +56,4 @@ def topk_average_precision(names, distmat, k=None):
 
     ap_mat = ((cum_mat * score_array) * match_mat).sum(axis=1) / rel_mat
 
-    return ap_mat.nan_to_num(0).mean()
+    return ap_mat.nan_to_num(0).mean().item()

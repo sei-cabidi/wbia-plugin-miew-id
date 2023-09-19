@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import wandb
 
-from metrics import AverageMeter, compute_distance_matrix, eval_onevsall
+from metrics import AverageMeter, compute_distance_matrix, eval_onevsall, topk_average_precision, precision_at_k
 from torch.cuda.amp import autocast  
 
 def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, max_rank=50, use_autocast=True):
@@ -38,8 +38,10 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, ma
     distmat = distmat.numpy()
 
     print("Computing CMC and mAP ...")
-    cmc, mAP = eval_onevsall(distmat, q_pids, max_rank=max_rank)
 
+    mAP = topk_average_precision(q_pids, distmat, k=None)
+    cmc, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=list(range(1, 21)), return_matches=True)
+    print(f"Computed rank metrics on {match_mat.shape[0]} examples")
     ranks=[1, 5, 10, 20]
     print("** Results **")
     print("mAP: {:.1%}".format(mAP))
