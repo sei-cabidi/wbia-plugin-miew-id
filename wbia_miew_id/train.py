@@ -30,7 +30,7 @@ def parse_args():
 
 def run(config):
     checkpoint_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}"
-    os.makedirs(checkpoint_dir, exist_ok=True)
+    os.makedirs(checkpoint_dir, exist_ok=False)
     print('Checkpoints will be saved at: ', checkpoint_dir)
 
     config_path_out = f'{checkpoint_dir}/{config.exp_name}.yaml'
