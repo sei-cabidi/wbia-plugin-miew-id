@@ -109,9 +109,11 @@ def run_test(config, visualize=False):
     if visualize:
         k=5
         embeddings, q_pids, distmat = test_outputs
-        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
+        ranks=list(range(1, k+1))
+        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
         render_query_results(config, model, test_dataset, df_test, match_results, k=k)
+
 
     return test_score
 
