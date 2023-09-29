@@ -104,6 +104,12 @@ def run_test(config, visualize=False):
     eval_groups = config.data.test.eval_groups
 
     if eval_groups:
+        df_test = preprocess_data(config.data.test.anno_path, 
+                            name_keys=config.data.name_keys,
+                            convert_names_to_ids=True, 
+                            viewpoint_list=config.data.viewpoint_list, 
+                            n_filter_min=None, 
+                            n_subsample_max=None)
         group_results = group_eval(config, df_test, eval_groups, model)
 
     if visualize:

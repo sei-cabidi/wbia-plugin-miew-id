@@ -31,16 +31,17 @@ def load_to_df(anno_path):
 
 def filter_viewpoint_df(df, viewpoint_list):
     df = df[df['viewpoint'].isin(viewpoint_list)]
+    print('     ', len(df), 'annotations remain after filtering by viewpoint list', viewpoint_list)
     return df
 
 def filter_min_names_df(df, n_filter_min, filter_key='name_species'):
-    print(f"Filtering by min {n_filter_min} annotations per {filter_key}")
     df = df.groupby(filter_key).filter(lambda g: len(g)>=n_filter_min)
+    print('     ', len(df), 'annotations remain after filtering by min', n_filter_min, 'per', filter_key)
     return df
 
 def subsample_max_df(df, n_subsample_max, subsample_name_key='name_species'):
-    print(f"Subsampling by max {n_subsample_max} annotations per {subsample_name_key}")
     df = df.groupby(subsample_name_key).apply(lambda g: g.sample(frac=1, random_state=0).head(n_subsample_max)).sample(frac=1, random_state=1).reset_index(drop=True)
+    print('     ', len(df), 'annotations remain after subsampling by max', n_subsample_max, 'per', subsample_name_key)
     return df
 
 def convert_name_to_id(names):
@@ -64,15 +65,14 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
 
     if viewpoint_list:
         df = filter_viewpoint_df(df, viewpoint_list)
-        print('     ', len(df), 'annotations remain after filtering by viewpoint list', viewpoint_list)
+        
     
     if n_filter_min:
         df = filter_min_names_df(df, n_filter_min)
-        print('     ', len(df), 'annotations remain after filtering by min', n_filter_min)
+        
 
     if n_subsample_max:
         df = subsample_max_df(df, n_subsample_max)
-        print('     ', len(df), 'annotations remain after subsampling by max', n_subsample_max)
 
     if convert_names_to_ids:
         names = df['name'].values

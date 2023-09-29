@@ -1,6 +1,7 @@
 import torch
 from datasets import MiewIdDataset, get_test_transforms
 from .eval_fn import eval_fn
+from etl import filter_min_names_df, subsample_max_df
 
 def group_eval(config, df_test, eval_groups, model):
 
@@ -9,8 +10,14 @@ def group_eval(config, df_test, eval_groups, model):
     group_results = []
     for eval_group in eval_groups:
         for group, df_group in df_test.groupby(eval_group):
-            print()
             print('* Evaluating group:', group)
+            n_filter_min = config.data.test.n_filter_min
+            if n_filter_min:
+                print(len(df_group))
+                df_group = filter_min_names_df(df_group, n_filter_min)
+            n_subsample_max = config.data.test.n_subsample_max
+            if n_subsample_max:
+                df_group = subsample_max_df(df_group, n_subsample_max)
             test_dataset = MiewIdDataset(
                 csv=df_group,
                 images_dir=config.data.images_dir,
