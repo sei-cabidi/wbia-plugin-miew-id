@@ -148,7 +148,7 @@ class ArcFaceSubCenterDynamic(nn.Module):
         self.output_classes = output_classes
         self.margins = margins
         self.s = s
-        self.wmetric_classify = ArcMarginProduct_subcenter(self.embedding_dim, self.output_classes, k=3)
+        self.wmetric_classify = ArcMarginProduct_subcenter(self.embedding_dim, self.output_classes, k=2)
         
         self.warcface_margin = ArcFaceLossAdaptiveMargin(margins=self.margins, 
                                                          out_dim=self.output_classes, 
