@@ -4,10 +4,10 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-def get_img(path):
-    im_bgr = cv2.imread(path)
-    im_rgb = im_bgr[:, :, ::-1]
-    return im_rgb
+def load_image(image_path):
+    image = cv2.imread(image_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    return image
 
 def imshow(img):
     plt.figure(figsize=(12, 8))

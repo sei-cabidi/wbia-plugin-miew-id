@@ -20,13 +20,10 @@ def group_eval(config, df_test, eval_groups, model):
                 df_group = subsample_max_df(df_group, n_subsample_max)
             test_dataset = MiewIdDataset(
                 csv=df_group,
-                images_dir=config.data.images_dir,
                 transforms=get_test_transforms(config),
                 fliplr=config.test.fliplr,
                 fliplr_view=config.test.fliplr_view,
                 crop_bbox=config.data.crop_bbox,
-                use_full_image_path=config.data.use_full_image_path
-
             )
                 
             test_loader = torch.utils.data.DataLoader(

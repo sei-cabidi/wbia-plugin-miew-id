@@ -49,7 +49,7 @@ def convert_name_to_id(names):
     names_id = le.fit_transform(names)
     return names_id
 
-def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, viewpoint_list=None, n_filter_min=None, n_subsample_max=None):
+def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, viewpoint_list=None, n_filter_min=None, n_subsample_max=None, use_full_image_path=False, images_dir=None):
 
     df = load_to_df(anno_path)
 
@@ -78,6 +78,12 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
         names = df['name'].values
         names_id = convert_name_to_id(names)
         df['name'] = names_id
+
+    if not use_full_image_path:
+        df['file_path'] = df['file_name'].apply(lambda x: os.path.join(images_dir, x))
+
+    df = df.reset_index(drop=True)
+
     return df
 
 if __name__ == "__main__":

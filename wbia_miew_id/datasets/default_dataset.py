@@ -3,40 +3,29 @@ import cv2
 import torch
 from torch.utils.data import Dataset
 import numpy as np
-from .helpers import get_chip_from_img
+from .helpers import get_chip_from_img, load_image
+import random
 
 
 
 class MiewIdDataset(Dataset):
-    def __init__(self, csv, images_dir, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False, use_full_image_path=False):
+    def __init__(self, csv, transforms=None, fliplr=False, fliplr_view=[], crop_bbox=False):
 
         self.csv = csv#.reset_index()
         self.augmentations = transforms
-        self.images_dir = images_dir
         self.fliplr = fliplr
         self.fliplr_view = fliplr_view
         self.crop_bbox = crop_bbox
-        self.use_full_image_path = use_full_image_path
 
     def __len__(self):
         return self.csv.shape[0]
-    
-    def load_image(self, image_path):
-        image = cv2.imread(image_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        return image
-
 
     def __getitem__(self, index):
         row = self.csv.iloc[index]
 
-        if self.use_full_image_path:
-            image_path = row['file_path']
-        else:
-            image_path = os.path.join(self.images_dir, row['file_name'])
+        image_path = row['file_path']
 
-        image = cv2.imread(image_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = load_image(image_path)
         bbox = row['bbox']
         theta = row['theta'] if row['theta'] is not None else 0
 
@@ -52,6 +41,13 @@ class MiewIdDataset(Dataset):
 
         if self.crop_bbox:
             image = get_chip_from_img(image, bbox, theta)
+
+        # species = row['species']
+        # exclude_flip = ['']
+        # if species not in exclude_flip:
+        #     if random.random() < 0.5:
+        #         image = cv2.flip(image, 1)
+        #         bbox[0] = image.shape[1] - bbox[0] - bbox[2]
 
 
         if self.augmentations:

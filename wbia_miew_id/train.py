@@ -1,7 +1,7 @@
 from datasets import MiewIdDataset, get_train_transforms, get_valid_transforms
 from logging_utils import WandbContext
 from models import MiewIdNet
-from etl import preprocess_data, print_intersect_stats, convert_name_to_id
+from etl import preprocess_data, print_intersect_stats, preprocess_images
 from losses import fetch_loss
 from schedulers import MiewIdScheduler
 from engine import run_fn
@@ -36,7 +36,6 @@ def run(config):
     config_path_out = f'{checkpoint_dir}/{config.exp_name}.yaml'
     config.data.test.checkpoint_path = f'{checkpoint_dir}/model_best.bin'
 
-
     def set_seed_torch(seed):
         random.seed(seed)
         os.environ['PYTHONHASHSEED'] = str(seed)
@@ -52,37 +51,55 @@ def run(config):
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
                                 n_filter_min=config.data.train.n_filter_min, 
-                                n_subsample_max=config.data.train.n_subsample_max)
+                                n_subsample_max=config.data.train.n_subsample_max,
+                                use_full_image_path=config.data.use_full_image_path,
+                                images_dir = config.data.images_dir,
+                                )
     
     df_val = preprocess_data(config.data.val.anno_path, 
                                 name_keys=config.data.name_keys,
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
                                 n_filter_min=config.data.val.n_filter_min, 
-                                n_subsample_max=config.data.val.n_subsample_max)
+                                n_subsample_max=config.data.val.n_subsample_max,
+                                use_full_image_path=config.data.use_full_image_path,
+                                images_dir = config.data.images_dir
+                                )
     
     print_intersect_stats(df_train, df_val, individual_key='name_orig')
     
     n_train_classes = df_train['name'].nunique()
 
+    crop_bbox = config.data.crop_bbox
+    if config.data.preprocess_images:
+        preprocess_dir_images = os.path.join(checkpoint_dir, 'images')
+        preprocess_dir_train = os.path.join(preprocess_dir_images, 'train')
+        preprocess_dir_val = os.path.join(preprocess_dir_images, 'val')
+        print("Preprocessing images. Destination: ", preprocess_dir_images)
+        os.makedirs(preprocess_dir_train)
+        os.makedirs(preprocess_dir_val)
+
+        target_size = (config.data.image_size[0],config.data.image_size[1])
+
+        df_train = preprocess_images(df_train, crop_bbox, preprocess_dir_train, target_size)
+        df_val = preprocess_images(df_val, crop_bbox, preprocess_dir_val, target_size)
+
+        crop_bbox = False
+
     train_dataset = MiewIdDataset(
         csv=df_train,
-        images_dir = config.data.images_dir,
         transforms=get_train_transforms(config),
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
-        crop_bbox=config.data.crop_bbox,
-        use_full_image_path=config.data.use_full_image_path
+        crop_bbox=crop_bbox,
     )
         
     valid_dataset = MiewIdDataset(
         csv=df_val,
-        images_dir=config.data.images_dir,
         transforms=get_valid_transforms(config),
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
-        crop_bbox=config.data.crop_bbox,
-        use_full_image_path=config.data.use_full_image_path
+        crop_bbox=crop_bbox,
     )
         
     train_loader = torch.utils.data.DataLoader(

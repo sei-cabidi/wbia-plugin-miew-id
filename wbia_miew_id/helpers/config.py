@@ -42,6 +42,7 @@ class Data(DictableClass):
     name_keys: List = field(default_factory=lambda: ['name'])
     crop_bbox: bool = False
     use_full_image_path: bool = False
+    preprocess_images: bool = False
 
 
 @dataclass
