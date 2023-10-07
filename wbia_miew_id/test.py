@@ -109,7 +109,9 @@ def run_test(config, visualize=False):
                             convert_names_to_ids=True, 
                             viewpoint_list=config.data.viewpoint_list, 
                             n_filter_min=None, 
-                            n_subsample_max=None)
+                            n_subsample_max=None,
+                            use_full_image_path=config.data.use_full_image_path,
+                            images_dir = config.data.images_dir)
         group_results = group_eval(config, df_test, eval_groups, model)
 
     if visualize:
