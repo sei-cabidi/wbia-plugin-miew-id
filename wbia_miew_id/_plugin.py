@@ -81,6 +81,8 @@ CONFIGS = {
     'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_sperm+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'right_whale+head_aerial':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
+    'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
     }
     
 
@@ -126,6 +128,8 @@ MODELS = {
     'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_sperm+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'right_whale+head_aerial':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
+    'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
 }
 
 
