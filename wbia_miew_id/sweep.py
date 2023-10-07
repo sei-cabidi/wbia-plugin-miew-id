@@ -19,6 +19,15 @@ def parse_args():
         default="configs/default_config.yaml",
         help="Path to the YAML configuration file. Default: configs/default_config.yaml",
     )
+
+    parser.add_argument(
+        "--n_trials",
+        type=int,
+        default=100,
+        help="Number of trials. Default: 100",
+    )
+
+
     return parser.parse_args()
 
 
@@ -66,6 +75,7 @@ signal.signal(signal.SIGINT, signal_handler)
 if __name__ == "__main__":
     args = parse_args()
     config_path = args.config
+    n_trials = args.n_trials
 
     config = get_config(config_path)
 
@@ -80,7 +90,7 @@ if __name__ == "__main__":
 
     comb_objective = lambda trial: objective(trial, config)
 
-    study.optimize(comb_objective, n_trials=100)
+    study.optimize(comb_objective, n_trials=n_trials)
 
     print("Best trial:")
     trial_ = study.best_trial
