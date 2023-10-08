@@ -30,7 +30,7 @@ def print_intersect_stats(df_a, df_b, individual_key="name"):
     print("     number of individuals in test: ", len(names_b))
     print("     number of annotations in test: ", len(df_b))
     print()
-    avg_ratio_train = len(df_a) / len(names_b)
+    avg_ratio_train = len(df_a) / len(names_a)
     avg_ratio_test = len(df_b) / len(names_b)
     print(f"    average number of annotations per individual in train: {avg_ratio_train:.2f}")
     print(f"    average number of annotations per individual in test: {avg_ratio_test:.2f}")
