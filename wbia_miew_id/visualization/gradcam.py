@@ -6,7 +6,7 @@ from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 from .helpers import resize_image, unnormalize, get_chip_from_img
 
-from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM
+from pytorch_grad_cam import GradCAMPlusPlus, EigenCAM, HiResCAM, GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
 class SimilarityToConceptTarget:
@@ -221,7 +221,7 @@ def generate_embeddings(config, model, test_loader):
     embeddings = pd.concat(embeddings)
     return embeddings, labels, images, paths, bboxes, thetas
 
-def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, render_transformed=False, show=False, use_cuda=True):
+def draw_batch(config, test_loader, model, images_dir = '', method='hires_cam', eigen_smooth=False, render_transformed=False, show=False, use_cuda=True):
 
     print('** draw_batch started')
 
@@ -238,6 +238,10 @@ def draw_batch(config, test_loader, model, images_dir = '', method='gradcam_plus
         generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=use_cuda)
     elif method=='eigencam':
         generate_cam = EigenCAM(model=model,target_layers=[target_layers],use_cuda=use_cuda)
+    elif method=='hires_cam':
+        generate_cam = HiResCAM(model=model,target_layers=[target_layers],use_cuda=use_cuda)
+    elif method=='gradcam':
+        generate_cam = GradCAM(model=model,target_layers=[target_layers],use_cuda=use_cuda)
 
     qry_idx = 0
     db_idx = 1
