@@ -17,7 +17,10 @@ def load_to_df(anno_path):
     dfa = pd.DataFrame(data['annotations'])
     dfi = pd.DataFrame(data['images'])
 
-    dfi = dfi.drop_duplicates(subset=['uuid'])
+    if 'uuid' in dfi.columns:
+        dfi = dfi.drop_duplicates(subset=['uuid'])
+
+    #dfi = dfi.drop_duplicates(subset=['uuid'])
 
     merge_on_uuid = 'image_uuid' in dfa.columns and 'uuid' in dfi.columns
     if merge_on_uuid:
@@ -70,6 +73,9 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
 
     df = load_to_df(anno_path)
 
+
+    df['species'] = df['category_id'].astype(str)
+    df['theta'] = 0.0
 
     df['name'] = df[name_keys].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 

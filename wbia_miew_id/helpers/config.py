@@ -42,7 +42,6 @@ class Data(DictableClass):
     name_keys: List = field(default_factory=lambda: ['name'])
     crop_bbox: bool = False
     use_full_image_path: bool = False
-    preprocess_images: bool = False
 
 
 @dataclass
@@ -87,6 +86,10 @@ class TestParams():
     fliplr_view: List = field(default_factory=list)
 
 @dataclass
+class CalibrationParams():
+    method: str
+
+@dataclass
 class Config(DictableClass):
     exp_name: str
     project_name: str
@@ -97,6 +100,7 @@ class Config(DictableClass):
     scheduler_params: SchedulerParams
     model_params: ModelParams
     test: TestParams
+    calibration: CalibrationParams
     
 
 
@@ -148,6 +152,7 @@ def get_config(file_path: str) -> Config:
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
     config_dict['test'] = TestParams(**config_dict['test'])
+    config_dict['calibration'] = CalibrationParams(**config_dict['calibration'])
     
 
     config = Config(**config_dict)

@@ -7,34 +7,35 @@ data:
   use_full_image_path: true
   preprocess_images: false
   viewpoint_list: null
-  name_keys: ['name']
+  name_keys: ['id_x']
   crop_bbox: false
   image_size:
-    - 256
-    - 256
+    - 440
+    - 440
   test:
-    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
-    checkpoint_path: ''
+    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_val2017.json
+    checkpoint_path: './checkpoints/miew_id.bottlenose.bin'
     eval_groups:
     - species
-    n_filter_min: 2
+    n_filter_min: 1
     n_subsample_max: 10
   train:
-    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_train2023.json
-    n_filter_min: 4
+    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_minitrain2017.json
+    n_filter_min: 1
     n_subsample_max: null
   val:
-    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
-    n_filter_min: 2
+    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_val2017.json
+    n_filter_min: 1
     n_subsample_max: 10
+
 engine:
   num_workers: 8
   train_batch_size: 6
   valid_batch_size: 12
   epochs: 30
   seed: 42
-  device: cuda
-  use_wandb: false
+  device: cpu
+  use_wandb: true
 
 scheduler_params:
   lr_start: 1.e-5
@@ -43,6 +44,7 @@ scheduler_params:
   lr_ramp_ep: 15
   lr_sus_ep: 0
   lr_decay: 0.8
+
 model_params:
   model_name: efficientnetv2_rw_m
   use_fc: false
@@ -57,4 +59,4 @@ model_params:
   n_classes: 865 
   fliplr: false
   fliplr_view: []
-  batch_size: 8s
+  batch_size: 8
