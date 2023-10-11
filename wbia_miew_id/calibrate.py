@@ -74,11 +74,6 @@ def run_calibrate(config, visualize=False):
 
     device = torch.device(config.engine.device)
 
-    if config.calibration.method == "temperature_scaling":
-        model_class = MiewIdNetTS
-    else:
-        model_class = MiewIdNet
-
     checkpoint_path = config.data.test.checkpoint_path
 
     if checkpoint_path:
@@ -88,15 +83,20 @@ def run_calibrate(config, visualize=False):
             print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the checkpoint -  ({n_train_classes}).")
             config.model_params.n_classes = n_train_classes
 
-        
-        model = model_class(**dict(config.model_params))
+        if config.calibration.method == "temperature_scaling":
+            model = MiewIdNetTS(**dict(config.model_params), temperature=config.calibration.temperature)
+        else:
+            model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
         model.load_state_dict(weights, strict=False)
         print('loaded checkpoint from', checkpoint_path)
         
     else:
-        model = model_class(**dict(config.model_params))
+        if config.calibration.method == "temperature_scaling":
+            model = MiewIdNetTS(**dict(config.model_params), temperature=config.calibration.temperature)
+        else:
+            model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
     calibrate_fn(valid_loader, model, device, checkpoint_path, use_wandb=False) 

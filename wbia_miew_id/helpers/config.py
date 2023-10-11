@@ -77,7 +77,6 @@ class ModelParams(DictableClass):
     theta_zero: float
     pretrained: bool
     n_classes: int
-    temperature: float
 
 @dataclass
 class TestParams():
@@ -88,6 +87,7 @@ class TestParams():
 @dataclass
 class CalibrationParams():
     method: str
+    temperature: float
 
 @dataclass
 class Config(DictableClass):

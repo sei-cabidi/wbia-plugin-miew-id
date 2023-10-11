@@ -9,21 +9,21 @@ data:
   name_keys: ['id_x']
   crop_bbox: false
   image_size:
-    - 440
-    - 440
+    - 256
+    - 256
   test:
-    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_val2017.json
-    checkpoint_path: './checkpoints/miew_id.bottlenose.bin'
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
+    checkpoint_path: ''
     eval_groups:
     - species
     n_filter_min: 1
     n_subsample_max: 10
   train:
-    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_minitrain2017.json
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_train2023.json
     n_filter_min: 1
     n_subsample_max: null
   val:
-    anno_path: /Users/cabidi/data/coco_minitrain_25k/annotations/instances_val2017.json
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
     n_filter_min: 1
     n_subsample_max: 10
 
@@ -33,8 +33,8 @@ engine:
   valid_batch_size: 12
   epochs: 30
   seed: 42
-  device: cpu
-  use_wandb: true
+  device: cuda
+  use_wandb: false
 
 scheduler_params:
   lr_start: 1.e-5
