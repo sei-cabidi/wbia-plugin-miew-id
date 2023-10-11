@@ -138,7 +138,9 @@ class MiewIdNet(nn.Module):
         return x
 
 class MiewIdNetTS(MiewIdNet):
-
+    """A temperature-scaled version of MiewIdNet. 
+    TS code taken from https://github.com/gpleiss/temperature_scaling
+    """
     def __init__(self,
                  temperature=1.0,
                  **kwargs):
@@ -175,9 +177,9 @@ class MiewIdNetTS(MiewIdNet):
         print("Collecting logits and labels in validation set")
         logits_list = []
         labels_list = []
-        from tqdm import tqdm
+        
         with torch.no_grad():
-            for batch in tqdm(valid_loader):
+            for batch in valid_loader:
                 input = batch['image'].to(device)
                 label = batch['label'].to(device)
                 logits = self(input)

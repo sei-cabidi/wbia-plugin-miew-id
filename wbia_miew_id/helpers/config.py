@@ -77,7 +77,10 @@ class ModelParams(DictableClass):
     theta_zero: float
     pretrained: bool
     n_classes: int
+<<<<<<< HEAD
     k: int = 2
+=======
+>>>>>>> separated temperature from model params in config and added citation for original TS code
 
 @dataclass
 class TestParams():
@@ -88,6 +91,7 @@ class TestParams():
 @dataclass
 class CalibrationParams():
     method: str
+    temperature: float
 
 @dataclass
 class Config(DictableClass):
