@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import timm
 
+from losses import ECELoss
 from .heads import ArcMarginProduct, ElasticArcFace, ArcFaceSubCenterDynamic
 
 def weights_init_kaiming(m):
@@ -132,4 +133,104 @@ class MiewIdNet(nn.Module):
             x1 = self.fc(x1)
             
 
+        return x
+
+class MiewIdNetTS(MiewIdNet):
+
+    def __init__(self,
+                 temperature=1.0,
+                 **kwargs):
+        """
+        """
+        super().__init__(**kwargs)
+
+        self.temperature = nn.Parameter(torch.ones(1) * temperature)
+
+    def _init_params(self):
+        nn.init.xavier_normal_(self.fc.weight)
+        nn.init.constant_(self.fc.bias, 0)
+        nn.init.constant_(self.bn.weight, 1)
+        nn.init.constant_(self.bn.bias, 0)
+
+    def temperature_scale(self, logits):
+        """
+        Perform temperature scaling on logits
+        """
+        # Expand temperature to match the size of the logits
+        temperature = self.temperature.unsqueeze(1).expand(logits.size(0), logits.size(1))
+        return logits / temperature
+    
+    def set_temperature(self, valid_loader, device):
+        """
+        Tune the temperature of the model (using the validation set).
+        We're going to set it to optimize NLL.
+        valid_loader (DataLoader): validation set loader
+        """
+        nll_criterion = nn.CrossEntropyLoss().to(device)
+        ece_criterion = ECELoss().to(device)
+
+        # First: collect all the logits and labels for the validation set
+        print("Collecting logits and labels in validation set")
+        logits_list = []
+        labels_list = []
+        from tqdm import tqdm
+        with torch.no_grad():
+            for batch in tqdm(valid_loader):
+                input = batch['image'].to(device)
+                label = batch['label'].to(device)
+                logits = self(input)
+                logits_list.append(logits)
+                labels_list.append(label)
+            logits = torch.cat(logits_list).to(device)
+            labels = torch.cat(labels_list).to(device)
+
+        # Calculate NLL and ECE before temperature scaling
+        before_temperature_nll = nll_criterion(logits, labels).item()
+        before_temperature_ece = ece_criterion(logits, labels).item()
+        print('Before temperature - NLL: %.3f, ECE: %.3f' % (before_temperature_nll, before_temperature_ece))
+
+        # Next: optimize the temperature w.r.t. NLL
+        optimizer = torch.optim.LBFGS([self.temperature], lr=0.01, max_iter=50)
+        print("Optimizing temperature w.r.t. NLL")
+        def eval():
+            optimizer.zero_grad()
+            loss = nll_criterion(self.temperature_scale(logits), labels)
+            loss.backward()
+            return loss
+        optimizer.step(eval)
+
+        # Calculate NLL and ECE after temperature scaling
+        print("Calculating post-temperature scaling NLL and ECE")
+        self.after_temperature_nll = nll_criterion(self.temperature_scale(logits), labels).item()
+        self.after_temperature_ece = ece_criterion(self.temperature_scale(logits), labels).item()
+        print('Optimal temperature: %.3f' % self.temperature.item())
+        print('After temperature - NLL: %.3f, ECE: %.3f' % (self.after_temperature_nll, self.after_temperature_ece))
+
+        return self
+
+    def forward(self, x, label=None):
+        feature = self.extract_feat(x)
+        if not self.training:
+            return feature
+        else:
+            assert label is not None
+        if self.loss_module in ('arcface', 'arcface_subcenter_dynamic'):
+            logits = self.final(feature, label)
+        else:
+            logits = self.final(feature)
+
+        logits = self.temperature_scale(logits)
+
+        return logits
+
+    def extract_feat(self, x):
+        batch_size = x.shape[0]
+        x = self.backbone(x)
+        x = self.pooling(x).view(batch_size, -1)
+        x = self.bn(x)
+        if self.use_fc:
+            x1 = self.dropout(x)
+            x1 = self.bn(x1)
+            x1 = self.fc(x1)
+    
         return x
