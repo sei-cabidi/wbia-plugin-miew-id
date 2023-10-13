@@ -2,6 +2,15 @@
 import torch
 import torch.nn.functional as F
 
+def remove_diagonal(A):
+    print("A.shape", A.shape)
+    print(A.size(0), A.size(1))
+    if A.size(0) != A.size(1):
+        raise ValueError("Input must be a square matrix")
+    
+    mask = ~torch.eye(A.size(0), dtype=torch.bool)
+    return A[mask].reshape(A.size(0), -1)
+
 def euclidean_squared_distance(input1, input2):
     """Computes euclidean squared distance./
 

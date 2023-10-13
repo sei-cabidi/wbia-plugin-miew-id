@@ -7,8 +7,7 @@ import wandb
 from metrics import AverageMeter, compute_distance_matrix, eval_onevsall, topk_average_precision, precision_at_k
 from torch.cuda.amp import autocast  
 
-def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, max_rank=50, use_autocast=True):
-
+def extract_embeddings(data_loader, model, device):
     model.eval()
     tk0 = tqdm(data_loader, total=len(data_loader))
     embeddings = []
@@ -30,18 +29,33 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, ma
             
     embeddings = pd.concat(embeddings)
 
-    dist_metric = 'cosine'
-    qf = torch.Tensor(embeddings.values)
-    q_pids = np.array(labels)
+    return embeddings.values, labels
 
-    distmat = compute_distance_matrix(qf, qf, dist_metric)
+def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, dist_metric='cosine', ranks=list(range(1, 21))):
+
+    q_pids = np.array(labels)
+    
+    qf = torch.Tensor(embeddings)
+    if embeddings_db is not None:
+        print('embeddings_db not note')
+        df = torch.Tensor(embeddings_db)
+        labels_db = np.array(labels_db)
+    else:
+        df = qf
+        
+    distmat = compute_distance_matrix(qf, df, dist_metric, square=False)
+
     distmat = distmat.numpy()
 
     print("Computing CMC and mAP ...")
 
-    mAP = topk_average_precision(q_pids, distmat, k=None)
-    cmc, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=list(range(1, 21)), return_matches=True)
+    mAP = topk_average_precision(q_pids, distmat, labels_db, k=None)
+    cmc, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, labels_db, ranks=ranks, return_matches=True)
     print(f"Computed rank metrics on {match_mat.shape[0]} examples")
+
+    return mAP, cmc, (embeddings, q_pids, distmat)
+
+def log_results(mAP, cmc, use_wandb=True):
     ranks=[1, 5, 10, 20]
     print("** Results **")
     print("mAP: {:.1%}".format(mAP))
@@ -52,7 +66,15 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False, ma
         
     if use_wandb: wandb.log({"mAP": mAP})
 
+def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
+
+    embeddings, labels = extract_embeddings(data_loader, model, device)
+
+    mAP, cmc, (embeddings, q_pids, distmat) = calculate_matches(embeddings, labels)
+
+    log_results(mAP, cmc, use_wandb=use_wandb)
+
     if return_outputs:
-        return mAP, cmc, (embeddings.values, q_pids, distmat)
+        return mAP, cmc, (embeddings, q_pids, distmat)
     else:
         return mAP, cmc
