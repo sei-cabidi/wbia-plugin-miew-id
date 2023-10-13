@@ -128,7 +128,7 @@ def run(config):
 
     if config.model_params.loss_module == 'arcface_subcenter_dynamic':
         margin_min = 0.2
-        margin_max = 0.5
+        margin_max = config.model_params.margin #0.5
         tmp = np.sqrt(1 / np.sqrt(df_train['name'].value_counts().sort_index().values))
         margins = (tmp - tmp.min()) / (tmp.max() - tmp.min()) * (margin_max - margin_min) + margin_min
     else:
