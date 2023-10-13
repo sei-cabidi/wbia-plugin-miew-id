@@ -74,11 +74,15 @@ def preprocess_data(anno_path, name_keys=['name'], convert_names_to_ids=True, vi
     df['name'] = df[name_keys].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
 
     # df.loc[df['name_species'].isna(), 'name_species'] = df.loc[df['name_species'].isna(), 'name'].astype(str) + '_' + df.loc[df['name_species'].isna(), 'species']
-    df['name_species'] = df['name'] + '_' + df['species']
+    if 'species' in df.columns:
+        df['name_species'] = df['name'] + '_' + df['species']
+        filter_key = 'name_species'
+    else:
+        filter_key = 'name'
 
     df['name_orig'] = df['name'].copy()
 
-    df = filter_df(df, viewpoint_list, n_filter_min, n_subsample_max)
+    df = filter_df(df, viewpoint_list, n_filter_min, n_subsample_max, filter_key=filter_key)
 
     if convert_names_to_ids:
         names = df['name'].values
