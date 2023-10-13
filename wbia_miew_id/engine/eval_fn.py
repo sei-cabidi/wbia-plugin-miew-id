@@ -43,7 +43,7 @@ def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, di
     else:
         df = qf
         
-    distmat = compute_distance_matrix(qf, df, dist_metric, square=False)
+    distmat = compute_distance_matrix(qf, df, dist_metric)
 
     distmat = distmat.numpy()
 
