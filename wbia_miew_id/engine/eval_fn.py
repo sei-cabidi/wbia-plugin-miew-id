@@ -28,8 +28,11 @@ def extract_embeddings(data_loader, model, device):
             labels.extend(batch_labels)
             
     embeddings = pd.concat(embeddings)
+    embeddings = embeddings.values
 
-    return embeddings.values, labels
+    assert not np.isnan(embeddings).sum(), "NaNs found in extracted embeddings"
+
+    return embeddings, labels
 
 def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, dist_metric='cosine', ranks=list(range(1, 21))):
 
