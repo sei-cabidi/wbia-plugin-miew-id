@@ -44,9 +44,9 @@ def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, di
         df = torch.Tensor(embeddings_db)
         labels_db = np.array(labels_db)
     else:
-        df = qf
+        dbf = qf
         
-    distmat = compute_distance_matrix(qf, df, dist_metric)
+    distmat = compute_distance_matrix(qf, dbf, dist_metric)
 
     distmat = distmat.numpy()
 
