@@ -77,21 +77,13 @@ class ModelParams(DictableClass):
     theta_zero: float
     pretrained: bool
     n_classes: int
-<<<<<<< HEAD
     k: int = 2
-=======
->>>>>>> separated temperature from model params in config and added citation for original TS code
-
+    
 @dataclass
 class TestParams():
     batch_size: int = 4
     fliplr: bool = False
     fliplr_view: List = field(default_factory=list)
-
-@dataclass
-class CalibrationParams():
-    method: str
-    temperature: float
 
 @dataclass
 class Config(DictableClass):
@@ -104,7 +96,6 @@ class Config(DictableClass):
     scheduler_params: SchedulerParams
     model_params: ModelParams
     test: TestParams
-    calibration: CalibrationParams
     
 
 
@@ -156,7 +147,6 @@ def get_config(file_path: str) -> Config:
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
     config_dict['test'] = TestParams(**config_dict['test'])
-    config_dict['calibration'] = CalibrationParams(**config_dict['calibration'])
     
 
     config = Config(**config_dict)
