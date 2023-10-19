@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import timm
+from torch import optim
 
 from losses import ECELoss
 from .heads import ArcMarginProduct, ElasticArcFace, ArcFaceSubCenterDynamic
@@ -61,7 +62,8 @@ class MiewIdNet(nn.Module):
                  ls_eps=0.0,
                  theta_zero=0.785,
                  pretrained=True,
-                 margins=None):
+                 margins=None,
+                 temperature=1.0):
         """
         """
         super(MiewIdNet, self).__init__()
@@ -90,7 +92,7 @@ class MiewIdNet(nn.Module):
             self.final = ElasticArcFace(final_in_features, n_classes,
                                           s=s, m=margin)
         elif loss_module == 'arcface_subcenter_dynamic':
-            if margins is None:
+            if margins == None:
                 margins = [0.3] * n_classes
             self.final = ArcFaceSubCenterDynamic(
                 embedding_dim=final_in_features, 
@@ -104,48 +106,6 @@ class MiewIdNet(nn.Module):
         else:
             self.final = nn.Linear(final_in_features, n_classes)
 
-    def _init_params(self):
-        nn.init.xavier_normal_(self.fc.weight)
-        nn.init.constant_(self.fc.bias, 0)
-        nn.init.constant_(self.bn.weight, 1)
-        nn.init.constant_(self.bn.bias, 0)
-
-    def forward(self, x, label=None):
-        feature = self.extract_feat(x)
-        if not self.training:
-            return feature
-        else:
-            assert label is not None
-        if self.loss_module in ('arcface', 'arcface_subcenter_dynamic'):
-            logits = self.final(feature, label)
-        else:
-            logits = self.final(feature)
-        return logits
-
-    def extract_feat(self, x):
-        batch_size = x.shape[0]
-        x = self.backbone(x)
-        x = self.pooling(x).view(batch_size, -1)
-        x = self.bn(x)
-        if self.use_fc:
-            x1 = self.dropout(x)
-            x1 = self.bn(x1)
-            x1 = self.fc(x1)
-            
-
-        return x
-
-class MiewIdNetTS(MiewIdNet):
-    """A temperature-scaled version of MiewIdNet. 
-    TS code taken from https://github.com/gpleiss/temperature_scaling
-    """
-    def __init__(self,
-                 temperature=1.0,
-                 **kwargs):
-        """
-        """
-        super().__init__(**kwargs)
-
         self.temperature = nn.Parameter(torch.ones(1) * temperature)
 
     def _init_params(self):
@@ -154,14 +114,6 @@ class MiewIdNetTS(MiewIdNet):
         nn.init.constant_(self.bn.weight, 1)
         nn.init.constant_(self.bn.bias, 0)
 
-    def temperature_scale(self, logits):
-        """
-        Perform temperature scaling on logits
-        """
-        # Expand temperature to match the size of the logits
-        temperature = self.temperature.unsqueeze(1).expand(logits.size(0), logits.size(1))
-        return logits / temperature
-    
     def set_temperature(self, valid_loader, device):
         """
         Tune the temperature of the model (using the validation set).
@@ -172,15 +124,12 @@ class MiewIdNetTS(MiewIdNet):
         ece_criterion = ECELoss().to(device)
 
         # First: collect all the logits and labels for the validation set
-        print("Collecting logits and labels in validation set")
         logits_list = []
         labels_list = []
-        
         with torch.no_grad():
-            for batch in valid_loader:
-                input = batch['image'].to(device)
-                label = batch['label'].to(device)
-                logits = self(input)
+            for input, label in valid_loader:
+                input = input.to(device)
+                logits = self.model(input)
                 logits_list.append(logits)
                 labels_list.append(label)
             logits = torch.cat(logits_list).to(device)
@@ -192,8 +141,8 @@ class MiewIdNetTS(MiewIdNet):
         print('Before temperature - NLL: %.3f, ECE: %.3f' % (before_temperature_nll, before_temperature_ece))
 
         # Next: optimize the temperature w.r.t. NLL
-        optimizer = torch.optim.LBFGS([self.temperature], lr=0.01, max_iter=50)
-        print("Optimizing temperature w.r.t. NLL")
+        optimizer = optim.LBFGS([self.temperature], lr=0.01, max_iter=50)
+
         def eval():
             optimizer.zero_grad()
             loss = nll_criterion(self.temperature_scale(logits), labels)
@@ -202,7 +151,6 @@ class MiewIdNetTS(MiewIdNet):
         optimizer.step(eval)
 
         # Calculate NLL and ECE after temperature scaling
-        print("Calculating post-temperature scaling NLL and ECE")
         self.after_temperature_nll = nll_criterion(self.temperature_scale(logits), labels).item()
         self.after_temperature_ece = ece_criterion(self.temperature_scale(logits), labels).item()
         print('Optimal temperature: %.3f' % self.temperature.item())
@@ -221,7 +169,8 @@ class MiewIdNetTS(MiewIdNet):
         else:
             logits = self.final(feature)
 
-        logits = self.temperature_scale(logits)
+        # Temperature scaling
+        logits = logits / self.temperature.unsqueeze(1).expand(logits.size(0), logits.size(1))
 
         return logits
 

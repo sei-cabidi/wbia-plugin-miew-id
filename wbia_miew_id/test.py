@@ -17,6 +17,10 @@ import argparse
 # os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 # os.environ['TORCH_USE_CUDA_DSA'] = "1"
 
+# Turn off SSL verify
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Load configuration file.")
     parser.add_argument(
@@ -47,19 +51,19 @@ def run_test(config, visualize=False):
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
                                 n_filter_min=config.data.test.n_filter_min, 
-                                n_subsample_max=config.data.test.n_subsample_max,
-                                use_full_image_path=config.data.use_full_image_path,
-                                images_dir = config.data.images_dir)
-    
+                                n_subsample_max=config.data.test.n_subsample_max)
+
     # top_names = df_test['name'].value_counts().index[:10]
     # df_test = df_test[df_test['name'].isin(top_names)]
-    
+
     test_dataset = MiewIdDataset(
         csv=df_test,
+        images_dir=config.data.images_dir,
         transforms=get_test_transforms(config),
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
         crop_bbox=config.data.crop_bbox,
+        use_full_image_path=config.data.use_full_image_path,
     )
         
     test_loader = torch.utils.data.DataLoader(
@@ -79,7 +83,7 @@ def run_test(config, visualize=False):
 
     if checkpoint_path:
         weights = torch.load(config.data.test.checkpoint_path, map_location=torch.device(config.engine.device))
-        n_train_classes = weights[list(weights.keys())[-1]].shape[-1]
+        n_train_classes = weights['final.kernel'].shape[-1]
         if config.model_params.n_classes != n_train_classes:
             print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the checkpoint -  ({n_train_classes}).")
             config.model_params.n_classes = n_train_classes
@@ -87,14 +91,13 @@ def run_test(config, visualize=False):
         model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
-        model.load_state_dict(weights)
+        model.load_state_dict(weights, strict=False)
         print('loaded checkpoint from', checkpoint_path)
         
     else:
         model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
-    
 
     test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
@@ -104,24 +107,14 @@ def run_test(config, visualize=False):
     eval_groups = config.data.test.eval_groups
 
     if eval_groups:
-        df_test = preprocess_data(config.data.test.anno_path, 
-                            name_keys=config.data.name_keys,
-                            convert_names_to_ids=True, 
-                            viewpoint_list=config.data.viewpoint_list, 
-                            n_filter_min=None, 
-                            n_subsample_max=None,
-                            use_full_image_path=config.data.use_full_image_path,
-                            images_dir = config.data.images_dir)
         group_results = group_eval(config, df_test, eval_groups, model)
 
     if visualize:
         k=5
         embeddings, q_pids, distmat = test_outputs
-        ranks=list(range(1, k+1))
-        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
+        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
         render_query_results(config, model, test_dataset, df_test, match_results, k=k)
-
 
     return test_score
 
