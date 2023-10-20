@@ -41,7 +41,7 @@ def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, di
     qf = torch.Tensor(embeddings)
     if embeddings_db is not None:
         print('embeddings_db not note')
-        df = torch.Tensor(embeddings_db)
+        dbf = torch.Tensor(embeddings_db)
         labels_db = np.array(labels_db)
     else:
         dbf = qf
