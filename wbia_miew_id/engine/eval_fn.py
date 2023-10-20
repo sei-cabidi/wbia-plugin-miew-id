@@ -34,7 +34,7 @@ def extract_embeddings(data_loader, model, device):
 
     return embeddings, labels
 
-def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, dist_metric='cosine', ranks=list(range(1, 21))):
+def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, dist_metric='cosine', ranks=list(range(1, 21)), mask_matrix=None):
 
     q_pids = np.array(labels)
     
@@ -45,15 +45,26 @@ def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, di
         labels_db = np.array(labels_db)
     else:
         dbf = qf
-        
+        labels_db = np.array(labels)
+        mask_matrix_diagonal = np.full((embeddings.shape[0], embeddings.shape[0]), False)
+        np.fill_diagonal(mask_matrix_diagonal, True)
+        if mask_matrix is not None:
+            mask_matrix = np.logical_or(mask_matrix_diagonal, mask_matrix)
+        else:
+            mask_matrix = mask_matrix_diagonal
+
     distmat = compute_distance_matrix(qf, dbf, dist_metric)
 
     distmat = distmat.numpy()
 
+    if mask_matrix is not None:
+        assert mask_matrix.shape == distmat.shape, "Mask matrix must have same shape as distance matrix"
+        distmat[mask_matrix] = np.inf
+
     print("Computing CMC and mAP ...")
 
-    mAP = topk_average_precision(q_pids, distmat, labels_db, k=None)
-    cmc, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, labels_db, ranks=ranks, return_matches=True)
+    mAP = topk_average_precision(q_pids, distmat, names_db=labels_db, k=None)
+    cmc, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, names_db=labels_db, ranks=ranks, return_matches=True)
     print(f"Computed rank metrics on {match_mat.shape[0]} examples")
 
     return mAP, cmc, (embeddings, q_pids, distmat)

@@ -7,9 +7,7 @@ def precision_at_k(names, distmat, names_db=None, ranks=list(range(1, 21)), retu
     # assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
 
 
-    if names_db is None or np.array_equal(names, names_db):
-        names_db = names
-        np.fill_diagonal(distmat, np.inf)
+
 
     output = torch.Tensor(distmat[:, :]) * -1
     y = torch.Tensor(names[:]).squeeze(0)
@@ -45,9 +43,7 @@ def topk_average_precision(names, distmat, names_db=None, k=None):
     Assumes the distance matrix is square and does one-vs-all evaluation"""
     # assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
 
-    if names_db is None or np.array_equal(names, names_db):
-        names_db = names
-        np.fill_diagonal(distmat, np.inf)
+
 
     output = torch.Tensor(distmat[:, :]) * -1
     y = torch.Tensor(names[:]).squeeze(0)
