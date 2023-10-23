@@ -53,10 +53,15 @@ def topk_average_precision(names, distmat, names_db=None, k=None):
         k = output.shape[1] 
     score_array = torch.tensor([1.0 / i for i in range(1, k + 1)], device=output.device)
 
-    _topk = output.topk(k)[1][:, :] #### k+1 1:
+    _topk = output.topk(k)[1][:, :]
     topk = ids_tensor[_topk]
 
     match_mat = topk == y[:, None].expand(topk.shape)
+
+    # Masked variables have values of np.inf, they should not be considered for calculation
+    match_mat_mask = torch.isinf(torch.gather(output, -1, _topk))
+    match_mat[match_mat_mask] = False
+
     rel_mat = match_mat.sum(axis=1)
     cum_mat = match_mat.cumsum(dim=1)
 
