@@ -95,6 +95,7 @@ CONFIGS = {
     'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
     'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
     'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+    'panthera_pardus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'hyaena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'hyaena_brown': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
@@ -106,6 +107,7 @@ CONFIGS = {
     'wild_dog_general': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog_standard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog_ambiguous': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+    'lycaon_pictus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     }
     
 
@@ -165,6 +167,7 @@ MODELS = {
     'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
     'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
     'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+    'panthera_pardus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'hyaena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
@@ -177,6 +180,7 @@ MODELS = {
     'wild_dog_general': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog_standard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog_ambiguous': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+    'lycaon_pictus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
 
 }
 
