@@ -36,20 +36,29 @@ A config file path can be set by:
 - `project_name`: Name of the project
 - `checkpoint_dir`: Directory for storing training checkpoints
 - `comment`: Comment text for the experiment
+- `viewpoint_list`: List of viewpoint values to keep for all subsets.
 - `data`: Subfield for data-related settings
   - `images_dir`: Directory containing the all of the dataset images
-  - `train_anno_path`: Path to the JSON file containing training annotations 
-  - `val_anno_path`: Path to the JSON file containing validation annotations
-  - `viewpoint_list`: List of viewpoints to use.
-  - `train_n_filter_min`: Minimum number of samples per name (individual) to keep for the training set. Names under the theshold will be discarded.
-  - `val_n_filter_min`: Minimum number of samples per name (individual) to keep for the validation set. Names under the theshold will be discarded
-  - `train_n_subsample_max`: Maximum number of samples per name to keep for the training set. Annotations of names above the threshold will be randomly subsampled during loading
-  - `val_n_subsample_max`: Maximum number of samples per name to keep for the validation set. Annotations of names above the threshold will be randomly subsampled during loading
-  - `name_keys`: List of keys used for defining a unique name (individual). Fields from multiple keys will be combined to form the final representation of a name. Common use-case is `name_keys: ['name', 'viewpoint']` for treating each name + viewpoint combination as unique
+  - `use_full_image_path`: Overrides the images_dir for path construction and instead uses an absolute path that should be defined in the `file_path` file path under the `images` entries for each entry in the COCO JSON. In such a case, `images_dir` can be set to `null`
+  - `train`: Data parameters regarding the train set used in train.py
+    - `anno_path`: Path to the JSON file containing the annotations
+    - `n_filter_min`: Minimum number of samples per name (individual) to keep that individual in the set. Names under the threshold will be discarded
+    - `n_subsample_max`: Maximum number of samples per name to keep for the training set. Annotations for names over the threshold will be randomly subsampled once at the start of training
+    - `crop_bbox`: Whether to use the `bbox` field of JSON annotations to crop the images. The crops will also be adjusted for rotation if the `theta` field is present for the annotations
+  - `val`: Data parameters regarding the validation set used in train.py
+    - `anno_path`
+    - `n_filter_min`
+    - `n_subsample_max`
+  - `test`: Data parameters regarding the test set used in test.py
+    - `anno_path`
+    - `n_filter_min`
+    - `n_subsample_max`
+    - `checkpoint_path`: Path to model checkpoint to test
+    - `eval_groups`: Attributes for which to group the testing sets. For example, the value of `['viewpoint']` will create subsets of the test set for each unique value of the viewpoint and run one-vs-all evaluation for each subset separately. The value can be a list - `[['species', 'viewpoint']]` will run evaluation separately for each species+viewpoint combination. `['species', 'viewpoint']` will run grouped eval for each species, and then for each viewpoint. The corresponding fields to be grouped should be present under `annotation` entries in the COCO file. Can be left as `null` to do eval for the full test set.
+  - `name_keys`: List of keys used for defining a unique name (individual). Fields from multiple keys will be combined to form the final representation of a name. A common use-case is `name_keys: ['name', 'viewpoint']` for treating each name + viewpoint combination as a unique individual
   - `image_size`:
     - Image height to resize to
     - Image width to resize to
-
 - `engine`: Subfields for engine-related settings
   - `num_workers`: Number of workers for data loading (default: 0)
   - `train_batch_size`: Batch size for training
@@ -63,6 +72,9 @@ A config file path can be set by:
   - `lr_start`: Initial learning rate
   - `lr_max`: Maximum learning rate
   - `lr_min`: Minimum learning rate
+  - `lr_ramp_ep`: Number of epochs to ramp up the learning rate
+  - `lr_sus_ep`: Number of epochs to sustain the maximum learning rate
+  - `lr_decay`: Rate of learning rate decay per epoch
 - `model_params`: Dictionary containing model-related settings
   - `model_name`: Name of the model backbone architecture
   - `use_fc`: Whether to use a fully connected layer after backbone extraction
@@ -78,6 +90,9 @@ A config file path can be set by:
   - `fliplr_view`: List of viewpoints to apply horizontal flipping
   - `batch_size`: Batch size for plugin inference
   
-## Notes
+## Testing
+`python test.py --config {path_to_config} --visualize`
 
-This is an initial commit which includes training, inference and WBIA integration capabilities. Release of additional features is underway.
+The `--visualize` flag is optional and will produce top 5 match results for each individual in the test set, along with gradcam visualizations.
+
+The parameters for the test set are defined under `data.test` of the config.yaml file.
