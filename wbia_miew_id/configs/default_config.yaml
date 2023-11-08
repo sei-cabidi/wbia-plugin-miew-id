@@ -2,30 +2,37 @@ exp_name: default_experiment
 project_name: default_config
 checkpoint_dir: ./runs
 comment: Experiment comment goes here
-
 data:
-  images_dir: "data/beluga-440"
-  train_anno_path: "data/beluga-coco-v0-full/instances_train2023.json"
-  val_anno_path: "data/beluga-coco-v0-full/instances_val2023.json"
-  viewpoint_list: ['up']
-  train_n_filter_min: 4
-  val_n_filter_min: 2
-  train_n_subsample_max: null
-  val_n_subsample_max: 10
-  name_keys: ['name', 'viewpoint']
-  crop_bbox: true
+  images_dir: null
+  use_full_image_path: true
+  viewpoint_list: null
+  name_keys: ['name']
+  crop_bbox: false
   image_size:
-    - 440
-    - 440
-
+    - 256
+    - 256
+  test:
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
+    checkpoint_path: ''
+    eval_groups:
+    - species
+    n_filter_min: 2
+    n_subsample_max: 10
+  train:
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_train2023.json
+    n_filter_min: 4
+    n_subsample_max: null
+  val:
+    anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
+    n_filter_min: 2
+    n_subsample_max: 10
 engine:
-  num_workers: 0
+  num_workers: 8
   train_batch_size: 6
   valid_batch_size: 12
   epochs: 30
   seed: 42
   device: cuda
-  loss_module: arcface
   use_wandb: false
 
 scheduler_params:
@@ -46,8 +53,7 @@ model_params:
   ls_eps: 0.0
   theta_zero: 0.785
   pretrained: true
-  n_classes: 273 # used for loading checkpoint
-test:
+  n_classes: 865 
   fliplr: false
   fliplr_view: []
-  batch_size: 8
+  batch_size: 8s
