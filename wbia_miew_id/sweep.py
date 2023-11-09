@@ -34,7 +34,7 @@ def parse_args():
 def objective(trial, config):
 
     # Specify the parameters you want to optimize
-    config.data.train.n_filter_min = 4 #trial.suggest_int("train.n_filter_min", 2, 5)
+    config.data.train.n_filter_min = trial.suggest_int("train.n_filter_min", 2, 5)
     # image_size = 256 #trial.suggest_categorical("image_size", [192, 256, 384, 440, 512])
     # config.data.image_size = [image_size, image_size]
     n_epochs = 20#trial.suggest_int("epochs", 20, 40)
@@ -57,7 +57,12 @@ def objective(trial, config):
         config.exp_name = config.exp_name + f"_t{trial.number}"
 
 
-    result = run(config)
+    try:
+        result = run(config)
+    except Exception as e:
+        print("Exception occured: ", e)
+        print(trial)
+        result = 0
 
     return result
 
