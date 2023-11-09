@@ -40,11 +40,12 @@ A config file path can be set by:
 - `data`: Subfield for data-related settings
   - `images_dir`: Directory containing the all of the dataset images
   - `use_full_image_path`: Overrides the images_dir for path construction and instead uses an absolute path that should be defined in the `file_path` file path under the `images` entries for each entry in the COCO JSON. In such a case, `images_dir` can be set to `null`
+  - `crop_bbox`: Whether to use the `bbox` field of JSON annotations to crop the images. The crops will also be adjusted for rotation if the `theta` field is present for the annotations
+  - `preprocess_images` pre-applies cropping and resizing and caches the images for training
   - `train`: Data parameters regarding the train set used in train.py
     - `anno_path`: Path to the JSON file containing the annotations
     - `n_filter_min`: Minimum number of samples per name (individual) to keep that individual in the set. Names under the threshold will be discarded
     - `n_subsample_max`: Maximum number of samples per name to keep for the training set. Annotations for names over the threshold will be randomly subsampled once at the start of training
-    - `crop_bbox`: Whether to use the `bbox` field of JSON annotations to crop the images. The crops will also be adjusted for rotation if the `theta` field is present for the annotations
   - `val`: Data parameters regarding the validation set used in train.py
     - `anno_path`
     - `n_filter_min`
