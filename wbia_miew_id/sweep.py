@@ -53,6 +53,11 @@ def objective(trial, config):
     config.scheduler_params.lr_max = lr_base * 10
     config.scheduler_params.lr_min = lr_base / 20
 
+    # SWA parameters to test
+    config.engine.use_swa = trial.suggest_categorical("use_swa", [False, True])
+    config.swa_params.swa_lr = trial.suggest_loguniform("swa_lr", 0.0001, 0.05)
+    config.swa_params.swa_start = trial.suggest_int("swa_start", 20, 25)
+
     print("trial number: ", trial.number)
     print("config: ", dict(config))
 
