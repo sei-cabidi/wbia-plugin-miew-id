@@ -44,11 +44,6 @@ def extract_logits(data_loader, model, device):
     with torch.no_grad():
         for batch in tk0:
             batch_logits = model.extract_logits(batch["image"].to(device), batch["label"].to(device)).detach().cpu()
-            
-            batch_accuracy = (batch["label"] == torch.softmax(
-                batch_logits, dim=1).argmax(dim=1)).sum() / batch["label"].shape[0]
-            
-            tk0.set_postfix(EvalAcc=batch_accuracy.detach().item())
 
             image_idx = batch["image_idx"].tolist()
             batch_logits_df = pd.DataFrame(batch_logits.numpy(), index=image_idx)
@@ -115,7 +110,7 @@ def calculate_calibration(logits, labels, logits_db=None, labels_db=None):
 
     return ece, (logits, q_pids, top_confidences, pred_labels)
 
-def log_results(mAP, cmc, ece, accuracy, use_wandb=True):
+def log_results(mAP, cmc, accuracy, ece, use_wandb=True):
     ranks=[1, 5, 10, 20]
     print("** Results **")
     print("mAP: {:.1%}".format(mAP))
@@ -124,7 +119,7 @@ def log_results(mAP, cmc, ece, accuracy, use_wandb=True):
         print("Rank-{:<3}: {:.1%}".format(r, cmc[r - 1]))
         if use_wandb: wandb.log({"Rank-{:<3}".format(r): cmc[r - 1]})
     print(f"ECE: {ece}")
-    print(f"classification accuracy using output logits: {accuracy}")
+    print(f"Classification accuracy on output logits: {accuracy*100}%")
     
     if use_wandb: wandb.log({"mAP": mAP})
 

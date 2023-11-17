@@ -17,10 +17,6 @@ import argparse
 # os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 # os.environ['TORCH_USE_CUDA_DSA'] = "1"
 
-# Turn off SSL verify
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
-
 def parse_args():
     parser = argparse.ArgumentParser(description="Load configuration file.")
     parser.add_argument(
@@ -99,7 +95,7 @@ def run_test(config, visualize=False):
         model.to(device)
 
 
-    test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
+    test_score, cmc, accuracy, ece, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
 
 
@@ -119,7 +115,7 @@ def run_test(config, visualize=False):
 
     if visualize:
         k=5
-        embeddings, q_pids, distmat = test_outputs
+        embeddings, logits, q_pids, distmat = test_outputs
         score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
         render_query_results(config, model, test_dataset, df_test, match_results, k=k)
