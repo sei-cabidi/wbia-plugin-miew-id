@@ -42,7 +42,7 @@ class Data(DictableClass):
     name_keys: List = field(default_factory=lambda: ['name'])
     crop_bbox: bool = False
     use_full_image_path: bool = False
-
+    preprocess_images: bool = False
 
 @dataclass
 class Engine(DictableClass):
@@ -54,6 +54,12 @@ class Engine(DictableClass):
     use_wandb: bool
     num_workers: int = 0
     loss_module: str = 'softmax'
+    use_swa: bool = False
+
+@dataclass
+class SWAParams(DictableClass):
+    swa_lr: float = 0.05
+    swa_start: int = 25
 
 @dataclass
 class SchedulerParams(DictableClass):
@@ -77,7 +83,6 @@ class ModelParams(DictableClass):
     theta_zero: float
     pretrained: bool
     n_classes: int
-    temperature: float
 
 @dataclass
 class TestParams():
@@ -96,6 +101,7 @@ class Config(DictableClass):
     scheduler_params: SchedulerParams
     model_params: ModelParams
     test: TestParams
+    swa_params: SWAParams
     
 
 
@@ -144,6 +150,7 @@ def get_config(file_path: str) -> Config:
     config_dict['data'].val = Val(**config_dict['data'].val)
     config_dict['data'].test = Test(**config_dict['data'].test)
     config_dict['engine'] = Engine(**config_dict['engine'])
+    config_dict['swa_params'] = SWAParams(**config_dict['swa_params'])
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
     config_dict['test'] = TestParams(**config_dict['test'])

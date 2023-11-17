@@ -5,10 +5,6 @@ def precision_at_k(names, distmat, names_db=None, ranks=list(range(1, 21)), retu
     """Computes precision at k given a distance matrix. 
     Assumes the distance matrix is square and does one-vs-all evaluation"""
     # assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
-
-
-
-
     output = torch.Tensor(distmat[:, :]) * -1
     y = torch.Tensor(names[:]).squeeze(0)
     ids_tensor = torch.Tensor(names_db)
@@ -33,18 +29,17 @@ def precision_at_k(names, distmat, names_db=None, ranks=list(range(1, 21)), retu
     else:
         return scores
 
-
-
-
-    
+def get_accuracy(outputs, targets):
+    predicted = torch.Tensor(outputs.argmax(1))
+    total = targets.size(0)
+    correct = predicted.eq(
+        targets.detach().cpu()).sum().item()
+    return correct / total
 
 def topk_average_precision(names, distmat, names_db=None, k=None):
     """Computes top-k average precision given a distance matrix.
     Assumes the distance matrix is square and does one-vs-all evaluation"""
     # assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
-
-
-
     output = torch.Tensor(distmat[:, :]) * -1
     y = torch.Tensor(names[:]).squeeze(0)
     ids_tensor = torch.Tensor(names_db)

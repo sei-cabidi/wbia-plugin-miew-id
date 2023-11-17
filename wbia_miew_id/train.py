@@ -6,6 +6,7 @@ from losses import fetch_loss
 from schedulers import MiewIdScheduler
 from engine import run_fn
 from helpers import get_config, write_config
+from torch.optim.swa_utils import AveragedModel, SWALR
 
 import os
 import torch
@@ -55,7 +56,7 @@ def run(config):
                                 use_full_image_path=config.data.use_full_image_path,
                                 images_dir = config.data.images_dir,
                                 )
-    
+
     df_val = preprocess_data(config.data.val.anno_path, 
                                 name_keys=config.data.name_keys,
                                 convert_names_to_ids=True, 
@@ -145,13 +146,22 @@ def run(config):
 
     scheduler = MiewIdScheduler(optimizer,**dict(config.scheduler_params))
 
+    if config.engine.use_swa:
+        swa_model = AveragedModel(model)
+        swa_model.to(device)
+        swa_scheduler = SWALR(optimizer=optimizer, swa_lr=config.swa_params.swa_lr)
+        swa_start = config.swa_params.swa_start
+    else:
+        swa_model = None
+        swa_scheduler = None
+        swa_start = None
+
     write_config(config, config_path_out)
 
 
     with WandbContext(config):
-        best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb)
-
-
+        best_score = run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=config.engine.use_wandb,
+            swa_model=swa_model, swa_scheduler=swa_scheduler, swa_start=swa_start)
 
     return best_score
 
