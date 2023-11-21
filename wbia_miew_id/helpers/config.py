@@ -78,6 +78,7 @@ class ModelParams(DictableClass):
     theta_zero: float
     pretrained: bool
     n_classes: int
+    k: int = 2
 
 @dataclass
 class TestParams():

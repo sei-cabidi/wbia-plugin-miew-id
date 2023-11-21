@@ -60,7 +60,8 @@ class MiewIdNet(nn.Module):
                  ls_eps=0.0,
                  theta_zero=0.785,
                  pretrained=True,
-                 margins=None):
+                 margins=None,
+                 k=None):
         """
         """
         super(MiewIdNet, self).__init__()
@@ -95,7 +96,8 @@ class MiewIdNet(nn.Module):
                 embedding_dim=final_in_features, 
                 output_classes=n_classes, 
                 margins=margins,
-                s=s )
+                s=s,
+                k=k )
         # elif loss_module == 'cosface':
         #     self.final = AddMarginProduct(final_in_features, n_classes, s=s, m=margin)
         # elif loss_module == 'adacos':

@@ -58,7 +58,7 @@ def l2_norm(input, axis = 1):
 
     return output
 class ElasticArcFace(nn.Module):
-    def __init__(self, in_features, out_features, s=64.0, m=0.50,std=0.0125,plus=False):
+    def __init__(self, in_features, out_features, s=64.0, m=0.50,std=0.0125,plus=False, k=None):
         super(ElasticArcFace, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -140,20 +140,21 @@ class ArcFaceSubCenterDynamic(nn.Module):
         embedding_dim,
         output_classes,
         margins,
-        s
+        s,
+        k=2,
     ):
         super().__init__()
-        
+
         self.embedding_dim = embedding_dim
         self.output_classes = output_classes
         self.margins = margins
         self.s = s
-        self.wmetric_classify = ArcMarginProduct_subcenter(self.embedding_dim, self.output_classes, k=2)
+        self.wmetric_classify = ArcMarginProduct_subcenter(self.embedding_dim, self.output_classes, k=k)
         
         self.warcface_margin = ArcFaceLossAdaptiveMargin(margins=self.margins, 
                                                          out_dim=self.output_classes, 
                                                          s=self.s)
-    
+
     def forward(self, features, labels):
         logits = self.wmetric_classify(features.float())
         logits = self.warcface_margin(logits, labels)

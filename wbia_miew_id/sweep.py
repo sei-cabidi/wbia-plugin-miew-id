@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument(
         "--n_trials",
         type=int,
-        default=100,
+        default=40,
         help="Number of trials. Default: 100",
     )
 
@@ -41,6 +41,8 @@ def objective(trial, config):
     config.engine.epochs = n_epochs
     config.model_params.margin = trial.suggest_uniform("margin", 0.3, 0.7)
     config.model_params.s = trial.suggest_uniform("s", 20, 64)
+
+    config.model_params.k = trial.suggest_int("k", 1, 5)
 
     # The scheduler params are derived from one base paremeter to minimize the number of parameters to optimzie
     lr_base = trial.suggest_loguniform("lr_base", 1e-6, 1e-2)
