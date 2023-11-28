@@ -34,18 +34,21 @@ def parse_args():
 def objective(trial, config):
 
     # Specify the parameters you want to optimize
-    config.data.train.n_filter_min = trial.suggest_int("train.n_filter_min", 2, 5)
+    config.data.train.n_filter_min = trial.suggest_int("train.n_filter_min", 3, 5)
     # image_size = 256 #trial.suggest_categorical("image_size", [192, 256, 384, 440, 512])
+    image_size = 256 #trial.suggest_categorical("image_size", [192, 256, 384, 440, 512])
+    loss_module = trial.suggest_categorical("loss_module", ['arcface_subcenter_dynamic', 'arcface'])
+    config.model_params.loss_module = loss_module
     # config.data.image_size = [image_size, image_size]
     n_epochs = 20#trial.suggest_int("epochs", 20, 40)
     config.engine.epochs = n_epochs
     config.model_params.margin = trial.suggest_uniform("margin", 0.3, 0.7)
-    config.model_params.s = trial.suggest_uniform("s", 20, 64)
 
-    config.model_params.k = trial.suggest_int("k", 1, 5)
+    config.model_params.s = trial.suggest_uniform("s", 30, 64) # This is only for 'arcface'
+    config.model_params.k = trial.suggest_int("k", 2, 4) # This is only for 'arcface_subcenter_dynamic'
 
     # The scheduler params are derived from one base paremeter to minimize the number of parameters to optimzie
-    lr_base = trial.suggest_loguniform("lr_base", 1e-6, 1e-2)
+    lr_base = trial.suggest_loguniform("lr_base", 1e-5, 1e-3)
     config.scheduler_params.lr_start = lr_base / 10
     config.scheduler_params.lr_max = lr_base * 10
     config.scheduler_params.lr_min = lr_base / 20
