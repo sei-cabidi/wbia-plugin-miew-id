@@ -8,25 +8,8 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
 
     best_score = 0
     for epoch in range(config.engine.epochs):
-<<<<<<< HEAD
         train_loss = train_fn(train_loader, model,criterion, optimizer, device,scheduler=scheduler,epoch=epoch, use_wandb=use_wandb, swa_model=swa_model, swa_start=swa_start, swa_scheduler=swa_scheduler)
 
-=======
-        """
-        NOTE
-        Train mAP proceeds as expected:         going from 0.0 -> 0.0 -> 1.0  -> .... -> ~99.0% over all 30 epochs
-        Train accuracy proceeds as expected:    going from 0.0 -> 0.0 -> 1.0  -> .... -> ~99.9% over all 30 epochs
-
-        Validation mAP proceeds as expected:    going from 0.0 -> 0.0 -> 1.0  -> .... -> ~65.0% over all 30 epochs
-        Validation accuracy proceeds strangely: going from 0.0 -> 0.0 -> 0.01 -> .... -> ~0.50% over all 30 epochs
-        
-        This accuracy calculated by using the output logits, not accuracy from the embeddings. 
-        The mAP scores on train and validation sets look normal to me.
-        """
-
-        train_loss = train_fn(train_loader, model,criterion, optimizer, device,scheduler=scheduler,epoch=epoch, use_wandb=use_wandb, swa_model=swa_model, swa_start=swa_start, swa_scheduler=swa_scheduler)
-
->>>>>>> d4861e49e03160304da87ebbeb3b1607cd8de918
         torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
 
         print("\n\nGenerating metrics on train set...")
