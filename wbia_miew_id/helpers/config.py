@@ -58,8 +58,8 @@ class Engine(DictableClass):
 
 @dataclass
 class SWAParams(DictableClass):
-    swa_lr: float = 0.05
-    swa_start: int = 25
+    swa_lr: float = 0.00014
+    swa_start: int = 21
 
 @dataclass
 class SchedulerParams(DictableClass):
