@@ -103,6 +103,7 @@ def run_test(config, visualize=False):
     eval_groups = config.data.test.eval_groups
 
     if eval_groups:
+<<<<<<< HEAD
         df_test_group = preprocess_data(config.data.test.anno_path, 
                             name_keys=config.data.name_keys,
                             convert_names_to_ids=True, 
@@ -112,6 +113,9 @@ def run_test(config, visualize=False):
                             use_full_image_path=config.data.use_full_image_path,
                             images_dir = config.data.images_dir)
         group_results = group_eval(config, df_test_group, eval_groups, model)
+=======
+        group_results = group_eval(config, df_test, eval_groups, model)
+>>>>>>> d4861e49e03160304da87ebbeb3b1607cd8de918
 
     if visualize:
         k=5
