@@ -50,7 +50,7 @@ def update_bn(loader, model, device=None):
             label = input['label']
             input = input['image']
         if device is not None:
-            input = input.to(device)
+            input.to(device)
             label.to(device)
 
         if was_training:
