@@ -79,7 +79,7 @@ def run_test(config, visualize=False):
 
     if checkpoint_path:
         weights = torch.load(config.data.test.checkpoint_path, map_location=torch.device(config.engine.device))
-        n_train_classes = weights['final.kernel'].shape[-1]
+        n_train_classes = weights[list(weights.keys())[-1]].shape[-1]
         if config.model_params.n_classes != n_train_classes:
             print(f"WARNING: Overriding n_classes in config ({config.model_params.n_classes}) which is different from actual n_train_classes in the checkpoint -  ({n_train_classes}).")
             config.model_params.n_classes = n_train_classes
@@ -95,7 +95,7 @@ def run_test(config, visualize=False):
         model.to(device)
 
 
-    test_score, cmc, accuracy, ece, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
+    test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
 
 
