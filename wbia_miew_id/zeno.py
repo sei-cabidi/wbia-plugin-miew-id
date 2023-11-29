@@ -30,7 +30,10 @@ def set_seed_torch(seed):
 # ----------------------------- #
 # Make sure to set your Zeno API Key at the command
 # line using: export ZENOAPIKEY="your api key here"
-client = ZenoClient(os.environ['ZENOAPIKEY'])
+try:
+    client = ZenoClient(os.environ['ZENOAPIKEY'])
+except:
+    print("You need to add your ZENO API key at the command line: export ZENOAPIKEY='your key here'")
 
 # ----------------------------- #
 # Stage 2: WildMe Setup         #
@@ -144,6 +147,7 @@ print("Drawing reliability diagram...")
 # ----------------------------- #
 # Stage 5: Zeno-ification       #
 # ----------------------------- #
+# TODO: Fix this
 df = pd.DataFrame(
     {
         "output": outputs,

@@ -13,13 +13,13 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
 
         print("\n\nGenerating metrics on train set...")
-        train_score, train_cmc, train_accuracy, train_ece = eval_fn(train_loader, model, device, use_wandb=use_wandb, return_outputs=False)
+        train_score, train_cmc = eval_fn(train_loader, model, device, use_wandb=use_wandb, return_outputs=False)
         
         print("\n\nGetting metrics on validation set...")
-        valid_score, valid_cmc, valid_accuracy, valid_ece = eval_fn(valid_loader, model, device, use_wandb=use_wandb, return_outputs=False)
+        valid_score, valid_cmc = eval_fn(valid_loader, model, device, use_wandb=use_wandb, return_outputs=False)
 
         print("\n")
-        print(tabulate([["Train", train_score, train_accuracy], ["Valid", valid_score, valid_accuracy]], headers=["Split", "mAP", "Accuracy"]))
+        print(tabulate([["Train", train_score], ["Valid", valid_score]], headers=["Split", "mAP"]))
         print("\n\n")
 
         if valid_score > best_score:

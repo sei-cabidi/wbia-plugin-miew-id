@@ -27,6 +27,8 @@ python train.py
 
 The data is expected to be in the coco JSON format. Paths to data files and the image directory are defined in the config YAML file.
 
+The beluga data can be downloaded from [here](https://cthulhu.dyn.wildme.io/public/datasets/beluga-model-data.zip).
+
 ## Configuration file
 
 A config file path can be set by:
@@ -69,6 +71,7 @@ A config file path can be set by:
   - `device`: Device to be used for training
   - `loss_module`: Loss function module
   - `use_wandb`: Whether to use Weights and Biases for logging
+  - `use_swa`: Whether to use SWA during training
 - `scheduler_params`: Subfields for  learning rate scheduler parameters
   - `lr_start`: Initial learning rate
   - `lr_max`: Maximum learning rate
@@ -85,7 +88,10 @@ A config file path can be set by:
   - `s`: Scaling factor for the loss function
   - `margin`: Margin for the loss function
   - `pretrained`: Whether to use a pretrained model backbone
-  - `n_classes`: Number of classes in the training dataset, used for loading checkpoint 
+  - `n_classes`: Number of classes in the training dataset, used for loading checkpoint
+- `swa_params`: Subfields for SWA training
+  - `swa_lr`: SWA learning rate
+  - `swa_start`: Epoch number to begin SWA training
 - `test`: Subfields for plugin-related settings
   - `fliplr`: Whether to perform horizontal flipping during testing
   - `fliplr_view`: List of viewpoints to apply horizontal flipping

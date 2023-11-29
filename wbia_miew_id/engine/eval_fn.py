@@ -110,7 +110,7 @@ def calculate_calibration(logits, labels, logits_db=None, labels_db=None):
 
     return ece, (logits, q_pids, top_confidences, pred_labels)
 
-def log_results(mAP, cmc, accuracy, ece, use_wandb=True):
+def log_results(mAP, cmc, use_wandb=True):
     ranks=[1, 5, 10, 20]
     print("** Results **")
     print("mAP: {:.1%}".format(mAP))
@@ -118,8 +118,6 @@ def log_results(mAP, cmc, accuracy, ece, use_wandb=True):
     for r in ranks:
         print("Rank-{:<3}: {:.1%}".format(r, cmc[r - 1]))
         if use_wandb: wandb.log({"Rank-{:<3}".format(r): cmc[r - 1]})
-    print(f"ECE: {ece}")
-    print(f"Classification accuracy on output logits: {accuracy*100}%")
     
     if use_wandb: wandb.log({"mAP": mAP})
 
@@ -129,12 +127,10 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
     mAP, cmc, (embeddings, q_pids, distmat) = calculate_matches(embeddings, labels)
 
     logits, labels = extract_logits(data_loader, model, device)
-    accuracy = get_accuracy(torch.Tensor(logits), torch.Tensor(labels))
-    ece, (_, q_pids, top_confidences, pred_labels) = calculate_calibration(logits, labels)
 
-    log_results(mAP, cmc, accuracy, ece, use_wandb=use_wandb)
+    log_results(mAP, cmc, use_wandb=use_wandb)
 
     if return_outputs:
-        return mAP, cmc, accuracy, ece, (embeddings, logits, q_pids, distmat)
+        return mAP, cmc, (embeddings, logits, q_pids, distmat)
     else:
-        return mAP, cmc, accuracy, ece
+        return mAP, cmc
