@@ -47,19 +47,20 @@ def run_test(config, visualize=False):
                                 convert_names_to_ids=True, 
                                 viewpoint_list=config.data.viewpoint_list, 
                                 n_filter_min=config.data.test.n_filter_min, 
-                                n_subsample_max=config.data.test.n_subsample_max)
+                                n_subsample_max=config.data.test.n_subsample_max,
+                                use_full_image_path=config.data.use_full_image_path,
+                                images_dir = config.data.images_dir,
+                                )
 
     # top_names = df_test['name'].value_counts().index[:10]
     # df_test = df_test[df_test['name'].isin(top_names)]
 
     test_dataset = MiewIdDataset(
         csv=df_test,
-        images_dir=config.data.images_dir,
         transforms=get_test_transforms(config),
         fliplr=config.test.fliplr,
         fliplr_view=config.test.fliplr_view,
         crop_bbox=config.data.crop_bbox,
-        use_full_image_path=config.data.use_full_image_path,
     )
         
     test_loader = torch.utils.data.DataLoader(
@@ -116,7 +117,8 @@ def run_test(config, visualize=False):
     if visualize:
         k=5
         embeddings, logits, q_pids, distmat = test_outputs
-        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, return_matches=True, k=k)
+        ranks=list(range(1, k+1))
+        score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
         render_query_results(config, model, test_dataset, df_test, match_results, k=k)
 
