@@ -46,7 +46,7 @@ def topk_average_precision(names, distmat, names_db=None, k=None):
     # assert distmat.shape[0] == distmat.shape[1], "Distance matrix must be square"
 
     if names_db is None:
-        names_db = name
+        names_db = names
 
     output = torch.Tensor(distmat[:, :]) * -1
     y = torch.Tensor(names[:]).squeeze(0)
