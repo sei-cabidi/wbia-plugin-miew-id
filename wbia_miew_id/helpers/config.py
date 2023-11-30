@@ -146,6 +146,9 @@ def get_config(file_path: str) -> Config:
         print("Attempting to convert config dict to compatible format...")
         config_dict = convert_config_dict(config_dict)
 
+    if not config_dict.get('swa_params', False):
+        config_dict['swa_params'] = {}
+
     config_dict['data'] = Data(**config_dict['data'])
     config_dict['data'].train = Train(**config_dict['data'].train)
     config_dict['data'].val = Val(**config_dict['data'].val)
