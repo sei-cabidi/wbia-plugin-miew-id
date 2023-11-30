@@ -14,6 +14,10 @@ def imshow(img):
     plt_img = img.copy()
     plt.imshow(plt_img)
     plt.show()
+
+def show_image(image_path):
+    image = load_image(image_path)
+    imshow(image)
     
 def rotate_box(x1,y1,x2,y2,theta):
     xm = (x1 + x2) // 2
