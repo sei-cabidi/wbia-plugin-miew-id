@@ -44,8 +44,10 @@ def objective(trial, config):
     config.engine.epochs = n_epochs
     config.model_params.margin = trial.suggest_uniform("margin", 0.3, 0.7)
 
-    config.model_params.s = trial.suggest_uniform("s", 30, 64) # This is only for 'arcface'
-    config.model_params.k = trial.suggest_int("k", 2, 4) # This is only for 'arcface_subcenter_dynamic'
+    if config.model_params.loss_module == 'arcface':
+        config.model_params.s = trial.suggest_uniform("s", 30, 64)
+    if config.model_params.loss_module == 'arcface_subcenter_dynamic':
+        config.model_params.k = trial.suggest_int("k", 2, 4)
 
     # The scheduler params are derived from one base paremeter to minimize the number of parameters to optimzie
     lr_base = trial.suggest_loguniform("lr_base", 1e-5, 1e-3)
@@ -55,8 +57,9 @@ def objective(trial, config):
 
     # SWA parameters to test
     config.engine.use_swa = trial.suggest_categorical("use_swa", [False, True])
-    config.swa_params.swa_lr = trial.suggest_loguniform("swa_lr", 0.0001, 0.05)
-    config.swa_params.swa_start = trial.suggest_int("swa_start", 20, 25)
+    if config.engine.use_swa:
+        config.swa_params.swa_lr = trial.suggest_loguniform("swa_lr", 0.0001, 0.05)
+        config.swa_params.swa_start = trial.suggest_int("swa_start", 20, 25)
 
     print("trial number: ", trial.number)
     print("config: ", dict(config))
