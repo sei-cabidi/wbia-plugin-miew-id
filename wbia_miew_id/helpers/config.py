@@ -44,7 +44,6 @@ class Data(DictableClass):
     use_full_image_path: bool = False
     preprocess_images: bool = False
 
-
 @dataclass
 class Engine(DictableClass):
     train_batch_size: int
@@ -55,6 +54,12 @@ class Engine(DictableClass):
     use_wandb: bool
     num_workers: int = 0
     loss_module: str = 'softmax'
+    use_swa: bool = False
+
+@dataclass
+class SWAParams(DictableClass):
+    swa_lr: float = 0.00014
+    swa_start: int = 21
 
 @dataclass
 class SchedulerParams(DictableClass):
@@ -79,7 +84,7 @@ class ModelParams(DictableClass):
     pretrained: bool
     n_classes: int
     k: int = 2
-
+    
 @dataclass
 class TestParams():
     batch_size: int = 4
@@ -97,6 +102,7 @@ class Config(DictableClass):
     scheduler_params: SchedulerParams
     model_params: ModelParams
     test: TestParams
+    swa_params: SWAParams
     
 
 
@@ -140,11 +146,15 @@ def get_config(file_path: str) -> Config:
         print("Attempting to convert config dict to compatible format...")
         config_dict = convert_config_dict(config_dict)
 
+    if not config_dict.get('swa_params', False):
+        config_dict['swa_params'] = {}
+
     config_dict['data'] = Data(**config_dict['data'])
     config_dict['data'].train = Train(**config_dict['data'].train)
     config_dict['data'].val = Val(**config_dict['data'].val)
     config_dict['data'].test = Test(**config_dict['data'].test)
     config_dict['engine'] = Engine(**config_dict['engine'])
+    config_dict['swa_params'] = SWAParams(**config_dict['swa_params'])
     config_dict['scheduler_params'] = SchedulerParams(**config_dict['scheduler_params'])
     config_dict['model_params'] = ModelParams(**config_dict['model_params'])
     config_dict['test'] = TestParams(**config_dict['test'])

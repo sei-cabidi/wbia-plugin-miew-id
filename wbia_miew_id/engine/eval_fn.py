@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import wandb
 
-from metrics import AverageMeter, compute_distance_matrix, eval_onevsall, topk_average_precision, precision_at_k
+from metrics import AverageMeter, compute_distance_matrix, compute_calibration, eval_onevsall, topk_average_precision, precision_at_k, get_accuracy
+from helpers.swatools import extract_outputs
 from torch.cuda.amp import autocast  
 
 def extract_embeddings(data_loader, model, device):
@@ -33,6 +34,31 @@ def extract_embeddings(data_loader, model, device):
     assert not np.isnan(embeddings).sum(), "NaNs found in extracted embeddings"
 
     return embeddings, labels
+
+def extract_logits(data_loader, model, device):
+    model.eval()
+    tk0 = tqdm(data_loader, total=len(data_loader))
+    logits = []
+    labels = []
+    
+    with torch.no_grad():
+        for batch in tk0:
+            batch_logits = model.extract_logits(batch["image"].to(device), batch["label"].to(device)).detach().cpu()
+
+            image_idx = batch["image_idx"].tolist()
+            batch_logits_df = pd.DataFrame(batch_logits.numpy(), index=image_idx)
+            logits.append(batch_logits_df)
+
+            batch_labels = batch['label'].tolist()
+            labels.extend(batch_labels)
+            
+            
+    logits = pd.concat(logits)
+    logits = logits.values
+
+    assert not np.isnan(logits).sum(), "NaNs found in extracted logits"
+
+    return logits, labels
 
 def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, dist_metric='cosine', ranks=list(range(1, 21)), mask_matrix=None):
 
@@ -69,6 +95,21 @@ def calculate_matches(embeddings, labels, embeddings_db=None, labels_db=None, di
 
     return mAP, cmc, (embeddings, q_pids, distmat)
 
+def calculate_calibration(logits, labels, logits_db=None, labels_db=None):
+
+    q_pids = np.array(labels)
+    confidences = torch.softmax(torch.Tensor(logits), dim=1)
+    top_confidences, pred_labels = confidences.max(dim=1)
+    pred_labels = pred_labels.numpy()
+    top_confidences = top_confidences.numpy()
+
+    print("Computing ECE ...")
+    results = compute_calibration(q_pids, pred_labels, top_confidences, num_bins=10)
+    ece = results['expected_calibration_error']
+    print(f"Computed ECE on {pred_labels.shape[0]} examples")
+
+    return ece, (logits, q_pids, top_confidences, pred_labels)
+
 def log_results(mAP, cmc, use_wandb=True):
     ranks=[1, 5, 10, 20]
     print("** Results **")
@@ -77,18 +118,19 @@ def log_results(mAP, cmc, use_wandb=True):
     for r in ranks:
         print("Rank-{:<3}: {:.1%}".format(r, cmc[r - 1]))
         if use_wandb: wandb.log({"Rank-{:<3}".format(r): cmc[r - 1]})
-        
+    
     if use_wandb: wandb.log({"mAP": mAP})
 
 def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
 
     embeddings, labels = extract_embeddings(data_loader, model, device)
-
     mAP, cmc, (embeddings, q_pids, distmat) = calculate_matches(embeddings, labels)
+
+    logits, labels = extract_logits(data_loader, model, device)
 
     log_results(mAP, cmc, use_wandb=use_wandb)
 
     if return_outputs:
-        return mAP, cmc, (embeddings, q_pids, distmat)
+        return mAP, cmc, (embeddings, logits, q_pids, distmat)
     else:
         return mAP, cmc

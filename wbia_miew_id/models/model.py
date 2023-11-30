@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import timm
+from torch import optim
 
+from losses import ECELoss
 from .heads import ArcMarginProduct, ElasticArcFace, ArcFaceSubCenterDynamic
 
 def weights_init_kaiming(m):
@@ -90,7 +92,7 @@ class MiewIdNet(nn.Module):
             self.final = ElasticArcFace(final_in_features, n_classes,
                                           s=s, m=margin)
         elif loss_module == 'arcface_subcenter_dynamic':
-            if margins is None:
+            if margins == None:
                 margins = [0.3] * n_classes
             self.final = ArcFaceSubCenterDynamic(
                 embedding_dim=final_in_features, 
@@ -121,6 +123,7 @@ class MiewIdNet(nn.Module):
             logits = self.final(feature, label)
         else:
             logits = self.final(feature)
+
         return logits
 
     def extract_feat(self, x):
@@ -132,6 +135,15 @@ class MiewIdNet(nn.Module):
             x1 = self.dropout(x)
             x1 = self.bn(x1)
             x1 = self.fc(x1)
-            
-
+    
         return x
+
+    def extract_logits(self, x, label=None):
+        feature = self.extract_feat(x)
+        assert label is not None
+        if self.loss_module in ('arcface', 'arcface_subcenter_dynamic'):
+            logits = self.final(feature, label)
+        else:
+            logits = self.final(feature)
+        
+        return logits

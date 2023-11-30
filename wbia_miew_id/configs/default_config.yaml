@@ -27,6 +27,7 @@ data:
     anno_path: /mnt/space/space-home/wild-me/multi-species/splits/EDA-single-species-1/instances_val2023.json
     n_filter_min: 2
     n_subsample_max: 10
+
 engine:
   num_workers: 8
   train_batch_size: 6
@@ -35,6 +36,7 @@ engine:
   seed: 42
   device: cuda
   use_wandb: false
+  use_swa: false
 
 scheduler_params:
   lr_start: 1.e-5
@@ -43,6 +45,7 @@ scheduler_params:
   lr_ramp_ep: 15
   lr_sus_ep: 0
   lr_decay: 0.8
+
 model_params:
   model_name: efficientnetv2_rw_m
   use_fc: false
@@ -57,4 +60,8 @@ model_params:
   n_classes: 865 
   fliplr: false
   fliplr_view: []
-  batch_size: 8s
+  batch_size: 8
+
+swa_params:
+  swa_lr: 0.00014
+  swa_start: 21

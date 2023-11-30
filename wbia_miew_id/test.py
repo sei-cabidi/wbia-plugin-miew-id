@@ -49,11 +49,12 @@ def run_test(config, visualize=False):
                                 n_filter_min=config.data.test.n_filter_min, 
                                 n_subsample_max=config.data.test.n_subsample_max,
                                 use_full_image_path=config.data.use_full_image_path,
-                                images_dir = config.data.images_dir)
-    
+                                images_dir = config.data.images_dir,
+                                )
+
     # top_names = df_test['name'].value_counts().index[:10]
     # df_test = df_test[df_test['name'].isin(top_names)]
-    
+
     test_dataset = MiewIdDataset(
         csv=df_test,
         transforms=get_test_transforms(config),
@@ -87,14 +88,13 @@ def run_test(config, visualize=False):
         model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
-        model.load_state_dict(weights)
+        model.load_state_dict(weights, strict=False)
         print('loaded checkpoint from', checkpoint_path)
         
     else:
         model = MiewIdNet(**dict(config.model_params))
         model.to(device)
 
-    
 
     test_score, cmc, test_outputs = eval_fn(test_loader, model, device, use_wandb=False, return_outputs=True)
 
@@ -116,12 +116,11 @@ def run_test(config, visualize=False):
 
     if visualize:
         k=5
-        embeddings, q_pids, distmat = test_outputs
+        embeddings, logits, q_pids, distmat = test_outputs
         ranks=list(range(1, k+1))
         score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
         render_query_results(config, model, test_dataset, df_test, match_results, k=k)
-
 
     return test_score
 
