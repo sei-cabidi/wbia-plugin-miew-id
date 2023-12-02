@@ -126,11 +126,10 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
     embeddings, labels = extract_embeddings(data_loader, model, device)
     mAP, cmc, (embeddings, q_pids, distmat) = calculate_matches(embeddings, labels)
 
-    logits, labels = extract_logits(data_loader, model, device)
 
     log_results(mAP, cmc, use_wandb=use_wandb)
 
     if return_outputs:
-        return mAP, cmc, (embeddings, logits, q_pids, distmat)
+        return mAP, cmc, (embeddings, q_pids, distmat)
     else:
         return mAP, cmc
