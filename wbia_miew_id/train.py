@@ -1,7 +1,7 @@
 from datasets import MiewIdDataset, get_train_transforms, get_valid_transforms
 from logging_utils import WandbContext
 from models import MiewIdNet
-from etl import preprocess_data, print_intersect_stats, preprocess_images
+from etl import preprocess_data, print_intersect_stats, load_preprocessed_mapping, preprocess_dataset
 from losses import fetch_loss
 from schedulers import MiewIdScheduler
 from engine import run_fn
@@ -72,18 +72,35 @@ def run(config):
     n_train_classes = df_train['name'].nunique()
 
     crop_bbox = config.data.crop_bbox
-    if config.data.preprocess_images:
-        preprocess_dir_images = os.path.join(checkpoint_dir, 'images')
-        preprocess_dir_train = os.path.join(preprocess_dir_images, 'train')
-        preprocess_dir_val = os.path.join(preprocess_dir_images, 'val')
-        print("Preprocessing images. Destination: ", preprocess_dir_images)
-        os.makedirs(preprocess_dir_train)
-        os.makedirs(preprocess_dir_val)
+    # if config.data.preprocess_images.force_apply:
+    #     preprocess_dir_images = os.path.join(checkpoint_dir, 'images')
+    #     preprocess_dir_train = os.path.join(preprocess_dir_images, 'train')
+    #     preprocess_dir_val = os.path.join(preprocess_dir_images, 'val')
+    #     print("Preprocessing images. Destination: ", preprocess_dir_images)
+    #     os.makedirs(preprocess_dir_train)
+    #     os.makedirs(preprocess_dir_val)
 
-        target_size = (config.data.image_size[0],config.data.image_size[1])
+    #     target_size = (config.data.image_size[0],config.data.image_size[1])
 
-        df_train = preprocess_images(df_train, crop_bbox, preprocess_dir_train, target_size)
-        df_val = preprocess_images(df_val, crop_bbox, preprocess_dir_val, target_size)
+    #     df_train = preprocess_images(df_train, crop_bbox, preprocess_dir_train, target_size)
+    #     df_val = preprocess_images(df_val, crop_bbox, preprocess_dir_val, target_size)
+
+    #     crop_bbox = False
+
+    if config.data.preprocess_images.apply:
+
+        if config.data.preprocess_images.preprocessed_dir is None:
+            preprocess_dir_images = os.path.join(checkpoint_dir, 'images')
+        else:
+            preprocess_dir_images = config.data.preprocess_images.preprocessed_dir
+
+        if os.path.exists(preprocess_dir_images) and not config.data.preprocess_images.force_apply:
+            print('Preprocessed images directory found at: ', preprocess_dir_images)
+        else:
+            preprocess_dataset(config, preprocess_dir_images)
+
+        df_train = load_preprocessed_mapping(df_train, preprocess_dir_images)
+        df_val = load_preprocessed_mapping(df_val, preprocess_dir_images)
 
         crop_bbox = False
 

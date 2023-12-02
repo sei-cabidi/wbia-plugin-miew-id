@@ -5,7 +5,10 @@ comment: Experiment comment goes here
 data:
   images_dir: null
   use_full_image_path: true
-  preprocess_images: false
+  preprocess_images: 
+    apply: false
+    force_apply: false
+    preprocessed_dir: null
   viewpoint_list: null
   name_keys: ['name']
   crop_bbox: false
