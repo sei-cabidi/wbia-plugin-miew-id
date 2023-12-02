@@ -12,8 +12,8 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
 
         torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
 
-        print("\nGetting metrics on train set...")
-        train_score, train_cmc = eval_fn(train_loader, model, device, use_wandb=use_wandb, return_outputs=False)
+        # print("\nGetting metrics on train set...")
+        # train_score, train_cmc = eval_fn(train_loader, model, device, use_wandb=use_wandb, return_outputs=False)
         
         print("\nGetting metrics on validation set...")
         valid_score, valid_cmc = eval_fn(valid_loader, model, device, use_wandb=use_wandb, return_outputs=False)
