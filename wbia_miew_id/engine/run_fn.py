@@ -18,9 +18,9 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         print("\nGetting metrics on validation set...")
         valid_score, valid_cmc = eval_fn(valid_loader, model, device, use_wandb=use_wandb, return_outputs=False)
 
-        print("\n")
-        print(tabulate([["Train", train_score], ["Valid", valid_score]], headers=["Split", "mAP"]))
-        print("\n\n")
+        # print("\n")
+        # print(tabulate([["Train", 0], ["Valid", valid_score]], headers=["Split", "mAP"]))
+        # print("\n\n")
 
         if valid_score > best_score:
             best_score = valid_score
