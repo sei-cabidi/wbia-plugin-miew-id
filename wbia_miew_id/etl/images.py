@@ -52,8 +52,8 @@ def preprocess_dataset(config, preprocess_dir_images):
     preprocess_mapping_path = os.path.join(preprocess_dir_images, 'preprocess_mapping.csv')
 
     print("Preprocessing images. Destination: ", preprocess_dir_images)
-    os.makedirs(preprocess_dir_train)
-    os.makedirs(preprocess_dir_val)
+    os.makedirs(preprocess_dir_train, exist_ok=True)
+    os.makedirs(preprocess_dir_val, exist_ok=True)
 
     df_train_full = preprocess_data(config.data.train.anno_path, 
                             name_keys=config.data.name_keys,
