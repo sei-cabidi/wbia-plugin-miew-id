@@ -40,7 +40,7 @@ def objective(trial, config):
     loss_module = trial.suggest_categorical("loss_module", ['arcface_subcenter_dynamic', 'arcface'])
     config.model_params.loss_module = loss_module
     # config.data.image_size = [image_size, image_size]
-    n_epochs = 1#trial.suggest_int("epochs", 20, 40)
+    n_epochs = 20#trial.suggest_int("epochs", 20, 40)
     config.engine.epochs = n_epochs
     config.model_params.s = trial.suggest_uniform("s", 30, 64)
     if config.model_params.loss_module == 'arcface':
