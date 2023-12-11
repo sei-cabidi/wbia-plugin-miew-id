@@ -10,8 +10,6 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
     for epoch in range(config.engine.epochs):
         train_loss = train_fn(train_loader, model,criterion, optimizer, device,scheduler=scheduler,epoch=epoch, use_wandb=use_wandb, swa_model=swa_model, swa_start=swa_start, swa_scheduler=swa_scheduler)
 
-        torch.save(model.state_dict(), f'{checkpoint_dir}/model_{epoch}.bin')
-
         # print("\nGetting metrics on train set...")
         # train_score, train_cmc = eval_fn(train_loader, model, device, use_wandb=use_wandb, return_outputs=False)
         
