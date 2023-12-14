@@ -39,6 +39,13 @@ DEMOS = {
     'whale_beluga': '',
 }
 
+REMOVED_CONFIGS ={
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.yaml',
+    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+}
+
 CONFIGS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
@@ -85,7 +92,6 @@ CONFIGS = {
     'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'dolphin_roughtoothed+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_orca': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.yaml',
     'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_grey+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
@@ -95,13 +101,10 @@ CONFIGS = {
     'right_whale+fluke':'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
     'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'panthera_pardus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
-    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'hyaena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'crocuta_crocuta': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'hyaena_brown': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog_dark': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog_puppy': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
@@ -110,8 +113,25 @@ CONFIGS = {
     'wild_dog_standard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'wild_dog_ambiguous': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
     'lycaon_pictus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
+    'wilddog':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'snow_leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'eurasianlynx':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'cheetah':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'hyena':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'lynx_pardinus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml'
     }
-    
+
+
+REMOVED_MODELS = {
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin',
+    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
+}
 
 MODELS = {
     'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
@@ -159,7 +179,6 @@ MODELS = {
     'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'dolphin_roughtoothed+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_orca': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin',
     'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_grey+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
@@ -169,14 +188,10 @@ MODELS = {
     'right_whale+fluke':'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
     'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'panthera_pardus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'hyaena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'crocuta_crocuta': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'hyaena_brown': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog_dark': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog_puppy': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
@@ -185,7 +200,15 @@ MODELS = {
     'wild_dog_standard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'wild_dog_ambiguous': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
     'lycaon_pictus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-
+    'wilddog':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'snow_leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'eurasianlynx':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'cheetah':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'hyena':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'lynx_pardinus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
 }
 
 
