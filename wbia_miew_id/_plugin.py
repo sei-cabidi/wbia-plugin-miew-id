@@ -126,7 +126,13 @@ CONFIGS = {
     'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'panthera_onca':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml'
+    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'ocelot':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'leopardus_pardalis':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml'
     }
 
 
@@ -218,7 +224,13 @@ MODELS = {
     'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'panthera_onca':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin'
+    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'ocelot':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'leopardus_pardalis':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin'
 }
 
 
