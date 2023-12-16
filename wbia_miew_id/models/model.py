@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import timm
 from torch import optim
 
-from losses import ECELoss
 from .heads import ArcMarginProduct, ElasticArcFace, ArcFaceSubCenterDynamic
 
 def weights_init_kaiming(m):
