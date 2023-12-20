@@ -155,7 +155,7 @@ def get_config(file_path: str) -> Config:
     if not config_dict.get('swa_params', False):
         config_dict['swa_params'] = dict(SWAParams())
 
-    if not config_dict['data'].get('preprocess_images', False):
+    if not config_dict['data'].get('preprocess_images', False) or isinstance(config_dict['data']['preprocess_images'], bool):
         config_dict['data']['preprocess_images'] = dict(PreprocessImages())
 
     config_dict['data'] = Data(**config_dict['data'])
