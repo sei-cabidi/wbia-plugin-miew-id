@@ -5,6 +5,27 @@ import albumentations
 from albumentations.core.transforms_interface import ImageOnlyTransform
 from albumentations.pytorch.transforms import ToTensorV2
 
+import torchvision.transforms as T
+from albumentations.core.transforms_interface import ImageOnlyTransform
+from PIL import Image
+import numpy as np
+
+class PyTorchResize(ImageOnlyTransform):
+    """Wrap PyTorch Resize transform for Albumentations compatibility."""
+    def __init__(self, height, width, interpolation=T.InterpolationMode.BILINEAR, always_apply=False, p=1.0):
+        super().__init__(always_apply, p)
+        self.resize = T.Resize(size=(height, width), interpolation=interpolation)
+
+    def apply(self, img, **params):
+        # Convert numpy array to PIL Image
+        img_pil = Image.fromarray(img)
+
+        # Apply the resize transform
+        img_pil_resized = self.resize(img_pil)
+
+        # Convert back to numpy array
+        return np.array(img_pil_resized)
+
 
 def triangle(img, p):
     xx = numpy.random.rand(1)[0]
@@ -28,7 +49,8 @@ class Triangle(ImageOnlyTransform):
 def get_train_transforms(config):
     return albumentations.Compose(
         [   Triangle(p = 0.5),
-            albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
+            # albumentations.Resize(config.data.image_size[0],config.data.image_size[1],always_apply=True),
+            PyTorchResize(config.data.image_size[0], config.data.image_size[1], always_apply=True),
             # albumentations.HorizontalFlip(p=0.5),
             #albumentations.VerticalFlip(p=0.5),
             #albumentations.ImageCompression (quality_lower=50, quality_upper=100, p = 0.5),

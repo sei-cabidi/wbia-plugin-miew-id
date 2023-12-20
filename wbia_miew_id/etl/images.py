@@ -6,6 +6,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm.auto import tqdm
 from datasets import get_chip_from_img
 from etl import preprocess_data
+from torchvision import transforms
 
 def process_image(row, crop_bbox, preprocess_dir, chip_idx, target_size):
     image_path = row['file_path_orig']
@@ -22,7 +23,11 @@ def process_image(row, crop_bbox, preprocess_dir, chip_idx, target_size):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     pil_image = Image.fromarray(image)
-    pil_image_resized = pil_image.resize((target_w, target_h))
+    # pil_image_resized = pil_image.resize((target_w, target_h))
+    tensor_interpolate = transforms.Compose([transforms.ToTensor(), transforms.Resize((target_w, target_h), antialias=True, interpolation=transforms.InterpolationMode.BILINEAR), transforms.ToPILImage()])
+    pil_image_resized = tensor_interpolate(pil_image)
+    
+
 
     image_name = f"chip_{chip_idx:012}.jpg"
     out_path = os.path.join(preprocess_dir, image_name)
