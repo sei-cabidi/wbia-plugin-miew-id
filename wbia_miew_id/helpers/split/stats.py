@@ -16,12 +16,15 @@ def intersect_stats(df_a, df_b, df_c=None, key="name", a_name="train", b_name="t
     print(f"number of individuals in {b_name}: ", len(names_b))
     print(f"number of annotations in {b_name}: ", len(df_b))
     print()
-    print(f"{a_name} ratio: ", len(df_a)/(len(df_a) + len(df_b)))
+        
     if df_c is not None:
+        print(f"{a_name} ratio: ", len(df_a)/(len(df_a) + len(df_b) + len(df_c)))
         names_c = df_c[key].unique()
         print(f"number of individuals in {c_name}: ", len(names_c))
         print(f"number of annotations in {c_name}: ", len(df_c))
         print()
+    else:
+        print(f"{a_name} ratio: ", len(df_a)/(len(df_a) + len(df_b)))
     print(f"average number of annotations per individual in {a_name}: {len(df_a) / len(names_a):.2f}")
     print(f"average number of annotations per individual in {b_name}: {len(df_b) / len(names_b):.2f}")
     if df_c is not None:
