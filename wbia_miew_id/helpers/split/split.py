@@ -16,60 +16,8 @@ def split_dataframe(df, ratio=0.5):
     rest_part = df.drop(part.index)
     return part, rest_part
 
-def split_df(df, train_ratio=0.7, unknown_ratio=0.5, is_val=True, group_col='name', stratify_cols='name', print_key='name_viewpoint', verbose=False, random_state=0):
-    
-    dfa_train = df.copy()
 
-    assert (train_ratio > 0 and train_ratio < 1)
-    assert (unknown_ratio >= 0 and unknown_ratio <= 1)
-
-    test_val_ratio = 1 - train_ratio
-
-    
-    r1 = unknown_ratio * test_val_ratio
-    r2 = (test_val_ratio - r1)/((1-r1))
-
-    print(r1, r2)  
-   
-    # Stratified Group Split
-    if unknown_ratio > 0:
-        sgkf_n_splits = max(2, round(1/r1))
-        dfa_train, dfa_new = stratified_group_split(df, group_col, stratify_cols, sgkf_n_splits, random_state)
-    else:
-        dfa_new = None
-
-    # Stratified Split
-    if unknown_ratio < 1:
-        skf_n_splits = max(2, round(1/r2))
-        dfa_train, dfa_existing = stratified_split(dfa_train, group_col, skf_n_splits, random_state)
-    else:
-        dfa_existing = None
-
-    dfa_test_val = pd.concat([dfa for dfa in [dfa_existing, dfa_new] if dfa is not None])
-    if not is_val:
-        if verbose:
-            print('Calculating stats for existing subsets')
-            intersect_stats(dfa_train, dfa_existing, None, key=print_key)
-            print('Calculating stats for new subsets')
-            intersect_stats(dfa_train, dfa_new, None, key=print_key)
-            print_div()
-            print('Calculating stats for combined subsets')
-            intersect_stats(dfa_train, dfa_test_val, None, key=print_key)
-        return dfa_train, dfa_test_val
-    
-
-    test_names, val_names = dfa_test_val[group_col].unique()[::2], dfa_test_val[group_col].unique()[1::2]
-    dfa_test, dfa_val = dfa_test_val[dfa_test_val[group_col].isin(test_names)], dfa_test_val[dfa_test_val[group_col].isin(val_names)]
-
-    if verbose:
-        print_div()
-        print('Calculating stats for combined subsets')
-        intersect_stats(dfa_train, dfa_test, dfa_val, key=print_key)
-
-    return dfa_train, dfa_test, dfa_val
-
-
-def split_classes_objectve(r0, w, class_counts, train_ratio, unseen_ratio):
+def split_classes_objective(r0, w, class_counts, train_ratio, unseen_ratio):
     r1 = 1 - unseen_ratio * (1 - r0)
     i0 = int(r0*len(class_counts))
     i1 = int(r1*len(class_counts))
@@ -78,33 +26,61 @@ def split_classes_objectve(r0, w, class_counts, train_ratio, unseen_ratio):
     full = np.sum(class_counts)
     return np.abs(train_ratio*full - (train_full + train_part))
 
-def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='name', print_key='name_viewpoint', verbose=False):
-    
-    assert (train_ratio > 0 and train_ratio < 1)
-    assert (unseen_ratio >= 0 and unseen_ratio <= 1)
 
-    print("Filtering...")
+def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='name', print_key='name_viewpoint', verbose=False):
+    """
+    Splits a DataFrame into training, testing (and optionally validation) sets based on specified ratios and stratification column.
+
+    Parameters:
+    df (DataFrame): The pandas DataFrame to be split.
+    train_ratio (float, optional): The proportion of the dataset to include in the train split (between 0 and 1). Defaults to 0.7.
+    unseen_ratio (float, optional): The proportion of unique classes to be unseen in the test (and validation) sets (between 0 and 1). Defaults to 0.5.
+    is_val (bool, optional): If True, split the test set further into test and validation sets. Defaults to True.
+    stratify_col (str, optional): The column on which to stratify the splits. Defaults to 'name'.
+    print_key (str, optional): Key used for printing statistics if verbose is True. Defaults to 'name_viewpoint'.
+    verbose (bool, optional): If True, prints additional information about the splits. Defaults to False.
+
+    Returns:
+    tuple: Depending on 'is_val', returns a tuple of (train_df, test_df) or (train_df, test_df, val_df).
+
+    """
+
+    # Assertions to check validity of ratio inputs
+    assert (train_ratio > 0 and train_ratio < 1), "train_ratio must be between 0 and 1."
+    assert (unseen_ratio >= 0 and unseen_ratio <= 1), "unseen_ratio must be between 0 and 1."
+
+    if verbose:
+        print("Filtering...")
+    print(len(df))
+    # Apply filters based on the stratify column
     df = apply_filters(df, stratify_col, None, 2)
+    print(len(df))
     
+    # Get class counts and sort them
     class_counts = df[stratify_col].value_counts().sort_values(ascending=False)
     sorted_classes = class_counts.index.tolist()
 
+    # Optimize the split
     res = scipy.optimize.minimize(
-        lambda x: split_classes_objectve(x[0], x[1], np.array(class_counts), train_ratio, unseen_ratio), 
+        lambda x: split_classes_objective(x[0], x[1], np.array(class_counts), train_ratio, unseen_ratio), 
         [0.5, 0.5], bounds=scipy.optimize.Bounds(lb=0, ub=1, keep_feasible=True), tol=1e-12, method='Nelder-Mead')
+    
+    # Calculate indices for the splits
     r0 = res.x[0]
     r1 = 1 - unseen_ratio * (1 - r0)
-    i0 = int(r0*len(class_counts))
-    i1 = int(r1*len(class_counts))
+    i0 = int(r0 * len(class_counts))
+    i1 = int(r1 * len(class_counts))
     w = res.x[1]
 
+    # Define the ratios for the split
     ratios = np.zeros(len(sorted_classes))
     ratios[:i0] = 1
     ratios[i0:i1] = w
 
+    # Perform the stratified split
     dfa_train, dfa_test = stratified_split(df, sorted_classes, ratios, stratify_col)
     
-
+    # If validation set is not required, return train and test sets
     if not is_val:
         if verbose:
             print('Calculating stats for combined subsets')
@@ -112,15 +88,19 @@ def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='n
 
         return dfa_train, dfa_test
 
+    # Split the test set further into test and validation sets
     dfa_test_val = dfa_test
     test_names, val_names = dfa_test_val[stratify_col].unique()[::2], dfa_test_val[stratify_col].unique()[1::2]
-    dfa_test, dfa_val = dfa_test_val[dfa_test_val[stratify_col].isin(test_names)], dfa_test_val[dfa_test_val[stratify_col].isin(val_names)]
+    dfa_test = dfa_test_val[dfa_test_val[stratify_col].isin(test_names)]
+    dfa_val = dfa_test_val[dfa_test_val[stratify_col].isin(val_names)]
 
+    # Print statistics if verbose
     if verbose:
         print_div()
         print('Calculating stats for combined subsets')
         intersect_stats(dfa_train, dfa_test, dfa_val, key=print_key)
 
+    # Return the datasets
     return dfa_train, dfa_test, dfa_val
 
 def simple_stratified_split(df, ratio, class_col, shuffle=True):
@@ -150,27 +130,6 @@ def apply_filters(dataframe, key, max_df, min_df):
         if min_df is not None:
             dataframe = filter_min_df(dataframe, key, min_df)
         return dataframe
-
-
-
-def stratified_group_split(df, group_col, stratify_col, n_splits, random_state):
-    df_comb = df.copy()
-    dfg = df_comb.groupby(group_col)[group_col].count().sort_values(ascending=False)
-    df_comb['image_count'] = df_comb[group_col].map(dfg)
-
-    X = df_comb.index.values
-    y = df_comb['image_count']
-    groups = df_comb[group_col]
-    skf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
-    
-    for i, (train_index, test_index) in enumerate(skf.split(X, y, groups)):
-        break
-
-    dfa_train = df_comb.iloc[train_index]
-    dfa_new = df_comb.iloc[test_index]
-    
-    return dfa_train, dfa_new
-
 
    
 
