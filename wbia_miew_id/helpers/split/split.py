@@ -1,30 +1,33 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from stats import intersect_stats
-from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold, train_test_split
 import scipy
 import numpy as np
+from tools import print_div, apply_filters
 
-def subsample_max_df(df, group_col='name', n_subsample_max=4, random_states=(0, 1)):
-    def subsample_group(g):
-        return g.sample(frac=1, random_state=random_states[0]).head(n_subsample_max)
-
-    return df.groupby(group_col).apply(subsample_group).sample(frac=1, random_state=random_states[1]).reset_index(drop=True)
-
-def split_dataframe(df, ratio=0.5):
-    part = df.sample(frac = ratio)
-    rest_part = df.drop(part.index)
-    return part, rest_part
 
 
 def split_classes_objective(r0, w, class_counts, train_ratio, unseen_ratio):
+    """
+    Calculate the split objective for a given class distribution.
+
+    Parameters:
+    - r0: Initial ratio for selecting classes.
+    - w: Weight for the partial class count.
+    - class_counts: List of class counts.
+    - train_ratio: Target ratio for training data.
+    - unseen_ratio: Ratio of unseen data.
+
+    Returns:
+    - Split objective value.
+    """
     r1 = 1 - unseen_ratio * (1 - r0)
-    i0 = int(r0*len(class_counts))
-    i1 = int(r1*len(class_counts))
+    i0 = int(r0 * len(class_counts))
+    i1 = int(r1 * len(class_counts))
     train_full = np.sum(class_counts[:i0], initial=0)
     train_part = w * np.sum(class_counts[i0:i1], initial=0)
     full = np.sum(class_counts)
-    return np.abs(train_ratio*full - (train_full + train_part))
+    return np.abs(train_ratio * full - (train_full + train_part))
 
 
 def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='name', print_key='name_viewpoint', verbose=False):
@@ -51,10 +54,10 @@ def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='n
 
     if verbose:
         print("Filtering...")
-    print(len(df))
+    print(f"Before filtering: {len(df)} annotations")
     # Apply filters based on the stratify column
     df = apply_filters(df, stratify_col, None, 2)
-    print(len(df))
+    print(f"After filtering: {len(df)} annotations")
     
     # Get class counts and sort them
     class_counts = df[stratify_col].value_counts().sort_values(ascending=False)
@@ -103,16 +106,25 @@ def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='n
     # Return the datasets
     return dfa_train, dfa_test, dfa_val
 
-def simple_stratified_split(df, ratio, class_col, shuffle=True):
-    classes = df[class_col].unique()
-    ratios = np.ones(len(classes)) * ratio
-    return stratified_split(df, classes, ratios, class_col, shuffle=shuffle)
 
 
 def stratified_split(df, classes, ratios, class_col, shuffle=True):
+    """
+    Perform a stratified split of a DataFrame into training and test sets based on specified classes and ratios.
+
+    Parameters:
+    - df: DataFrame to be split.
+    - classes: List of unique classes used for stratification.
+    - ratios: List of ratios for each class in the split.
+    - class_col: Name of the column containing class labels.
+    - shuffle: Boolean to control whether to shuffle the indices (default: True).
+
+    Returns:
+    - Two DataFrames: the training set and the test set.
+    """
     train_indices = np.zeros(0, np.int64)
     for c, ratio in zip(classes, ratios):
-        indices = np.array((df[df[class_col]==c]).index)
+        indices = np.array((df[df[class_col] == c]).index)
         if shuffle:
             np.random.shuffle(indices)
         n = int(len(indices) * ratio)
@@ -124,41 +136,4 @@ def stratified_split(df, classes, ratios, class_col, shuffle=True):
 
 
 
-def apply_filters(dataframe, key, max_df, min_df):
-        if max_df is not None:
-            dataframe = subsample_max_df(dataframe, key, max_df)
-        if min_df is not None:
-            dataframe = filter_min_df(dataframe, key, min_df)
-        return dataframe
 
-   
-
-
-def filter_min_df(df, key='name', min_count=2):
-    return df.groupby(key).filter(lambda g: len(g) >= min_count)
-
-def plot_distribution(train_df, test_df, val_df):
-    fig, ax = plt.subplots()
-    train_df['species'].value_counts().plot(kind='bar', ax=ax, label="Train")
-    test_df['species'].value_counts().plot(kind='bar', ax=ax, label="Test", color='orange')
-    val_df['species'].value_counts().plot(kind='bar', ax=ax, label="Val",color='green')
-    ax.legend()
-
-    print_div()
-    print('Train: ')
-    print_group_stats(train_df)
-    print()
-    print('Test: ')
-    print_group_stats(test_df)
-    print()
-    print('Val: ')
-    print_group_stats(val_df)
-
-def print_group_stats(df):
-    df_annot_counts = df['species'].value_counts(ascending=True)
-    df_name_counts = df.groupby('species')['name'].nunique()
-    df_stat = pd.concat([df_annot_counts, df_name_counts], axis=1)
-    print(df_stat)
-
-def print_div():
-    print("===================================")

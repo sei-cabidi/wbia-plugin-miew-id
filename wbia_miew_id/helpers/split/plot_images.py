@@ -82,33 +82,62 @@ def get_chip_from_img(img, bbox, theta):
 
     return cropped_image
 
-def plot_images(df, species=None, viewpoint=None, individual_id=None, large_grid=False, crop_bbox=False):
+def plot_images(df, species=None, filter_key="name", filter_value=None, large_grid=False, crop_bbox=False):
+    """
+    Plot images from a DataFrame with optional filtering and grid size control.
 
+    Parameters:
+    - df: DataFrame containing image data.
+    - species: List of species names to filter images (default: None for no filtering).
+    - filter_key: Name of the column used for additional filtering (default: "name").
+    - filter_value: Value to filter the DataFrame by filter_key (default: None for no filtering).
+    - large_grid: Boolean to control the size of the grid (default: False).
+    - crop_bbox: Boolean to control whether to crop images based on bounding boxes (default: False).
+
+    Returns:
+    - None
+    """
+
+    # Determine the number of rows and columns for subplots based on grid size
     if large_grid:
         fig, axes = plt.subplots(nrows=6, ncols=6, figsize=(16, 16))
     else:
         fig, axes = plt.subplots(nrows=3, ncols=6, figsize=(16, 8))
-
+    
+    # Apply species filter if specified
     if species:
-        if isinstance(species, str): species = [species]
+        if isinstance(species, str):
+            species = [species]
         df = df[df['species'].isin(species)]
-    if individual_id:
-        df = df[df['individual_id'] == individual_id]
-    if viewpoint:
-        df = df[df['viewpoint'] == viewpoint]
+    
+    # Apply additional filtering if filter_value is provided
+    if filter_value is not None:
+        print("Filter value:", filter_value)
+        df = df[df[filter_key] == filter_value]
+        print("Length:", len(df))
+    
+    # Shuffle the DataFrame for random image selection
+    shuffled_df = df.sample(frac=1).reset_index(drop=True)
 
+    # Iterate through the subplots and display images
     for i, ax in enumerate(axes.flatten()):
-        row = df.sample(n=1).iloc[0]
+        if i >= len(shuffled_df):
+            break
+        row = shuffled_df.iloc[i]
         img_path = row['path']
         theta = row['theta']
         bbox = row['bbox']
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        # Optionally crop images based on bounding boxes
         if crop_bbox:
             img = get_chip_from_img(img, bbox, theta)
+        
         ax.imshow(img)
         ax.set_title(row['species'])
         ax.axis('off')
+    
+    # Adjust subplot layout and display the plot
     plt.tight_layout()
     plt.show()
-
