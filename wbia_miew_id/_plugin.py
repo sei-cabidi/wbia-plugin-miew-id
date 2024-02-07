@@ -437,39 +437,39 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         chips = ibs.get_annot_chips(aid_list)
         return chips
 
-    # def render_single_result(request, cm, aid, **kwargs):
-    #     # HACK FOR WEB VIEWER
-    #     overlay = kwargs.get('draw_fmatches')
-    #     chips = request.get_fmatch_overlayed_chip(
-    #         [cm.qaid, aid], overlay=overlay, config=request.config
-    #     )
-    #     out_image = vt.stack_image_list(chips)
-        
-    #     return out_image
-
     def render_single_result(request, cm, aid, **kwargs):
-
-        depc = request.depc
-        ibs = depc.controller
-
-        # Load config
-        species = ibs.get_annot_species_texts(aid)
-
-        config = None
-        if config is None:
-            config = CONFIGS[species]
-        config = _load_config(config)
-
-        # Load model
-        model = _load_model(config, MODELS[species], use_dataparallel=False)
-
-        # This list has to be in the format of [query_aid, db_aid]
-        aid_list = [cm.qaid, aid]
-        test_loader, test_dataset = _load_data(ibs, aid_list, config)
-
-        out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
-
+        # HACK FOR WEB VIEWER
+        overlay = kwargs.get('draw_fmatches')
+        chips = request.get_fmatch_overlayed_chip(
+            [cm.qaid, aid], overlay=overlay, config=request.config
+        )
+        out_image = vt.stack_image_list(chips)
+        
         return out_image
+
+    # def render_single_result(request, cm, aid, **kwargs):
+
+    #     depc = request.depc
+    #     ibs = depc.controller
+
+    #     # Load config
+    #     species = ibs.get_annot_species_texts(aid)
+
+    #     config = None
+    #     if config is None:
+    #         config = CONFIGS[species]
+    #     config = _load_config(config)
+
+    #     # Load model
+    #     model = _load_model(config, MODELS[species], use_dataparallel=False)
+
+    #     # This list has to be in the format of [query_aid, db_aid]
+    #     aid_list = [cm.qaid, aid]
+    #     test_loader, test_dataset = _load_data(ibs, aid_list, config)
+
+    #     out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
+
+    #     return out_image
     
     def render_batch_result(request, cm, aids):
 
