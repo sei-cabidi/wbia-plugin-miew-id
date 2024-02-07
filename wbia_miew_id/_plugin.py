@@ -438,7 +438,6 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         return chips
 
     def render_single_result(request, cm, aid, **kwargs):
-        # HACK FOR WEB VIEWER
         overlay = kwargs.get('draw_fmatches')
         chips = request.get_fmatch_overlayed_chip(
             [cm.qaid, aid], overlay=overlay, config=request.config
