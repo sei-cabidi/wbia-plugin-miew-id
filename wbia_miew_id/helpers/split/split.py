@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from stats import intersect_stats
 import scipy
+from scipy import optimize
 import numpy as np
 from tools import print_div, apply_filters
 
@@ -64,7 +65,7 @@ def split_df(df, train_ratio=0.7, unseen_ratio=0.5, is_val=True, stratify_col='n
     sorted_classes = class_counts.index.tolist()
 
     # Optimize the split
-    res = scipy.optimize.minimize(
+    res = optimize.minimize(
         lambda x: split_classes_objective(x[0], x[1], np.array(class_counts), train_ratio, unseen_ratio), 
         [0.5, 0.5], bounds=scipy.optimize.Bounds(lb=0, ub=1, keep_feasible=True), tol=1e-12, method='Nelder-Mead')
     
