@@ -141,7 +141,8 @@ CONFIGS = {
     'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml'
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'giraffe' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
     }
 
 
@@ -253,7 +254,8 @@ MODELS = {
     'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin'
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'giraffe':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
 }
 
 
