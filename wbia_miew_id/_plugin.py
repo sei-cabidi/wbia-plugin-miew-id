@@ -142,18 +142,18 @@ CONFIGS = {
     'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'giraffe_whole' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffe_reticulated' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffe_masai' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffe_tippelskirchi' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffe_tippelskirchi_thornicrofti' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_giraffa_angolensis' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_camelopardalis_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_camelopardalis_peralta' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml',
-    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id_giraffe.yaml'
+    'giraffe_whole' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_reticulated' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_masai' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_tippelskirchi' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_tippelskirchi_thornicrofti' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa_angolensis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis_peralta' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml'
     }
 
 
