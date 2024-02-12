@@ -156,6 +156,8 @@ CONFIGS = {
     'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml'
     }
 
+with open('./configs/model_config.json', 'r') as config_file:
+    CONFIGS = config = json.load(config_file) 
 
 REMOVED_MODELS = {
     'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin',
@@ -280,6 +282,8 @@ MODELS = {
     'giraffa_reticulata':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin'
 }
 
+with open('./configs/model_bin_config.json', 'r') as config_file:
+    MODELS = config = json.load(config_file) 
 
 GLOBAL_EMBEDDING_CACHE = {}
 
