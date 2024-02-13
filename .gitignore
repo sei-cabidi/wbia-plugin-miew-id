@@ -13,3 +13,4 @@ wbia_miew_id/configs/*
 *.csv
 *.db
 *.png
+wbia_miew_id/helpers/split/configs/config_*.yaml
