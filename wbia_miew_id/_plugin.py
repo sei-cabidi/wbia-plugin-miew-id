@@ -157,6 +157,24 @@ CONFIGS = {
     }
 
 
+
+# This section attempts to load the model configuration from a JSON file.
+#  - FileNotFoundError: Raised if the file is not found.
+#  - json.JSONDecodeError: Raised if the file content is not valid JSON.
+# If no errors occur, the MODELS variable is loaded successfully and a message is printed.
+
+try:
+  with open('/v_config/miewid/model_config.json', 'r') as config_file:
+    CONFIGS = json.load(config_file)
+except FileNotFoundError:
+  print("Error: File not found. Please check the file path /v_config/miewid/model_config.json ")
+except json.JSONDecodeError:
+  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_config.json.")
+else:
+  print("CONFIGS file loaded successfully.")
+
+
+
 REMOVED_MODELS = {
     'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin',
     'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
@@ -281,6 +299,22 @@ MODELS = {
 }
 
 
+# This section attempts to load the model bin configuration from a JSON file.
+#  - FileNotFoundError: Raised if the file is not found.
+#  - json.JSONDecodeError: Raised if the file content is not valid JSON.
+# If no errors occur, the MODELS variable is loaded successfully and a message is printed.
+try:
+  with open('/v_config/miewid/model_bin_config.json', 'r') as config_file:
+    MODELS = json.load(config_file)
+except FileNotFoundError:
+  print("Error: File not found. Please check the file path /v_config/miewid/model_bin_config.json ")
+except json.JSONDecodeError:
+  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_bin_config.json.")
+else:
+  print("MODELS bin config file loaded successfully.")
+
+
+
 GLOBAL_EMBEDDING_CACHE = {}
 
 
@@ -388,7 +422,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
 
     # Load model
     model = _load_model(config, MODELS[species])
-    
+
     # Initialize the gradient scaler
     scaler = GradScaler()
 
@@ -481,7 +515,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
             [cm.qaid, aid], overlay=overlay, config=request.config
         )
         out_image = vt.stack_image_list(chips)
-        
+
         return out_image
 
     # def render_single_result(request, cm, aid, **kwargs):
@@ -507,7 +541,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
     #     out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
 
     #     return out_image
-    
+
     def render_batch_result(request, cm, aids):
 
         depc = request.depc
