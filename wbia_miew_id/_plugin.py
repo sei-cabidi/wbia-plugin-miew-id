@@ -512,6 +512,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         return chips
 
     def render_single_result(request, cm, aid, **kwargs):
+        # Returns match images side-by-side without activation overlay
         overlay = kwargs.get('draw_fmatches')
         chips = request.get_fmatch_overlayed_chip(
             [cm.qaid, aid], overlay=overlay, config=request.config
