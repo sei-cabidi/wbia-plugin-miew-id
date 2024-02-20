@@ -85,9 +85,14 @@ CONFIGS = {
     'balaenoptera_acutorostrata+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_pilot+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'ziphiidae_sp': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_fin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'whale_gervais+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'whale_gervais': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'whale_beaked+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
+    'whale_beaked': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'balaenoptera_brydei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'balaenoptera_borealis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
     'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
@@ -134,8 +139,41 @@ CONFIGS = {
     'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
     'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml'
+    'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
+    'giraffe_whole' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_reticulated' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_masai' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_tippelskirchi' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffe_tippelskirchi_thornicrofti' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa_angolensis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis_peralta' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml'
     }
+
+
+
+# This section attempts to load the model configuration from a JSON file.
+#  - FileNotFoundError: Raised if the file is not found.
+#  - json.JSONDecodeError: Raised if the file content is not valid JSON.
+# If no errors occur, the MODELS variable is loaded successfully and a message is printed.
+
+try:
+  with open('/v_config/miewid/model_config.json', 'r') as config_file:
+    CONFIGS = json.load(config_file)
+except FileNotFoundError:
+  print("Error: File not found. Please check the file path /v_config/miewid/model_config.json ")
+except json.JSONDecodeError:
+  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_config.json.")
+else:
+  print("CONFIGS file loaded successfully.")
+
 
 
 REMOVED_MODELS = {
@@ -191,8 +229,13 @@ MODELS = {
     'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_pilot+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'whale_fin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'whale_beaked+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'whale_beaked': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'whale_gervais+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'whale_gervais': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'whale_pilot+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
+    'ziphiidae_sp': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'balaenoptera_brydei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
     'balaenoptera_borealis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',   
     'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
@@ -239,8 +282,39 @@ MODELS = {
     'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
     'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin'
+    'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
+    'giraffe_whole':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffe_reticulated':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffe_masai':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffe_tippelskirchi':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffe_tippelskirchi_thornicrofti':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_giraffa_angolensis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_giraffa_giraffa':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_giraffa':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_camelopardalis_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_camelopardalis_peralta':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'giraffa_reticulata':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin'
 }
+
+
+# This section attempts to load the model bin configuration from a JSON file.
+#  - FileNotFoundError: Raised if the file is not found.
+#  - json.JSONDecodeError: Raised if the file content is not valid JSON.
+# If no errors occur, the MODELS variable is loaded successfully and a message is printed.
+try:
+  with open('/v_config/miewid/model_bin_config.json', 'r') as config_file:
+    MODELS = json.load(config_file)
+except FileNotFoundError:
+  print("Error: File not found. Please check the file path /v_config/miewid/model_bin_config.json ")
+except json.JSONDecodeError:
+  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_bin_config.json.")
+else:
+  print("MODELS bin config file loaded successfully.")
+
 
 
 GLOBAL_EMBEDDING_CACHE = {}
@@ -350,7 +424,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
 
     # Load model
     model = _load_model(config, MODELS[species])
-    
+
     # Initialize the gradient scaler
     scaler = GradScaler()
 
@@ -443,7 +517,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
             [cm.qaid, aid], overlay=overlay, config=request.config
         )
         out_image = vt.stack_image_list(chips)
-        
+
         return out_image
 
     # def render_single_result(request, cm, aid, **kwargs):
@@ -469,7 +543,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
     #     out_image = draw_one(config, test_loader,  model, images_dir = '', method='gradcam_plus_plus', eigen_smooth=False, show=False)
 
     #     return out_image
-    
+
     def render_batch_result(request, cm, aids):
 
         depc = request.depc
