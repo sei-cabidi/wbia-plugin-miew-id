@@ -419,11 +419,16 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
 
     # Load config
     if config is None:
-        config = CONFIGS[species]
+        default_fallback_species_model = CONFIGS.get('default','')
+        config = CONFIGS.get(species, default_fallback_species_model)
+
     config = _load_config(config)
 
+    default_fallback_species_model = MODELS.get('default','')
+    d_config = MODELS.get(species, default_fallback_species_model)
+
     # Load model
-    model = _load_model(config, MODELS[species])
+    model = _load_model(config, d_config)
 
     # Initialize the gradient scaler
     scaler = GradScaler()
@@ -555,11 +560,15 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
 
         config = None
         if config is None:
-            config = CONFIGS[species]
+           default_fallback_species_model = CONFIGS.get('default','')
+           config = CONFIGS.get(species, default_fallback_species_model)
+
         config = _load_config(config)
 
+        default_fallback_species_model = MODELS.get('default','')
+        d_config = MODELS.get(species, default_fallback_species_model)
         # Load model
-        model = _load_model(config, MODELS[species], use_dataparallel=False)
+        model = _load_model(config, d_config, use_dataparallel=False)
 
         # This list has to be in the format of [query_aid, db_aid]
         aid_list = np.concatenate(([cm.qaid],  aids))
