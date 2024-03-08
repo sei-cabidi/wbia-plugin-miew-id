@@ -154,7 +154,20 @@ CONFIGS = {
     'giraffa_camelopardalis_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
     'giraffa_camelopardalis_peralta' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
     'giraffa_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml'
+    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
+    'chelonia_mydas' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'eretmochelys_imbricata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_asian' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_green' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_green+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_hawksbill' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_hawksbill+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_oliveridley' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_oliveridley+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_sea' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_sea+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_loggerhead' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
+    'turtle_loggerhead+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.yaml',
     }
 
 
@@ -297,7 +310,20 @@ MODELS = {
     'giraffa_camelopardalis_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
     'giraffa_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
     'giraffa_camelopardalis_peralta':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_reticulata':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin'
+    'giraffa_reticulata':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
+    'chelonia_mydas' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'eretmochelys_imbricata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_asian' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_green' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_green+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_hawksbill' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_hawksbill+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_oliveridley' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_oliveridley+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_sea' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_sea+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_loggerhead' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
+    'turtle_loggerhead+head' : 'https://wildbookiarepository.azureedge.net/models/miew_id.iot.bin',
 }
 
 
