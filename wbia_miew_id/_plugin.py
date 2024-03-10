@@ -39,282 +39,47 @@ DEMOS = {
     'whale_beluga': '',
 }
 
-REMOVED_CONFIGS ={
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.yaml',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
-    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.yaml',
-}
-
-CONFIGS = {
-    'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'tursiops_truncatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'dolphin_whitesided+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'white_shark+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'carcharodon_carcharias': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'spinner_dolphin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'stenella_longirostris': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'sotalia_guianensis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_humpback+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'megaptera_novaeangliae': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.yaml',
-    'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.yaml',
-    'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.yaml',
-    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.yaml',
-    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.yaml',
-    'dolphin_spotted+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'dolphin_spotted': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'stenella_frontalis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'stenella_attenuata': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'phocoena_phocoena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'harbour_porpoise+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'balaenoptera_acutorostrata+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_pilot+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'ziphiidae_sp': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_fin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_gervais+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_gervais': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_beaked+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_beaked': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'balaenoptera_brydei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'balaenoptera_borealis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'dolphin_roughtoothed+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_orca': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_grey+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'whale_sperm+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'physeter_macrocephalus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'right_whale+head_aerial':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
-    'right_whale+fluke':'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.yaml',
-    'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
-    'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.yaml',
-    'panthera_pardus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'hyaena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'crocuta_crocuta': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'hyaena_brown': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'hyaena_brunnea': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_dark': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_puppy': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_tan': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_general': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_standard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog_ambiguous': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'wild_dog+tail_double_black_white': 'https://cthulhu.dyn.wildme.io/public/models/miew_id_ms_9cats.yaml',
-    'lycaon_pictus': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'wilddog':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'snow_leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'panthera_uncia':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'lynx_lynx':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'cheetah':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'acinonyx_jubatus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'hyena':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'lynx_pardinus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'panthera_onca':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'ocelot':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leopardus_pardalis':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.yaml',
-    'giraffe_whole' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffe_reticulated' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffe_masai' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffe_tippelskirchi' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffe_tippelskirchi_thornicrofti' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_giraffa_angolensis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_giraffa' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_camelopardalis_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_camelopardalis_peralta' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_camelopardalis' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml',
-    'giraffa_reticulata' : 'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.yaml'
-    }
-
-
-
+def read_config_and_load_model(species):
 # This section attempts to load the model configuration from a JSON file.
 #  - FileNotFoundError: Raised if the file is not found.
 #  - json.JSONDecodeError: Raised if the file content is not valid JSON.
 # If no errors occur, the MODELS variable is loaded successfully and a message is printed.
-
-try:
-  with open('/v_config/miewid/model_config.json', 'r') as config_file:
-    CONFIGS = json.load(config_file)
-except FileNotFoundError:
-  print("Error: File not found. Please check the file path /v_config/miewid/model_config.json ")
-except json.JSONDecodeError:
-  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_config.json.")
-else:
-  print("CONFIGS file loaded successfully.")
-
-
-
-REMOVED_MODELS = {
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.leopard.bin',
-    'leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'snow_leopard': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'wilddog': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_4cats.bin',
-    'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-    'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miewid_lion_head_v0.bin',
-}
-
-MODELS = {
-    'whale_beluga': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'delphinapterus_leucas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'tursiops_truncatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'dolphin_whitesided+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'white_shark+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'carcharodon_carcharias': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'spinner_dolphin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'stenella_longirostris': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'sotalia_guianensis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'globicephala_macrorhynchus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'globicephala_melas': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'short_fin_pilot_whale+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'hyperoodon_ampullatus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_humpback+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'megaptera_novaeangliae': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'lagenodelphis_hosei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'lion+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.bin',
-    'lioness+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.bin',
-    'lion_general+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.bin',
-    'panthera_leo': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.bin',
-    'cougar+head': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_face.bin',
-    'dolphin_spotted+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'dolphin_spotted': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'stenella_frontalis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'stenella_attenuata': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_falsekiller': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'pseudorca_crassidens': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'dolphin_rissos+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'grampus_griseus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'phocoena_phocoena': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'harbour_porpoise+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'balaenoptera_acutorostrata+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_minke+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'dolphin_bottlenose+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_fin+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_fin': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_beaked+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_beaked': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_gervais+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_gervais': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_pilot+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'ziphiidae_sp': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'balaenoptera_brydei': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'balaenoptera_borealis': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',   
-    'whale_orca+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'dolphin_roughtoothed+fin_dorsal': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_orca': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_grey': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_grey+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_humpback+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'whale_sperm+fluke': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'physeter_macrocephalus': 'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'right_whale+head_aerial':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
-    'right_whale+fluke':'https://cthulhu.dyn.wildme.io/public/models/miew_id.ms_flukebook.bin',
-    'eubalaena_glacialis':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
-    'right_whale+head_lateral':'https://cthulhu.dyn.wildme.io/public/models/miew_id.rightwhale.bin',
-    'panthera_pardus': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'hyaena': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'hyaena_brown': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'hyaena_brunnea': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_dark': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_puppy': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_tan': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_general': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_standard': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog_ambiguous': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wild_dog+tail_double_black_white': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lycaon_pictus': 'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'wilddog':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'snow_leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'panthera_uncia':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lynx_lynx':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'cheetah':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'acinonyx_jubatus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'hyena':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lynx_pardinus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leopard':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'jaguar':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'panthera_onca':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'amur_tiger':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'panthera_tigris':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'ocelot':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leopardus_pardalis':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'tiger_cat':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leopardus_guttulus':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lion':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lioness':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'lion_general':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'leptailurus_serval':'https://wildbookiarepository.azureedge.net/models/miew_id_ms_9cats.bin',
-    'giraffe_whole':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffe_reticulated':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffe_masai':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffe_tippelskirchi':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffe_tippelskirchi_thornicrofti':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_giraffa_angolensis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_giraffa_giraffa':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_giraffa':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_camelopardalis_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_camelopardalis':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_camelopardalis_peralta':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin',
-    'giraffa_reticulata':'https://wildbookiarepository.azureedge.net/models/miew_id.giraffe.bin'
-}
-
+    try:
+      with open('/v_config/miewid/model_config.json', 'r') as config_file:
+         CONFIGS = json.load(config_file)
+    except FileNotFoundError:
+      print("Error: File not found. Please check the file path /v_config/miewid/model_config.json ")
+    except json.JSONDecodeError:
+      print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_config.json.")
+    else:
+      print("CONFIGS file loaded successfully.")
 
 # This section attempts to load the model bin configuration from a JSON file.
 #  - FileNotFoundError: Raised if the file is not found.
 #  - json.JSONDecodeError: Raised if the file content is not valid JSON.
 # If no errors occur, the MODELS variable is loaded successfully and a message is printed.
-try:
-  with open('/v_config/miewid/model_bin_config.json', 'r') as config_file:
-    MODELS = json.load(config_file)
-except FileNotFoundError:
-  print("Error: File not found. Please check the file path /v_config/miewid/model_bin_config.json ")
-except json.JSONDecodeError:
-  print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_bin_config.json.")
-else:
-  print("MODELS bin config file loaded successfully.")
+    try:
+      with open('/v_config/miewid/model_bin_config.json', 'r') as config_file:
+        MODELS = json.load(config_file)
+    except FileNotFoundError:
+      print("Error: File not found. Please check the file path /v_config/miewid/model_bin_config.json ")
+    except json.JSONDecodeError:
+      print("Error: Invalid JSON format. Please check the file content /v_config/miewid/model_bin_config.json.")
+    else:
+      print("MODELS bin config file loaded successfully.")
 
+    config = None
+    if config is None:
+       default_fallback_species_model = CONFIGS.get('default','')
+       config = CONFIGS.get(species, default_fallback_species_model)
+
+    config = _load_config(config)
+
+    default_fallback_species_model = MODELS.get('default','')
+    model_url  = MODELS.get(species, default_fallback_species_model)
+    # Load model
+    model = _load_model(config, model_url , use_dataparallel=False)
+    return model, config
 
 
 GLOBAL_EMBEDDING_CACHE = {}
@@ -417,18 +182,8 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
 
-    # Load config
-    if config is None:
-        default_fallback_species_model = CONFIGS.get('default','')
-        config = CONFIGS.get(species, default_fallback_species_model)
-
-    config = _load_config(config)
-
-    default_fallback_species_model = MODELS.get('default','')
-    d_config = MODELS.get(species, default_fallback_species_model)
-
     # Load model
-    model = _load_model(config, d_config)
+    model, config = read_config_and_load_model(species)
 
     # Initialize the gradient scaler
     scaler = GradScaler()
@@ -557,19 +312,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
 
         # Load config
         species = ibs.get_annot_species_texts(aids)[0]
-
-        config = None
-        if config is None:
-           default_fallback_species_model = CONFIGS.get('default','')
-           config = CONFIGS.get(species, default_fallback_species_model)
-
-        config = _load_config(config)
-
-        default_fallback_species_model = MODELS.get('default','')
-        d_config = MODELS.get(species, default_fallback_species_model)
-        # Load model
-        model = _load_model(config, d_config, use_dataparallel=False)
-
+        model, config = read_config_and_load_model(species)
         # This list has to be in the format of [query_aid, db_aid]
         aid_list = np.concatenate(([cm.qaid],  aids))
         test_loader, test_dataset = _load_data(ibs, aid_list, config)
