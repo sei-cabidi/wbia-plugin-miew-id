@@ -79,6 +79,7 @@ def run_test(config, visualize=False):
     checkpoint_path = config.data.test.checkpoint_path
 
     if checkpoint_path:
+        print('loading checkpoint from', checkpoint_path)
         weights = torch.load(config.data.test.checkpoint_path, map_location=torch.device(config.engine.device))
         n_train_classes = weights[list(weights.keys())[-1]].shape[-1]
         if config.model_params.n_classes != n_train_classes:
@@ -116,7 +117,7 @@ def run_test(config, visualize=False):
 
     if visualize:
         k=5
-        embeddings, logits, q_pids, distmat = test_outputs
+        embeddings, q_pids, distmat = test_outputs
         ranks=list(range(1, k+1))
         score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
