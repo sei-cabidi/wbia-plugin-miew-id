@@ -14,6 +14,7 @@ from torch.cuda.amp import autocast, GradScaler
 import torchvision.transforms as transforms  # noqa: E402
 from scipy.spatial import distance_matrix
 import pandas as pd
+import json
 
 import tqdm
 
@@ -68,18 +69,18 @@ def read_config_and_load_model(species):
     else:
       print("MODELS bin config file loaded successfully.")
 
-    config = None
-    if config is None:
-       default_fallback_species_model = CONFIGS.get('default','')
-       config = CONFIGS.get(species, default_fallback_species_model)
+    config_url = None
+    if config_url is None:
+       default_fallback_species_model = CONFIGS['default']
+       config_url = CONFIGS.get(species, default_fallback_species_model)
 
-    config = _load_config(config)
+    config = _load_config(config_url)
 
-    default_fallback_species_model = MODELS.get('default','')
+    default_fallback_species_model = MODELS['default']
     model_url  = MODELS.get(species, default_fallback_species_model)
     # Load model
     model = _load_model(config, model_url , use_dataparallel=False)
-    return model, config
+    return model, config, (model_url, config_url)
 
 
 GLOBAL_EMBEDDING_CACHE = {}
@@ -183,7 +184,7 @@ def miew_id_compute_embedding(ibs, aid_list, config=None, multithread=False):
     species = ibs.get_annot_species_texts(aid_list[0])
 
     # Load model
-    model, config = read_config_and_load_model(species)
+    model, config, (model_url, config_url) = read_config_and_load_model(species)
 
     # Initialize the gradient scaler
     scaler = GradScaler()
@@ -312,7 +313,7 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
 
         # Load config
         species = ibs.get_annot_species_texts(aids)[0]
-        model, config = read_config_and_load_model(species)
+        model, config, (model_url, config_url) = read_config_and_load_model(species)
         # This list has to be in the format of [query_aid, db_aid]
         aid_list = np.concatenate(([cm.qaid],  aids))
         test_loader, test_dataset = _load_data(ibs, aid_list, config)
@@ -327,6 +328,15 @@ class MiewIdRequest(dt.base.VsOneSimilarityRequest):
         depc = request.depc
         config = request.config
         cm_list = list(get_match_results(depc, qaid_list, daid_list, score_list, config))
+
+        depc = request.depc
+        ibs = depc.controller
+        for cm in cm_list:
+            species = ibs.get_annot_species_texts(cm.qaid)
+            _, _, (model_url, config_url) = read_config_and_load_model(species)
+            cm.model_url = model_url
+            cm.config_url = config_url
+
         table.delete_rows(rowids)
         return cm_list
 
