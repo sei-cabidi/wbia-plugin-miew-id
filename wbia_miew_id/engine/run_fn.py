@@ -2,7 +2,8 @@ import torch
 from tabulate import tabulate
 
 from .train_fn import train_fn
-from .eval_fn import eval_fn, group_eval_fn
+from .eval_fn import eval_fn
+from .group_eval import group_eval_fn
 from helpers.swatools import update_bn
 
 def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, scheduler, device, checkpoint_dir, use_wandb=True, swa_model=None, swa_start=None, swa_scheduler=None):
