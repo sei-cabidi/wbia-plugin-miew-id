@@ -20,6 +20,14 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         # print(tabulate([["Train", 0], ["Valid", valid_score]], headers=["Split", "mAP"]))
         # print("\n\n")
 
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict(),  
+            'best_score': best_score,
+        }, f'{checkpoint_dir}/checkpoint_latest.bin')
+
         if valid_score > best_score:
             best_score = valid_score
             torch.save(model.state_dict(), f'{checkpoint_dir}/model_best.bin')
