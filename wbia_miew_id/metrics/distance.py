@@ -1,3 +1,5 @@
+import numpy as np
+from scipy.spatial.distance import cdist
 
 import torch
 import torch.nn.functional as F
@@ -77,3 +79,33 @@ def compute_distance_matrix(input1, input2, metric='euclidean'):
         )
 
     return distmat
+
+def compute_batched_distance_matrix(input1, input2, metric='cosine', batch_size=10):
+    """
+    Computes the distance matrix in a batched manner to save memory.
+    
+    Args:
+        input1 (np.ndarray): 2-D array of query features.
+        input2 (np.ndarray): 2-D array of database features.
+        metric (str): The distance metric to use. Options include 'euclidean', 'cosine', etc.
+        batch_size (int): The number of rows from input1 to process at a time.
+    
+    Returns:
+        np.ndarray: The computed distance matrix.
+    """
+    # Ensure input is in numpy format for compatibility with cdist
+    if isinstance(input1, torch.Tensor):
+        input1 = input1.numpy()
+    if isinstance(input2, torch.Tensor):
+        input2 = input2.numpy()
+
+    num_batches = int(np.ceil(input1.shape[0] / batch_size))
+    dist_matrix = []
+
+    for i in range(num_batches):
+        start = i * batch_size
+        end = min((i + 1) * batch_size, input1.shape[0])
+        batch_distances = cdist(input1[start:end], input2, metric=metric)
+        dist_matrix.append(batch_distances)
+
+    return np.vstack(dist_matrix)
