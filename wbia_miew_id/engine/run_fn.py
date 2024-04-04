@@ -36,12 +36,12 @@ def run_fn(config, model, train_loader, valid_loader, criterion, optimizer, sche
         
         if eval_groups:
             valid_score, valid_cmc = group_eval_fn(config, eval_groups, model)
+            print('Group average score: ', valid_score)
 
         else:
             print('Evaluating on full test set')
             valid_score, valid_cmc = eval_fn(valid_loader, model, device, use_wandb=use_wandb, return_outputs=False)
-
-        print('Valid score: ', valid_score)
+            print('Valid score: ', valid_score)
 
         # print("\n")
         # print(tabulate([["Train", 0], ["Valid", valid_score]], headers=["Split", "mAP"]))

@@ -61,8 +61,6 @@ def group_eval_fn(config, eval_groups, model, use_wandb=True):
                         images_dir = config.data.images_dir)
     group_results = group_eval(config, df_test_group, eval_groups, model)
 
-    print('Group average score', valid_score)
-
     group_scores = []
     group_cmcs = []
 
