@@ -68,8 +68,13 @@ class MiewIdNet(nn.Module):
         super(MiewIdNet, self).__init__()
         print('Building Model Backbone for {} model'.format(model_name))
 
+        self.model_name = model_name
+
         self.backbone = timm.create_model(model_name, pretrained=pretrained)
-        final_in_features = self.backbone.classifier.in_features
+        if model_name.startswith('efficientnetv2_rw'):
+            final_in_features = self.backbone.classifier.in_features
+        if model_name.startswith('swinv2'):
+            final_in_features = self.backbone.norm.normalized_shape[0]
         
         self.backbone.classifier = nn.Identity()
         self.backbone.global_pool = nn.Identity()
@@ -127,7 +132,10 @@ class MiewIdNet(nn.Module):
 
     def extract_feat(self, x):
         batch_size = x.shape[0]
-        x = self.backbone(x)
+        x = self.backbone.forward_features(x)
+        if self.model_name.startswith('swinv2'):
+            x = x.permute(0, 3, 1, 2)
+
         x = self.pooling(x).view(batch_size, -1)
         x = self.bn(x)
         if self.use_fc:
