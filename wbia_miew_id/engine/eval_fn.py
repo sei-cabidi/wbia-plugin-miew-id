@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import wandb
 
+from etl import preprocess_data
+from .group_eval import group_eval
 from metrics import AverageMeter, compute_distance_matrix, compute_calibration, eval_onevsall, topk_average_precision, precision_at_k, get_accuracy
 from helpers.swatools import extract_outputs
 from torch.cuda.amp import autocast  
@@ -110,16 +112,16 @@ def calculate_calibration(logits, labels, logits_db=None, labels_db=None):
 
     return ece, (logits, q_pids, top_confidences, pred_labels)
 
-def log_results(mAP, cmc, use_wandb=True):
+def log_results(mAP, cmc, tag='Avg', use_wandb=True):
     ranks=[1, 5, 10, 20]
-    print("** Results **")
+    print("** {tag} Results **")
     print("mAP: {:.1%}".format(mAP))
     print("CMC curve")
     for r in ranks:
         print("Rank-{:<3}: {:.1%}".format(r, cmc[r - 1]))
-        if use_wandb: wandb.log({"Rank-{:<3}".format(r): cmc[r - 1]})
+        if use_wandb: wandb.log({"{tag} - Rank-{:<3}".format(r): cmc[r - 1]})
     
-    if use_wandb: wandb.log({"mAP": mAP})
+    if use_wandb: wandb.log({"{tag} - mAP": mAP})
 
 def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
 
@@ -133,3 +135,35 @@ def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
         return mAP, cmc, (embeddings, q_pids, distmat)
     else:
         return mAP, cmc
+    
+def group_eval_fn(config, eval_groups, model, use_wandb=True):
+    print('Evaluating on groups')
+    df_test_group = preprocess_data(config.data.test.anno_path, 
+                        name_keys=config.data.name_keys,
+                        convert_names_to_ids=True, 
+                        viewpoint_list=config.data.viewpoint_list, 
+                        n_filter_min=None, 
+                        n_subsample_max=None,
+                        use_full_image_path=config.data.use_full_image_path,
+                        images_dir = config.data.images_dir)
+    group_results = group_eval(config, df_test_group, eval_groups, model)
+
+    print('Group average score', valid_score)
+
+    group_scores = []
+    group_cmcs = []
+
+    for (group, group_score, group_cmc) in group_results:
+        group_tag = '-'.join(group) if isinstance(group, tuple) else group
+        log_results(group_score, group_cmc, group_tag, use_wandb=use_wandb)
+
+        group_scores.append(group_score)
+        group_cmcs.append(group_cmc)
+
+    group_scores = [x for x in group_scores if x != 0]
+    valid_score = np.mean(group_scores)
+    valid_cmc = np.mean(group_cmcs, axis=0).tolist()
+
+    log_results(valid_score, valid_cmc, 'Avg', use_wandb=use_wandb)
+
+    return valid_score, valid_cmc
