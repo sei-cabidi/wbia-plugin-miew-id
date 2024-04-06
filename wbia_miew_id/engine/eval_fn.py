@@ -110,16 +110,16 @@ def calculate_calibration(logits, labels, logits_db=None, labels_db=None):
 
     return ece, (logits, q_pids, top_confidences, pred_labels)
 
-def log_results(mAP, cmc, use_wandb=True):
+def log_results(mAP, cmc, tag='Avg', use_wandb=True):
     ranks=[1, 5, 10, 20]
-    print("** Results **")
+    print(f"** {tag} Results **")
     print("mAP: {:.1%}".format(mAP))
     print("CMC curve")
     for r in ranks:
-        print("Rank-{:<3}: {:.1%}".format(r, cmc[r - 1]))
-        if use_wandb: wandb.log({"Rank-{:<3}".format(r): cmc[r - 1]})
+        print(f"Rank-{r:<3}: {cmc[r - 1]:.1%}")
+        if use_wandb: wandb.log({f"{tag} - Rank-{r:<3}": cmc[r - 1]})
     
-    if use_wandb: wandb.log({"mAP": mAP})
+    if use_wandb: wandb.log({f"{tag} - mAP": mAP})
 
 def eval_fn(data_loader, model, device, use_wandb=True, return_outputs=False):
 

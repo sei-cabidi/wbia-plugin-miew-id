@@ -1,7 +1,8 @@
 import torch
+import numpy as np
 from datasets import MiewIdDataset, get_test_transforms
-from .eval_fn import eval_fn
-from etl import filter_min_names_df, subsample_max_df
+from .eval_fn import eval_fn, log_results
+from etl import filter_min_names_df, subsample_max_df, preprocess_data
 
 def group_eval(config, df_test, eval_groups, model):
 
@@ -47,3 +48,33 @@ def group_eval(config, df_test, eval_groups, model):
             group_results.append(group_result)
 
     return group_results
+
+def group_eval_fn(config, eval_groups, model, use_wandb=True):
+    print('Evaluating on groups')
+    df_test_group = preprocess_data(config.data.test.anno_path, 
+                        name_keys=config.data.name_keys,
+                        convert_names_to_ids=True, 
+                        viewpoint_list=config.data.viewpoint_list, 
+                        n_filter_min=None, 
+                        n_subsample_max=None,
+                        use_full_image_path=config.data.use_full_image_path,
+                        images_dir = config.data.images_dir)
+    group_results = group_eval(config, df_test_group, eval_groups, model)
+
+    group_scores = []
+    group_cmcs = []
+
+    for (group, group_score, group_cmc) in group_results:
+        group_tag = '-'.join(group) if isinstance(group, tuple) else group
+        log_results(group_score, group_cmc, group_tag, use_wandb=use_wandb)
+
+        group_scores.append(group_score)
+        group_cmcs.append(group_cmc)
+
+    group_scores = [x for x in group_scores if x != 0]
+    valid_score = np.mean(group_scores)
+    valid_cmc = np.mean(group_cmcs, axis=0).tolist()
+
+    log_results(valid_score, valid_cmc, 'Avg', use_wandb=use_wandb)
+
+    return valid_score, valid_cmc
