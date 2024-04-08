@@ -41,7 +41,7 @@ def group_eval(config, df_test, eval_groups, model):
             except Exception as E:
                 print('* Could not evaluate group:', group)
                 print(E)
-                test_score, test_cmc = 0, 0
+                test_score, test_cmc = 0, [0]*20
 
             group_result = (group, test_score, test_cmc)
 
