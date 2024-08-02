@@ -14,6 +14,7 @@ import numpy as np
 
 import argparse
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Load configuration file.")
     parser.add_argument(
@@ -75,6 +76,7 @@ class Evaluator:
         
         if checkpoint_path:
             weights = torch.load(checkpoint_path, map_location=device)
+            print(list(weights.keys()))
             n_train_classes = weights[list(weights.keys())[-1]].shape[-1]
             if model_params['n_classes'] != n_train_classes:
                 print(f"WARNING: Overriding n_classes in config ({model_params['n_classes']}) which is different from actual n_train_classes in the checkpoint -  ({n_train_classes}).")
@@ -147,9 +149,36 @@ class Evaluator:
         ranks = list(range(1, k+1))
         score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
+
+        import pickle
+        with open(os.path.join(output_dir, "df_test.pkl"), "wb") as f:
+            pickle.dump(df_test, f)
+        with open(os.path.join(output_dir, "test_dataset.pkl"), "wb") as f:
+            pickle.dump(test_dataset, f)
+        with open(os.path.join(output_dir, "q_pids.pkl"), "wb") as f:
+            pickle.dump(q_pids, f)
+        with open(os.path.join(output_dir, "distmat.pkl"), "wb") as f:
+            pickle.dump(distmat, f)
+        with open(os.path.join(output_dir, "ranks.pkl"), "wb") as f:
+            pickle.dump(ranks, f)
+        with open(os.path.join(output_dir, "topk_idx.pkl"), "wb") as f:
+            pickle.dump(topk_idx, f)
+        with open(os.path.join(output_dir, "topk_names.pkl"), "wb") as f:
+            pickle.dump(topk_names, f)
+        with open(os.path.join(output_dir, "match_mat.pkl"), "wb") as f:
+            pickle.dump(match_mat, f)
+        with open(os.path.join(output_dir, "match_results.pkl"), "wb") as f:
+            pickle.dump(match_results, f)
+
+        # Gradcam goes here
         render_query_results(model, test_dataset, df_test, match_results, device,
                              k=k, valid_batch_size=valid_batch_size, output_dir=output_dir)
-
+        
+        # LightGlue visualization code goes here
+        # render_query_results_lightglue(model, test_dataset, df_test, match_results, device,
+        #                                 k=k, valid_batch_size=valid_batch_size, output_dir=output_dir)
+        
+        
     def evaluate(self):
         test_loader, df_test = self.preprocess_test_data(
             self.anno_path, self.name_keys, self.viewpoint_list, 
@@ -168,7 +197,7 @@ class Evaluator:
 
         if self.visualize:
             self.visualize_results(test_outputs, df_test, test_loader.dataset, self.model, self.device,
-                                  k=5, valid_batch_size=self.valid_batch_size,output_dir=self.visualization_output_dir )
+                                  k=20, valid_batch_size=self.valid_batch_size,output_dir=self.visualization_output_dir )
 
         return test_score
 
@@ -179,27 +208,27 @@ if __name__ == '__main__':
     visualization_output_dir = f"{config.checkpoint_dir}/{config.project_name}/{config.exp_name}/visualizations"
     
     evaluator = Evaluator(
-    device=torch.device(config.engine.device),
-    seed=config.engine.seed,
-    anno_path=config.data.test.anno_path,
-    name_keys=config.data.name_keys,
-    viewpoint_list=config.data.viewpoint_list,
-    use_full_image_path=config.data.use_full_image_path,
-    images_dir=config.data.images_dir,
-    image_size=(config.data.image_size[0], config.data.image_size[1]),
-    crop_bbox=config.data.crop_bbox,
-    valid_batch_size=config.engine.valid_batch_size,
-    num_workers=config.engine.num_workers,
-    eval_groups=config.data.test.eval_groups,
-    fliplr=config.test.fliplr,
-    fliplr_view=config.test.fliplr_view,
-    n_filter_min=config.data.test.n_filter_min,
-    n_subsample_max=config.data.test.n_subsample_max,
-    model_params=dict(config.model_params),
-    checkpoint_path=config.data.test.checkpoint_path,
-    model=None,
-    visualize=args.visualize,
-    visualization_output_dir=visualization_output_dir
-)
+        device=torch.device(config.engine.device),
+        seed=config.engine.seed,
+        anno_path=config.data.test.anno_path,
+        name_keys=config.data.name_keys,
+        viewpoint_list=config.data.viewpoint_list,
+        use_full_image_path=config.data.use_full_image_path,
+        images_dir=config.data.images_dir,
+        image_size=(config.data.image_size[0], config.data.image_size[1]),
+        crop_bbox=config.data.crop_bbox,
+        valid_batch_size=config.engine.valid_batch_size,
+        num_workers=config.engine.num_workers,
+        eval_groups=config.data.test.eval_groups,
+        fliplr=config.test.fliplr,
+        fliplr_view=config.test.fliplr_view,
+        n_filter_min=config.data.test.n_filter_min,
+        n_subsample_max=config.data.test.n_subsample_max,
+        model_params=dict(config.model_params),
+        checkpoint_path=config.data.test.checkpoint_path,
+        model=None,
+        visualize=args.visualize,
+        visualization_output_dir=visualization_output_dir
+    )
     
     evaluator.evaluate()
