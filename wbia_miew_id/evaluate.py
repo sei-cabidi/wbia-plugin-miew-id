@@ -11,6 +11,7 @@ import os
 import torch
 import random
 import numpy as np
+import pickle
 
 import argparse
 
@@ -27,6 +28,27 @@ def parse_args():
     parser.add_argument('--visualize', '--vis', action='store_true')
 
     return parser.parse_args()
+
+def save_to_disk(output_dir, df_test, test_dataset, q_pids, distmat, ranks, topk_idx, topk_names, match_mat, match_results):
+    os.makedirs(output_dir, exist_ok=True)
+    with open(os.path.join(output_dir, "df_test.pkl"), "wb") as f:
+        pickle.dump(df_test, f)
+    with open(os.path.join(output_dir, "test_dataset.pkl"), "wb") as f:
+        pickle.dump(test_dataset, f)
+    with open(os.path.join(output_dir, "q_pids.pkl"), "wb") as f:
+        pickle.dump(q_pids, f)
+    with open(os.path.join(output_dir, "distmat.pkl"), "wb") as f:
+        pickle.dump(distmat, f)
+    with open(os.path.join(output_dir, "ranks.pkl"), "wb") as f:
+        pickle.dump(ranks, f)
+    with open(os.path.join(output_dir, "topk_idx.pkl"), "wb") as f:
+        pickle.dump(topk_idx, f)
+    with open(os.path.join(output_dir, "topk_names.pkl"), "wb") as f:
+        pickle.dump(topk_names, f)
+    with open(os.path.join(output_dir, "match_mat.pkl"), "wb") as f:
+        pickle.dump(match_mat, f)
+    with open(os.path.join(output_dir, "match_results.pkl"), "wb") as f:
+        pickle.dump(match_results, f)
 
 class Evaluator:
     def __init__(self, device, seed, anno_path, name_keys, viewpoint_list, use_full_image_path, images_dir, image_size,
@@ -149,26 +171,7 @@ class Evaluator:
         ranks = list(range(1, k+1))
         score, match_mat, topk_idx, topk_names = precision_at_k(q_pids, distmat, ranks=ranks, return_matches=True)
         match_results = (q_pids, topk_idx, topk_names, match_mat)
-
-        import pickle
-        with open(os.path.join(output_dir, "df_test.pkl"), "wb") as f:
-            pickle.dump(df_test, f)
-        with open(os.path.join(output_dir, "test_dataset.pkl"), "wb") as f:
-            pickle.dump(test_dataset, f)
-        with open(os.path.join(output_dir, "q_pids.pkl"), "wb") as f:
-            pickle.dump(q_pids, f)
-        with open(os.path.join(output_dir, "distmat.pkl"), "wb") as f:
-            pickle.dump(distmat, f)
-        with open(os.path.join(output_dir, "ranks.pkl"), "wb") as f:
-            pickle.dump(ranks, f)
-        with open(os.path.join(output_dir, "topk_idx.pkl"), "wb") as f:
-            pickle.dump(topk_idx, f)
-        with open(os.path.join(output_dir, "topk_names.pkl"), "wb") as f:
-            pickle.dump(topk_names, f)
-        with open(os.path.join(output_dir, "match_mat.pkl"), "wb") as f:
-            pickle.dump(match_mat, f)
-        with open(os.path.join(output_dir, "match_results.pkl"), "wb") as f:
-            pickle.dump(match_results, f)
+        save_to_disk(output_dir, df_test, test_dataset, q_pids, distmat, ranks, topk_idx, topk_names, match_mat, match_results)
 
         # Gradcam goes here
         render_query_results(model, test_dataset, df_test, match_results, device,
