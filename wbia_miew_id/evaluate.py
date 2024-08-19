@@ -200,7 +200,7 @@ class Evaluator:
 
         if self.visualize:
             self.visualize_results(test_outputs, df_test, test_loader.dataset, self.model, self.device,
-                                  k=20, valid_batch_size=self.valid_batch_size,output_dir=self.visualization_output_dir )
+                                  k=20, valid_batch_size=self.valid_batch_size,output_dir=self.visualization_output_dir)
 
         return test_score
 
