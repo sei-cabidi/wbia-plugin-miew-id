@@ -326,7 +326,7 @@ class LightGlueVisualizer(Visualizer):
             image_query,
             image_match,
             is_match: bool = False,
-            *args
+            **kwargs
         ) -> dict:
         # Extract and match features
         feats0 = self.extractor.extract(image_query.to(self.device))
