@@ -323,11 +323,13 @@ class LightGlueVisualizer(Visualizer):
     
     def generate(
             self,
-            image_query,
-            image_match,
+            image_query: np.ndarray | torch.Tensor,
+            image_match: np.ndarray | torch.Tensor,
+            *,
             is_match: bool = False,
             **kwargs
         ) -> dict:
+        """For a single query-match pair of images, generate a visualization and associated metadata."""
         # Extract and match features
         feats0 = self.extractor.extract(image_query.to(self.device))
         feats1 = self.extractor.extract(image_match.to(self.device))

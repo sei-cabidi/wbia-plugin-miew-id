@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 import torch
 import typing as tp
 import matplotlib.pyplot as plt
@@ -139,25 +140,28 @@ class GradCamPlusPlusVisualizer(Visualizer):
 
     def generate(
             self,
-            dataloader,
-            df,
+            image_query: np.ndarray | torch.Tensor,
+            image_match: np.ndarray | torch.Tensor,
             **kwargs
         ) -> dict:
-        test_score, cmc, test_outputs = eval_fn(dataloader, self.evaluator.model, self.evaluator.device, use_wandb=False, return_outputs=True)
-        self.evaluator.visualize_results(test_outputs, df, dataloader.dataset, self.evaluator.model, self.evaluator.device, k=1, valid_batch_size=self.evaluator.valid_batch_size, output_dir=evaluator.visualization_output_dir)
-        img = mpimg.imread(Path(self.evaluator.visualization_output_dir, f"vis_{id1}_{orientation}_{id2}_top1.jpg"))
-        #imgplot = plt.imshow(img)
+        """For a single query-match pair of images, generate a visualization and associated metadata."""
+        # test_score, cmc, test_outputs = eval_fn(dataloader, self.evaluator.model, self.evaluator.device, use_wandb=False, return_outputs=True)
+        # self.evaluator.visualize_results(test_outputs, df, dataloader.dataset, self.evaluator.model, self.evaluator.device, k=1, valid_batch_size=self.evaluator.valid_batch_size, output_dir=evaluator.visualization_output_dir)
+        # img = mpimg.imread(Path(self.evaluator.visualization_output_dir, f"vis_{id1}_{orientation}_{id2}_top1.jpg"))
+        # #imgplot = plt.imshow(img)
 
-        # Store computed results
-        data = {
-            "figure":       image,
-            "query_kpts":   [m_kpts0],
-            "match_kpts":   [m_kpts1]
-        }
+        # # Store computed results
+        # data = {
+        #     "figure":       image,
+        #     "query_kpts":   [m_kpts0],
+        #     "match_kpts":   [m_kpts1]
+        # }
 
-        plt.close('all')
+        # plt.close('all')
         
-        return data
+        # return data
+        
+        raise NotImplementedError
     
 if __name__ == "__main__":
      root = Path("/srv/transparency/wildbook_prototype/data/beluga_example_miewid")
