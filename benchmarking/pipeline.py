@@ -47,7 +47,9 @@ def pipeline(
                 image_query,
                 image_match,
                 is_match=is_match,
-                topk_indices=topk_indices
+                topk_indices=topk_indices,
+                query_idx=query_idx,
+                match_idx=match_idx
             )
 
             score = dist_mat[query_idx, match_idx]
@@ -123,7 +125,13 @@ if __name__ == "__main__":
                             dist_mat
     )
     gradcam_results = pipeline(
-                            GradCamPlusPlusVisualizer(),
+                            GradCamPlusPlusVisualizer(
+                                root,
+                                visualization_output_dir,
+                                df_test,
+                                test_dataset,
+                                match_mat
+                            ),
                             images,
                             topk_idx,
                             match_mat,

@@ -1,3 +1,4 @@
+import cv2
 import os
 import pandas as pd
 import numpy as np
@@ -5,6 +6,7 @@ import torch
 import typing as tp
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from tqdm.auto import tqdm
 
 from pathlib import Path
 from wbia_miew_id.evaluate import Evaluator
@@ -12,10 +14,14 @@ from wbia_miew_id.visualization import render_single_query_result
 from wbia_miew_id.visualization import draw_batch
 from wbia_miew_id.visualization import SimilarityToConceptTarget
 from wbia_miew_id.visualization import generate_embeddings
+from wbia_miew_id.visualization import stack_match_images
+from wbia_miew_id.visualization import load_image
+from wbia_miew_id.visualization import show_cam_on_image
 from wbia_miew_id.datasets.default_dataset import MiewIdDataset
 from wbia_miew_id.engine import calculate_matches
 from wbia_miew_id.engine import eval_fn, group_eval_run
 from wbia_miew_id.datasets import get_test_transforms
+from wbia_miew_id.metrics import precision_at_k
 
 from pytorch_grad_cam import GradCAMPlusPlus
 
@@ -25,13 +31,19 @@ class GradCamPlusPlusVisualizer(Visualizer):
     def __init__(
             self,
             root: str | Path,
-            checkpoint_path: str | Path,
             output_dir: str | Path,
+            df_test,
+            test_dataset,
+            match_mat,
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+            checkpoint_path: str | Path = Path("/srv/transparency/wildbook_prototype/data/beluga-model-data/beluga-single-species.bin")
         ):
         self.root = root
         self.device = device
         self.output_dir = output_dir
+        self.df_test = df_test
+        self.test_dataset = test_dataset
+        self.match_mat = match_mat
         self.model_params = {
             'model_name': 'efficientnetv2_rw_m',
             'use_fc': False,
@@ -62,11 +74,30 @@ class GradCamPlusPlusVisualizer(Visualizer):
             n_filter_min=2,
             n_subsample_max=10,
             model_params=self.model_params,
-            checkpoint_path = self.checkpoint_path,
+            checkpoint_path = checkpoint_path,
             model=None,
             visualize=True,
-            visualization_output_dir=self.visualization_output_dir
+            visualization_output_dir=output_dir
         )
+
+        self.data_loader = torch.utils.data.DataLoader(
+            test_dataset,
+            batch_size=1,
+            num_workers=1,
+            shuffle=False,
+            pin_memory=True,
+            drop_last=False,
+        )
+
+        self.paths = []
+        self.bboxes = []
+
+        with torch.no_grad():
+            for batch in tqdm(self.data_loader, total=len(self.data_loader)):
+                self.paths.extend(batch["file_path"])
+                self.bboxes.extend(batch["bbox"])
+        
+        self.bboxes = [t.int().tolist() for t in self.bboxes]
 
     # Creates a new Pytorch dataloader from two indices
     def create_dataloader(self, d, idx1, idx2):
@@ -110,7 +141,7 @@ class GradCamPlusPlusVisualizer(Visualizer):
 
     def _gradcam(self, image1, image2, model):
         # Create a new dataloader from the two image indices
-        loader = self.create_dataloader(dataset, image1, image2)
+        loader = self.create_dataloader(self.test_dataset, image1, image2)
         model.eval()
 
         # Generate the embeddings and extract relevant fields
@@ -138,6 +169,37 @@ class GradCamPlusPlusVisualizer(Visualizer):
         results_cam = generate_cam(input_tensor=stack_tensor, targets=stack_target, aug_smooth=False, eigen_smooth=False)
         return results_cam
 
+    def heatmap(self, results_cam, qry_idx, db_idx):
+        qry_image_path = self.paths[qry_idx]
+        qry_float = load_image(qry_image_path)
+        qry_bbox = self.bboxes[qry_idx]
+        x1, y1, w, h = qry_bbox
+
+        qry_float = qry_float[y1 : y1 + h, x1 : x1 + w]
+        if min(qry_float.shape) < 1:
+            # Use original image
+            qry_float = qry_float = load_image(qry_image_path)
+
+        qry_float_norm = (qry_float - qry_float.min()) / (qry_float.max() - qry_float.min())
+        db_grayscale_cam_res = cv2.resize(results_cam[0, :], (qry_float_norm.shape[1], qry_float_norm.shape[0]))
+        cam_image_qry = show_cam_on_image(qry_float_norm, db_grayscale_cam_res, use_rgb=True)
+
+        db_image_path = self.paths[db_idx]
+        db_float = load_image(db_image_path)
+        db_bbox = self.bboxes[db_idx]
+        x1, y1, w, h = db_bbox
+        db_float = db_float[y1 : y1 + h, x1 : x1 + w]
+        if min(db_float.shape) < 1:
+            # Use original image
+            db_float = db_float = load_image(db_image_path)
+
+        db_float_norm = (db_float - db_float.min()) / (db_float.max() - db_float.min())
+        qry_grayscale_cam_res = cv2.resize(results_cam[1, :], (db_float_norm.shape[1], db_float_norm.shape[0]))
+        cam_image_db = show_cam_on_image(db_float_norm, qry_grayscale_cam_res, use_rgb=True)
+
+        return cam_image_qry, cam_image_db
+
+
     def generate(
             self,
             image_query: np.ndarray | torch.Tensor,
@@ -145,23 +207,24 @@ class GradCamPlusPlusVisualizer(Visualizer):
             **kwargs
         ) -> dict:
         """For a single query-match pair of images, generate a visualization and associated metadata."""
-        # test_score, cmc, test_outputs = eval_fn(dataloader, self.evaluator.model, self.evaluator.device, use_wandb=False, return_outputs=True)
-        # self.evaluator.visualize_results(test_outputs, df, dataloader.dataset, self.evaluator.model, self.evaluator.device, k=1, valid_batch_size=self.evaluator.valid_batch_size, output_dir=evaluator.visualization_output_dir)
-        # img = mpimg.imread(Path(self.evaluator.visualization_output_dir, f"vis_{id1}_{orientation}_{id2}_top1.jpg"))
-        # #imgplot = plt.imshow(img)
 
-        # # Store computed results
-        # data = {
-        #     "figure":       image,
-        #     "query_kpts":   [m_kpts0],
-        #     "match_kpts":   [m_kpts1]
-        # }
+        loader = self.create_dataloader(self.test_dataset, kwargs['query_idx'], kwargs['match_idx'])
 
-        # plt.close('all')
-        
-        # return data
-        
-        raise NotImplementedError
+        batch_images = draw_batch(self.device, loader, self.evaluator.model, method='gradcam_plus_plus')
+        descriptions = [(f"Query {kwargs['query_idx']}", f"Match {kwargs['match_idx']}")]
+        vis_match_mask = [self.match_mat[kwargs['query_idx']].tolist()[0]]
+        print(f"{len(batch_images)} {len(descriptions)} {len(vis_match_mask)}")
+        vis_result = stack_match_images(batch_images, descriptions, vis_match_mask)
+
+        results_cam = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model)
+
+        (query_image_heatmap, match_image_heatmap) = self.heatmap(results_cam, kwargs['query_idx'], kwargs['match_idx'])
+
+        return {
+            "figure": vis_result,
+            "query_heatmap": query_image_heatmap,
+            "match_heatmap": match_image_heatmap
+        }
     
 if __name__ == "__main__":
      root = Path("/srv/transparency/wildbook_prototype/data/beluga_example_miewid")
