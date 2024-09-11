@@ -23,7 +23,7 @@ from wbia_miew_id.engine import eval_fn, group_eval_run
 from wbia_miew_id.datasets import get_test_transforms
 from wbia_miew_id.metrics import precision_at_k
 
-from pytorch_grad_cam import GradCAMPlusPlus
+from pytorch_grad_cam import GradCAMPlusPlus, GradCAM
 
 from visualizer import Visualizer
 
@@ -139,7 +139,7 @@ class GradCamPlusPlusVisualizer(Visualizer):
             }
         }
 
-    def _gradcam(self, image1, image2, model):
+    def _gradcam(self, image1, image2, model, plusplus=True):
         # Create a new dataloader from the two image indices
         loader = self.create_dataloader(self.test_dataset, image1, image2)
         model.eval()
@@ -160,9 +160,12 @@ class GradCamPlusPlusVisualizer(Visualizer):
         image1_ = images[0].unsqueeze(0)
         image2_ = images[1].unsqueeze(0)
 
-        # Create GradCAM++ Object and generate results
+        # Create GradCAM++/GradCAM Object and generate results
         target_layers = model.backbone.conv_head
-        generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=True)
+        if plusplus:
+            generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=True)
+        else:
+            generate_cam = GradCAM(model=model,target_layers=[target_layers],use_cuda=True)
 
         stack_tensor = torch.cat([image1_, image2_])
         stack_target = [similarity1, similarity2]
@@ -210,20 +213,24 @@ class GradCamPlusPlusVisualizer(Visualizer):
 
         loader = self.create_dataloader(self.test_dataset, kwargs['query_idx'], kwargs['match_idx'])
 
-        batch_images = draw_batch(self.device, loader, self.evaluator.model, method='gradcam_plus_plus')
+        batch_images_gradcam_plus_plus = draw_batch(self.device, loader, self.evaluator.model, method='gradcam_plus_plus')
+        batch_images_gradcam = draw_batch(self.device, loader, self.evaluator.model, method='gradcam')
         descriptions = [(f"Query {kwargs['query_idx']}", f"Match {kwargs['match_idx']}")]
         vis_match_mask = [self.match_mat[kwargs['query_idx']].tolist()[0]]
-        print(f"{len(batch_images)} {len(descriptions)} {len(vis_match_mask)}")
-        vis_result = stack_match_images(batch_images, descriptions, vis_match_mask)
+        print(f"{len(batch_images_gradcam_plus_plus)} {len(descriptions)} {len(vis_match_mask)}")
+        vis_result_gradcam_plus_plus = stack_match_images(batch_images_gradcam_plus_plus, descriptions, vis_match_mask)
+        vis_result_gradcam = stack_match_images(batch_images_gradcam, descriptions, vis_match_mask)
 
-        results_cam = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model)
+        results_cam_plusplus = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model, plusplus=True)
+        results_cam = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model, plusplus=False)
 
+        (query_image_heatmap_plusplus, match_image_heatmap_plusplus) = self.heatmap(results_cam_plusplus, kwargs['query_idx'], kwargs['match_idx'])
         (query_image_heatmap, match_image_heatmap) = self.heatmap(results_cam, kwargs['query_idx'], kwargs['match_idx'])
 
         return {
-            "figure": vis_result,
-            "query_heatmap": query_image_heatmap,
-            "match_heatmap": match_image_heatmap
+            "figure": (vis_result_gradcam_plus_plus, vis_result_gradcam),
+            "query_heatmaps": (query_image_heatmap_plusplus, query_image_heatmap),
+            "match_heatmaps": (match_image_heatmap_plusplus, match_image_heatmap)
         }
     
 if __name__ == "__main__":
