@@ -27,6 +27,9 @@ from pytorch_grad_cam import GradCAMPlusPlus, GradCAM
 
 from visualizer import Visualizer
 
+import Image_Retrieval
+import BN_Inception
+
 class GradCamPlusPlusVisualizer(Visualizer):
     def __init__(
             self,
@@ -202,6 +205,47 @@ class GradCamPlusPlusVisualizer(Visualizer):
 
         return cam_image_qry, cam_image_db
 
+    def imshow_convert(self, raw):
+        '''
+            convert the heatmap for imshow
+        '''
+        heatmap = np.array(cv2.applyColorMap(np.uint8(255*(1.-raw)), cv2.COLORMAP_JET))
+        return heatmap
+
+    def point_specific_map(self, path_1, path_2, size=(224,224)):
+        eg = Image_Retrieval.Explanation_generator()
+        inputs_1, image_1, inputs_2, image_2 = eg.get_input_from_path(path_1, path_2)
+        embed_1, map_1, ori_1, fc_1, embed_2, map_2, ori_2, fc_2 = eg.get_embed(inputs_1=inputs_1, inputs_2=inputs_2)
+
+        eg.Decomposition = eg.Overall_map(map_1 = map_1, map_2 = map_2, fc_1 = fc_1, fc_2 = fc_2, mode = 'GMP')
+
+        # query point, position in the feature matrix (not the x,y in image)
+        query_point_1 = [100, 128] 
+        query_point_2 = [100, 128] 
+
+        # Use stream=1 for query point on image 1, the generated map is for image 2 (partial_2). vice versa
+        partial_1 = eg.Point_Specific(decom=eg.Decomposition, point=query_point_2, stream=2)
+        partial_2 = eg.Point_Specific(decom=eg.Decomposition, point=query_point_1, stream=1)
+
+        partial_1 = cv2.resize(partial_1, (size[1], size[0]))
+        partial_2 = cv2.resize(partial_2, (size[1], size[0]))
+        partial_1 = partial_1 / np.max(partial_1)
+        partial_2 = partial_2 / np.max(partial_2)
+
+        image_overlay_1 = image_1 * 0.7 + self.imshow_convert(partial_1) / 255.0 * 0.3
+        image_overlay_2 = image_2 * 0.7 + self.imshow_convert(partial_2) / 255.0 * 0.3
+
+        # plt.imshow(image_overlay_1)
+        # plt.savefig("/home/jwidjaja/test.png")
+
+        # plt.imshow(image_overlay_2)
+        # plt.savefig("/home/jwidjaja/test2.png")
+
+        heatmap_1 = self.imshow_convert(partial_1)
+        heatmap_2 = self.imshow_convert(partial_2)
+
+        return image_overlay_1, heatmap_1, image_overlay_2, heatmap_2
+
 
     def generate(
             self,
@@ -227,10 +271,12 @@ class GradCamPlusPlusVisualizer(Visualizer):
         (query_image_heatmap_plusplus, match_image_heatmap_plusplus) = self.heatmap(results_cam_plusplus, kwargs['query_idx'], kwargs['match_idx'])
         (query_image_heatmap, match_image_heatmap) = self.heatmap(results_cam, kwargs['query_idx'], kwargs['match_idx'])
 
+        (image_overlay_1, heatmap_point_1, image_overlay_2, heatmap_point_2) = self.point_specific_map(self.paths[kwargs['query_idx']], self.paths[kwargs['match_idx']])
+
         return {
-            "figure": (vis_result_gradcam_plus_plus, vis_result_gradcam),
-            "query_heatmaps": (query_image_heatmap_plusplus, query_image_heatmap),
-            "match_heatmaps": (match_image_heatmap_plusplus, match_image_heatmap)
+            "figure": (vis_result_gradcam_plus_plus, vis_result_gradcam, image_overlay_1, image_overlay_2),
+            "query_heatmaps": (query_image_heatmap_plusplus, query_image_heatmap, heatmap_point_1),
+            "match_heatmaps": (match_image_heatmap_plusplus, match_image_heatmap, heatmap_point_2)
         }
     
 if __name__ == "__main__":
