@@ -175,6 +175,41 @@ class GradCamPlusPlusVisualizer(Visualizer):
         results_cam = generate_cam(input_tensor=stack_tensor, targets=stack_target, aug_smooth=False, eigen_smooth=False)
         return results_cam
 
+    def _gradcam_on_image(self, image1, image2, model, plusplus=True):
+        # Create a new dataloader from the two image indices
+        loader = self.create_dataloader(self.test_dataset, image1, image2)
+        model.eval()
+
+        # Generate the embeddings and extract relevant fields
+        embeddings, labels, images, paths, bboxes, thetas = generate_embeddings(self.device, self.evaluator.model, loader)
+
+        # Extract features
+        image1_features = images[0]
+        image1_features = torch.Tensor(image1_features).to(self.device)
+        image1_features = image1_features.flatten()[:2152]
+
+        image2_features = images[1]
+        image2_features = torch.Tensor(image2_features).to(self.device)
+        image2_features = image2_features.flatten()[:2152]
+
+        similarity1 = SimilarityToConceptTarget(image1_features)
+        similarity2 = SimilarityToConceptTarget(image2_features)
+        
+        image1_ = images[0].unsqueeze(0)
+        image2_ = images[1].unsqueeze(0)
+
+        # Create GradCAM++/GradCAM Object and generate results
+        target_layers = model.backbone.conv_head
+        if plusplus:
+            generate_cam = GradCAMPlusPlus(model=model,target_layers=[target_layers],use_cuda=True)
+        else:
+            generate_cam = GradCAM(model=model,target_layers=[target_layers],use_cuda=True)
+
+        stack_tensor = torch.cat([image1_, image2_])
+        stack_target = [similarity1, similarity2]
+        results_cam = generate_cam(input_tensor=stack_tensor, targets=stack_target, aug_smooth=False, eigen_smooth=False)
+        return results_cam
+
     def heatmap(self, results_cam, qry_idx, db_idx):
         qry_image_path = self.paths[qry_idx]
         qry_float = load_image(qry_image_path)
@@ -268,15 +303,18 @@ class GradCamPlusPlusVisualizer(Visualizer):
         results_cam_plusplus = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model, plusplus=True)
         results_cam = self._gradcam(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model, plusplus=False)
 
+        results_cam_onimage = self._gradcam_on_image(kwargs['query_idx'], kwargs['match_idx'], self.evaluator.model, plusplus=True)
+
         (query_image_heatmap_plusplus, match_image_heatmap_plusplus) = self.heatmap(results_cam_plusplus, kwargs['query_idx'], kwargs['match_idx'])
         (query_image_heatmap, match_image_heatmap) = self.heatmap(results_cam, kwargs['query_idx'], kwargs['match_idx'])
+        (query_image_heatmap_onimage, match_image_heatmap_onimage) = self.heatmap(results_cam_onimage, kwargs['query_idx'], kwargs['match_idx'])
 
         (image_overlay_1, heatmap_point_1, image_overlay_2, heatmap_point_2) = self.point_specific_map(self.paths[kwargs['query_idx']], self.paths[kwargs['match_idx']])
 
         return {
             "figure": (vis_result_gradcam_plus_plus, vis_result_gradcam, image_overlay_1, image_overlay_2),
-            "query_heatmaps": (query_image_heatmap_plusplus, query_image_heatmap, heatmap_point_1),
-            "match_heatmaps": (match_image_heatmap_plusplus, match_image_heatmap, heatmap_point_2)
+            "query_heatmaps": (query_image_heatmap_plusplus, query_image_heatmap, heatmap_point_1, query_image_heatmap_onimage),
+            "match_heatmaps": (match_image_heatmap_plusplus, match_image_heatmap, heatmap_point_2, match_image_heatmap_onimage)
         }
     
 if __name__ == "__main__":
