@@ -25,10 +25,10 @@ from wbia_miew_id.metrics import precision_at_k
 
 from pytorch_grad_cam import GradCAMPlusPlus, GradCAM
 
-from visualizer import Visualizer
+from .visualizer import Visualizer
 
-import Image_Retrieval
-import BN_Inception
+from . import Image_Retrieval
+from . import BN_Inception
 
 class GradCamPlusPlusVisualizer(Visualizer):
     def __init__(

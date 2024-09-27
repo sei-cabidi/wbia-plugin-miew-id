@@ -1,5 +1,5 @@
 import os,sys
-from BN_Inception import BNInception
+from .BN_Inception import BNInception
 import torch
 from torch.autograd import Variable
 import numpy as np

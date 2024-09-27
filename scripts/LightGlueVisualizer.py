@@ -20,7 +20,7 @@ import lightglue
 from lightglue import LightGlue, SuperPoint, DISK, viz2d
 from lightglue.utils import rbd
 
-from visualizer import Visualizer
+from .visualizer import Visualizer
 
 class LightGlueVisualizer(Visualizer):
     def __init__(self):
